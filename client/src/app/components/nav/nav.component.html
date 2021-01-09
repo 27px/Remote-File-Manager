@@ -1,0 +1,19 @@
+<nav [ngClass]="menuActive?'menu-active':''">
+  <a class="menu-large" routerLink="/home">
+    <div class="logo"></div>
+    <div class="title">{{appTitle}}</div>
+  </a>
+  <div class="menu-min">
+    <div class="logo"></div>
+    <div class="title">{{appTitle}}</div>
+    <div class="icon" (click)="toggleMenu();">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </div>
+  </div>
+  <div class="wrapper">
+    <a routerLink="/home" [ngClass]="isActive('home')">Home</a>
+    <a routerLink="/login" [ngClass]="isActive('login')">Login</a>
+    <a routerLink="/signup" [ngClass]="isActive('signup')">Sign Up</a>
+  </div>
+  <div *ngIf="menuActive" class="overlay" (click)="closeMenu();"></div>
+</nav>

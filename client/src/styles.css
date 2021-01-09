@@ -1,1 +1,132 @@
-/* You can add global styles to this file, and also import other style files */
+*
+{
+  padding:0;
+  margin:0;
+}
+:root,body
+{
+  width:100%;
+  height:100%;
+}
+body
+{
+  --primary:#2196F3;
+  --primary0:#E3F2FD;
+  --primary1:#BBDEFB;
+  --primary2:#90CAF9;
+  --primary3:#64B5F6;
+  --primary4:#42A5F5;
+  --primary5:#2196F3;
+  --primary6:#1E88E5;
+  --primary7:#1976D2;
+  --primary8:#1565C0;
+  --primary9:#0D47A1;
+
+  --nav-height:65px;
+
+  font-family:"Roboto";
+  letter-spacing:1px;
+  overflow-x:hidden;
+}
+
+@media (max-width:650px)
+{
+  body
+  {
+    --nav-height:50px;
+  }
+}
+.container
+{
+  width:100%;
+  height:calc(100% - var(--nav-height));
+  padding:20px 20px;
+  box-sizing:border-box;
+}
+/* Button */
+.button
+{
+  padding:8px 20px;
+  font-size:18px;
+  letter-spacing:1px;
+  color:#000000;
+  text-decoration:none;
+  display:inline-block;
+  margin:10px 0px;
+  background:var(--primary3) linear-gradient(90deg,var(--primary3),var(--primary7),var(--primary3));
+  background-size:200%;
+  background-position:0% 0%;
+  transition:background-position 0.3s;
+  border-radius:50px;
+  user-select:none;
+  border:none;
+  cursor:pointer;
+}
+.button:hover
+{
+  background-position:100% 0%;
+}
+.button:focus
+{
+  outline:0px solid transparent;
+}
+/* Alignment of anchor tag and button are different */
+button.button
+{
+  position:relative;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+}
+@media (max-width:650px)
+{
+  a.button
+  {
+    position:relative;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+  }
+}
+/* Input elements */
+.row
+{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  height:100%;
+}
+label
+{
+  width:100%;
+  font-size:18px;
+  margin-bottom:10px;
+  color:var(--primary6);
+}
+.error-message
+{
+  color:#f44336;
+  padding:5px 0px;
+  min-height:30px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+.error-message svg
+{
+  margin-right:5px;
+}
+@media (min-width:560px)
+{
+  label
+  {
+    font-size:20px;
+  }
+}
+@media (min-width:920px)
+{
+  .row
+  {
+    padding:10px 0px;
+  }
+}
