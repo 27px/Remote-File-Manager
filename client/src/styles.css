@@ -2,6 +2,7 @@
 {
   padding:0;
   margin:0;
+  user-select:none;
 }
 :root,body
 {
@@ -40,7 +41,6 @@ body
 {
   width:100%;
   height:calc(100% - var(--nav-height));
-  padding:20px 20px;
   box-sizing:border-box;
 }
 /* Button */

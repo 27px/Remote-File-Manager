@@ -1,0 +1,19 @@
+<app-nav active="signup"></app-nav>
+<div class="container">
+  <div class="image"></div>
+  <form>
+    <div class="title">Sign Up</div>
+    <app-input type="text" label="E-Mail" placeholder="Enter your email" name="email"></app-input>
+    <app-input type="password" label="Password" placeholder="Enter your password" name="password"></app-input>
+    <app-input type="password" label="Confirm Password" placeholder="Repeat password" name="confirm-password"></app-input>
+    <div class="error-message">
+      <span class="wrap" *ngIf="error!=''">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>{{error}}</span>
+      </span>
+    </div>
+    <div class="bottom">
+      <button class="button">Sign Up</button>
+    </div>
+  </form>
+</div>

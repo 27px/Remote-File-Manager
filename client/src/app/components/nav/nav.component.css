@@ -42,7 +42,8 @@ nav a.link.active
   background:var(--primary5);
   color:#FFFFFF;
 }
-nav a.link:not(.active):hover
+nav a.link:not(.active):hover,
+nav a.link:not(.active):focus
 {
   background:var(--primary0);
 }
