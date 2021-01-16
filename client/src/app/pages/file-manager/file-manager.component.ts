@@ -17,7 +17,6 @@ export class FileManagerComponent implements OnInit
       this.theme=t;
     }
   }
-
   ngOnInit(): void { }
 
   rightClick(event:any):void

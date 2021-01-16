@@ -103,6 +103,10 @@ label
   margin-bottom:10px;
   color:var(--primary6);
 }
+label.icon
+{
+  margin:0;
+}
 .error-message
 {
   color:#f44336;
