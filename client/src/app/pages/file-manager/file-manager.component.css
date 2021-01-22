@@ -14,6 +14,20 @@
   --border:2px solid var(--accent);
   --inverse:#FFFFFF;
 }
+.scroller::-webkit-scrollbar
+{
+  width:5px;
+  height:5px;
+  background:var(--accent);
+}
+.scroller::-webkit-scrollbar-thumb
+{
+  background:var(--accent-dark);
+}
+.scroller::-webkit-scrollbar-thumb:hover
+{
+  background:var(--inverse);
+}
 .full-container
 {
   width:100%;
@@ -179,6 +193,7 @@
   box-sizing:border-box;
   font-size:18px;
   letter-spacing:1px;
+  color:var(--accent-dark);
 }
 .top-bar .search input:focus
 {
@@ -233,10 +248,11 @@
   box-sizing:border-box;
   border:2px solid transparent;
   cursor:pointer;
+  border-radius:10px;
+  transition:border-color 0.3s;
 }
 .contents .item:hover
 {
-  border-radius:10px;
   border-color:var(--accent-dark);
 }
 .contents .item .icon
@@ -258,9 +274,24 @@
 }
 .contents .item.folder .icon
 {
-  background-image:url("../../../assets/images/logo.svg");
+  background-image:url("../../../assets/images/folder.svg");
+}
+.contents .item.folder.folder-filled .icon
+{
+  background-image:url("../../../assets/images/folder-filled.svg");
 }
 .contents .item.file .icon
 {
   background-image:url("../../../assets/images/file.svg");
+}
+.selector
+{
+  position:fixed;
+  top:0;
+  left:0;
+  width:0;
+  height:0;
+  opacity:0.3;
+  background:var(--primary6);
+  outline:2px solid var(--primary9);
 }

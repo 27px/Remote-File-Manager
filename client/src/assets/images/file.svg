@@ -1,22 +1,9 @@
-<svg width="381" height="381" viewBox="0 0 381 381" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="71" y="36" width="238" height="308">
-<path d="M309 79L265.909 36H71V232H243.362V293H71V344H309V79Z" fill="black"/>
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="238" y="161" width="524" height="678">
+<path d="M761.328 255.551L666.577 161H238V838.248H761.328V255.551Z" fill="black"/>
 </mask>
 <g mask="url(#mask0)">
-<rect x="70.4989" y="36" width="238.501" height="308" rx="15" fill="url(#paint0_linear)"/>
+<path d="M728.345 161H269.881C251.665 161 236.898 175.767 236.898 193.983V805.265C236.898 823.481 251.665 838.248 269.881 838.248H728.345C746.561 838.248 761.328 823.481 761.328 805.265V193.983C761.328 175.767 746.561 161 728.345 161Z" fill="#BBDEFB"/>
 </g>
-<rect x="71" y="238" width="166" height="48" fill="url(#paint1_linear)"/>
-<!-- <path d="M137.104 264.135H124.448V272.705H139.302V278H117.856V246.008H139.258V251.347H124.448V258.972H137.104V264.135ZM154.617 257.038L160.615 246.008H168.196L158.879 261.872L168.438 278H160.769L154.617 266.794L148.464 278H140.796L150.354 261.872L141.038 246.008H148.618L154.617 257.038ZM195.859 251.347H186.06V278H179.468V251.347H169.8V246.008H195.859V251.347Z" fill="white"/> -->
-<text x="120" y="275" fill="#FFFFFF" font-size="40" font-family="monospace">JPG</text>
-<path d="M308.5 78.5L266 36C266.167 47 266.5 70 266.5 74C266.5 78 269.5 78.6667 271 78.5H308.5Z" fill="#E3F2FD"/>
-<defs>
-<linearGradient id="paint0_linear" x1="303.989" y1="41" x2="79.1267" y2="344.453" gradientUnits="userSpaceOnUse">
-<stop stop-color="#64B5F6"/>
-<stop offset="1" stop-color="#1565C0"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="154" y1="238" x2="119.081" y2="289.78" gradientUnits="userSpaceOnUse">
-<stop stop-color="#3283D4"/>
-<stop offset="1" stop-color="#2171C8"/>
-</linearGradient>
-</defs>
+<path d="M760.9 255.027L667.449 161.575C667.816 185.763 668.549 236.337 668.549 245.132C668.549 253.927 675.145 255.393 678.443 255.027H760.9Z" fill="#90CAF9"/>
 </svg>
