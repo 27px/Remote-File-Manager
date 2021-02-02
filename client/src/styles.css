@@ -24,6 +24,9 @@ body
   --primary9:#0D47A1;
 
   --nav-height:65px;
+  --font-title:"Lemon","Roboto",sans-serif;
+  --font-sub-title:"Roboto",sans-serif;
+  --font-cursive:"Dancing Script",cursive;
 
   font-family:"Roboto";
   letter-spacing:1px;

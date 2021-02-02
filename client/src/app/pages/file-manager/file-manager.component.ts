@@ -1,5 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import data from '../../../assets/data/folder-data';
+
+const _=(s:string):any=>document.querySelector(s);
+const $=(s:string):any=>document.querySelectorAll(s);
+
 @Component({
   selector: 'app-file-manager',
   templateUrl: './file-manager.component.html',
@@ -7,79 +12,28 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class FileManagerComponent implements OnInit
 {
-  @Input() theme: any = "light";
-  dragging:boolean=false;
-  initY:number=0;
-  initX:number=0;
-  top:number=0;
-  left:number=0;
-  width:number=0;
-  height:number=0;
-  folders=[
-    {
-      "name":"New Folder 01",
-      "filled":false
-    },
-    {
-      "name":"New Folder 02",
-      "filled":true
-    },
-    {
-      "name":"New Folder 03",
-      "filled":false
-    },
-    {
-      "name":"New Folder 04",
-      "filled":false
-    },
-    {
-      "name":"New Folder 05",
-      "filled":false
-    },
-    {
-      "name":"New Folder 06",
-      "filled":false
-    },
-    {
-      "name":"New Folder 07",
-      "filled":false
-    },
-    {
-      "name":"New Folder 08",
-      "filled":false
-    },
-    {
-      "name":"New Folder 09",
-      "filled":false
-    },
-    {
-      "name":"New Folder 10",
-      "filled":false
-    }
-  ];
-  files=[
-    "File 01.txt",
-    "File 02.txt",
-    "File 03.txt",
-    "File 04.txt",
-    "File 05.txt",
-    "File 06.txt",
-    "File 07.txt",
-    "File 08.txt",
-    "File 09.txt",
-    "File 10.txt"
-  ];
-
+  @Input() theme: string = "light"; // theme
+  dragging: boolean = false; // currently dragging or not
+  initY: number = 0; // Initial Drag Selection coordinates
+  initX: number = 0; // Initial Drag Selection coordinates
+  top: number = 0; // Drag selector dimensions
+  left: number = 0; // Drag selector dimensions
+  width: number = 0; // Drag selector dimensions
+  height: number = 0; // Drag selector dimensions
+  path: string[] = this.parsePath(data.path); // directory path
+  contents: any[] = data.contents; // directory contents
   constructor()
   {
-    let t:any=localStorage.getItem("theme");
-    if(t!=null)
+    let theme:any=localStorage.getItem("theme");
+    if(theme!=null)
     {
-      this.theme=t;
+      this.theme=theme;
     }
   }
-  ngOnInit(): void { }
+  ngOnInit(): void
+  {
 
+  }
   switchTheme()
   {
     this.theme=this.theme=="dark"?"light":"dark";
@@ -102,20 +56,27 @@ export class FileManagerComponent implements OnInit
   {
     if(this.dragging)
     {
-      let {clientX:x,clientY:y}=event;
-      if(this.initY<y && this.initX<x)//quad 4
+      let {
+        clientX:x,
+        clientY:y
+      }=event;
+      // bottom right drag selection
+      if(this.initY<y && this.initX<x)
       {
         this.setSelectDimensions(this.initX,this.initY,x-this.initX,y-this.initY);
       }
-      else if(this.initY<y && this.initX>=x)//quad 3
+      // bottom left drag selection
+      else if(this.initY<y && this.initX>=x)
       {
         this.setSelectDimensions(x,this.initY,this.initX-x,y-this.initY);
       }
-      else if(this.initY>=y && this.initX<x)//quad 2
+      // top right drag selection
+      else if(this.initY>=y && this.initX<x)
       {
         this.setSelectDimensions(this.initX,y,x-this.initX,this.initY-y);
       }
-      else if(this.initY>=y && this.initX>=x)//quad 1
+      // top left drag selectiong
+      else if(this.initY>=y && this.initX>=x)
       {
         this.setSelectDimensions(x,y,this.initX-x,this.initY-y);
       }
@@ -125,6 +86,7 @@ export class FileManagerComponent implements OnInit
   {
     this.dragging=false;
   }
+  // set dragging box
   setSelectDimensions(x:number,y:number,w:number,h:number)
   {
     this.top=y;
@@ -132,8 +94,30 @@ export class FileManagerComponent implements OnInit
     this.width=w;
     this.height=h;
   }
-  prevent(event:any)
+  preventDefault(event:any)
+  {
+    event.preventDefault();
+  }
+  preventPropagation(event:any)
   {
     event.stopPropagation();
+  }
+  shortcut(event:any)
+  {
+    //Control Key was also pressing
+    if(event.ctrlKey)
+    {
+      // key: k
+      if(event.keyCode==70)
+      {
+        event.preventDefault();
+        _("#search")?.focus()
+      }
+    }
+  }
+  //split url path to array of drirectory path
+  parsePath(url:string):string[]
+  {
+    return url.replace(/(:\/\/|\\)/g,"/").split("/");
   }
 }

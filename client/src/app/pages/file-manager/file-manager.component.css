@@ -2,6 +2,7 @@
 {
   --bg:#FFFFFF;
   --accent:#C0C0C0;
+  --accent-semi:rgba(192,192,192,0.5);
   --accent-dark:#606060;
   --border:2px solid var(--accent);
   --inverse:#000000;
@@ -10,6 +11,7 @@
 {
   --bg:#303030;
   --accent:#606060;
+  --accent-semi:rgba(128,128,128,0.5);
   --accent-dark:#C0C0C0;
   --border:2px solid var(--accent);
   --inverse:#FFFFFF;
@@ -198,6 +200,18 @@
 .top-bar .search input:focus
 {
   outline:0px solid transparent;
+  animation:flash 1s ease-out 1 forwards;
+}
+@keyframes flash
+{
+  0%
+  {
+    background:var(--accent-semi);
+  }
+  100%
+  {
+    background:transparent;
+  }
 }
 .top-bar .search .icon
 {
@@ -253,7 +267,7 @@
 }
 .contents .item:hover
 {
-  border-color:var(--accent-dark);
+  border-color:var(--accent);
 }
 .contents .item .icon
 {

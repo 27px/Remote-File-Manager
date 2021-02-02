@@ -1,6 +1,6 @@
 .title
 {
-  font-family:"Raleway";
+  font-family:var(--font-title);
   font-weight:900;
   font-size:25px;
   letter-spacing:3px;
@@ -12,10 +12,9 @@
 .sub-title
 {
   font-size:18px;
-  font-style:italic;
-  color:rgba(0,0,0,0.6);
   width:100%;
   display:inline-block;
+  font-family:var(--font-cursive);
 }
 .text
 {
@@ -49,14 +48,13 @@
   }
   .title
   {
-    font-size:55px;
+    font-size:45px;
     text-align:left;
     line-height:unset;
   }
   .wrapper
   {
     width:100%;
-    padding-left:20px;
   }
   .home-image
   {
