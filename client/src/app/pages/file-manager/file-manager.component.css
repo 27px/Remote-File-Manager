@@ -40,7 +40,7 @@
   background:var(--bg);
 
   --icon-size:150px;
-  --icon-gap:15px;
+  --icon-gap:25px;
 }
 .mini-scroll-bar::-webkit-scrollbar
 {

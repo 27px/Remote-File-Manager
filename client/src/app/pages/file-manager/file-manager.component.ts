@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import data from '../../../assets/data/folder-data';
+import sortType from '../../../model/sortType';
+import dragDimension from "../../../model/dragDimension";
 
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
@@ -13,15 +15,14 @@ const $=(s:string):any=>document.querySelectorAll(s);
 export class FileManagerComponent implements OnInit
 {
   @Input() theme: string = "light"; // theme
+
   dragging: boolean = false; // currently dragging or not
-  initY: number = 0; // Initial Drag Selection coordinates
-  initX: number = 0; // Initial Drag Selection coordinates
-  top: number = 0; // Drag selector dimensions
-  left: number = 0; // Drag selector dimensions
-  width: number = 0; // Drag selector dimensions
-  height: number = 0; // Drag selector dimensions
+  drag: dragDimension = new dragDimension();
   path: string[] = this.parsePath(data.path); // directory path
   contents: any[] = data.contents; // directory contents
+  search: any = null; // search element
+  sort: sortType = new sortType("type","asc"); // sort by type and arrange as ascending
+
   constructor()
   {
     let theme:any=localStorage.getItem("theme");
@@ -32,8 +33,10 @@ export class FileManagerComponent implements OnInit
   }
   ngOnInit(): void
   {
-
+    this.search=_("#search");
+    this.arrange();
   }
+
   switchTheme()
   {
     this.theme=this.theme=="dark"?"light":"dark";
@@ -47,8 +50,8 @@ export class FileManagerComponent implements OnInit
   mouseDown(event:any)
   {
     let {clientX:x,clientY:y}=event;
-    this.initY=y;
-    this.initX=x;
+    this.drag.initY=y;
+    this.drag.initX=x;
     this.setSelectDimensions(x,y,0,0);
     this.dragging=true;
   }
@@ -61,24 +64,24 @@ export class FileManagerComponent implements OnInit
         clientY:y
       }=event;
       // bottom right drag selection
-      if(this.initY<y && this.initX<x)
+      if(this.drag.initY<y && this.drag.initX<x)
       {
-        this.setSelectDimensions(this.initX,this.initY,x-this.initX,y-this.initY);
+        this.setSelectDimensions(this.drag.initX,this.drag.initY,x-this.drag.initX,y-this.drag.initY);
       }
       // bottom left drag selection
-      else if(this.initY<y && this.initX>=x)
+      else if(this.drag.initY<y && this.drag.initX>=x)
       {
-        this.setSelectDimensions(x,this.initY,this.initX-x,y-this.initY);
+        this.setSelectDimensions(x,this.drag.initY,this.drag.initX-x,y-this.drag.initY);
       }
       // top right drag selection
-      else if(this.initY>=y && this.initX<x)
+      else if(this.drag.initY>=y && this.drag.initX<x)
       {
-        this.setSelectDimensions(this.initX,y,x-this.initX,this.initY-y);
+        this.setSelectDimensions(this.drag.initX,y,x-this.drag.initX,this.drag.initY-y);
       }
       // top left drag selectiong
-      else if(this.initY>=y && this.initX>=x)
+      else if(this.drag.initY>=y && this.drag.initX>=x)
       {
-        this.setSelectDimensions(x,y,this.initX-x,this.initY-y);
+        this.setSelectDimensions(x,y,this.drag.initX-x,this.drag.initY-y);
       }
     }
   }
@@ -89,10 +92,10 @@ export class FileManagerComponent implements OnInit
   // set dragging box
   setSelectDimensions(x:number,y:number,w:number,h:number)
   {
-    this.top=y;
-    this.left=x;
-    this.width=w;
-    this.height=h;
+    this.drag.top=y;
+    this.drag.left=x;
+    this.drag.width=w;
+    this.drag.height=h;
   }
   preventDefault(event:any)
   {
@@ -119,5 +122,40 @@ export class FileManagerComponent implements OnInit
   parsePath(url:string):string[]
   {
     return url.replace(/(:\/\/|\\)/g,"/").split("/");
+  }
+  // typing in search box
+  searching()
+  {
+    let key=this.search.value;
+    this.contents.map(content=>{
+      if(content.name.toLowerCase().indexOf(key.toLowerCase())==-1)
+      {
+        content.hidden=true;// not a match
+      }
+      else
+      {
+        content.hidden=false;
+      }
+      return content;
+    });
+  }
+  strcmp(a:any,b:any):1|-1|0
+  {
+    let x=a.name;
+    let y=b.name;
+    if(x<y)
+    {
+      return -1;
+    }
+    else if(x>y)
+    {
+      return 1;
+    }
+    return 0;
+  }
+  //sort
+  arrange()
+  {
+    console.warn(this.sort);
   }
 }

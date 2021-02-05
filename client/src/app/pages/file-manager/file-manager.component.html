@@ -91,7 +91,7 @@
     </div>
     <!-- Search in Folder-->
     <div class="search">
-      <input type="text" id="search" placeholder="Search">
+      <input type="text" id="search" placeholder="Search" (keyup)="searching();">
       <label class="icon" for="search">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </label>
@@ -101,18 +101,18 @@
   <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <ng-container *ngFor="let content of contents">
       <!-- Folder -->
-      <div [ngClass]="content.filled?'item folder folder-filled':'item folder'" *ngIf="content.type=='folder'" (mousedown)="preventPropagation($event);" draggable="true">
+      <div [ngClass]="content.filled?'item folder folder-filled':'item folder'" *ngIf="content.type=='folder' && !content.hidden" (mousedown)="preventPropagation($event);" draggable="true">
         <div class="icon"></div>
         <div class="name">{{content.name}}</div>
       </div>
       <!-- File -->
-      <div class="item file" *ngIf="content.type=='file'" (mousedown)="preventPropagation($event);" draggable="true">
+      <div class="item file" *ngIf="content.type=='file' && !content.hidden" (mousedown)="preventPropagation($event);" draggable="true">
         <div class="icon"></div>
         <div class="name">{{content.name}}</div>
       </div>
     </ng-container>
     <!-- Drag Selector -->
-    <div class="selector" *ngIf="dragging" [ngStyle]="{'top':top+'px','left':left+'px','width':width+'px','height':height+'px'}"></div>
+    <div class="selector" *ngIf="dragging" [ngStyle]="{'top':drag.top+'px','left':drag.left+'px','width':drag.width+'px','height':drag.height+'px'}"></div>
   </div>
 
 </div>

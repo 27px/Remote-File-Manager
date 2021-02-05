@@ -3,52 +3,52 @@ export default {
   "contents":[
     {
       "type":"folder",
-      "name":"New Folder 01",
+      "name":"My Gifs",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 02",
+      "name":"Jokes",
       "filled":true
     },
     {
       "type":"folder",
-      "name":"New Folder 03",
+      "name":"Movies",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 04",
+      "name":"Music",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 05",
+      "name":"My Music",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 06",
+      "name":"Videos",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 07",
+      "name":"Memes",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 08",
+      "name":"Marvel Movies",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 09",
+      "name":"Linux",
       "filled":false
     },
     {
       "type":"folder",
-      "name":"New Folder 10",
+      "name":"Windows",
       "filled":false
     },
     {
