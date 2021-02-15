@@ -40,7 +40,7 @@
   background:var(--bg);
 
   --icon-size:150px;
-  --icon-gap:25px;
+  --icon-gap:10px;
 }
 .mini-scroll-bar::-webkit-scrollbar
 {
@@ -271,9 +271,10 @@
 }
 .contents .item .icon
 {
-  width:calc(var(--icon-size) - var(--icon-gap) * 2);
+  /* width:calc(var(--icon-size) - var(--icon-gap) * 2); */
+  width:100%;
   height:calc(var(--icon-size) - var(--icon-gap) * 2);
-  margin-bottom:var(--icon-gap);
+  margin-bottom:5px;
   background-position:center;
   background-repeat:no-repeat;
   background-size:contain;
