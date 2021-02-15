@@ -251,23 +251,7 @@
   box-sizing:border-box;
   overflow:auto;
 }
-.contents .item
-{
-  width:var(--icon-size);
-  max-width:100%;
-  height:calc(var(--icon-size) + 30px);
-  margin:0px auto;
-  padding:var(--icon-gap);
-  box-sizing:border-box;
-  border:2px solid transparent;
-  cursor:pointer;
-  border-radius:10px;
-  transition:border-color 0.3s;
-}
-.contents .item:hover
-{
-  border-color:var(--accent);
-}
+/*
 .contents .item .icon
 {
   width:100%;
@@ -297,6 +281,7 @@
 {
   background-image:url("../../../assets/images/file.svg");
 }
+*/
 .selector
 {
   position:fixed;

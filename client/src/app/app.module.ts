@@ -9,6 +9,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { InputComponent } from './components/input/input.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
+import { FileFolderComponent } from './components/file-folder/file-folder.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FileManagerComponent } from './pages/file-manager/file-manager.componen
     LoginComponent,
     InputComponent,
     SignupComponent,
-    FileManagerComponent
+    FileManagerComponent,
+    FileFolderComponent
   ],
   imports: [
     BrowserModule,

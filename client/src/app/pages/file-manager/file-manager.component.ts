@@ -1,9 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, ViewChildren } from '@angular/core';
 
+// Components
+import { FileFolderComponent } from "../../components/file-folder/file-folder.component";
+
+// data models
 import data from '../../../assets/data/folder-data';
 import sortType from '../../../model/sortType';
 import dragDimension from "../../../model/dragDimension";
 
+// Custom Functions
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
 
@@ -12,9 +17,10 @@ const $=(s:string):any=>document.querySelectorAll(s);
   templateUrl: './file-manager.component.html',
   styleUrls: ['./file-manager.component.css']
 })
-export class FileManagerComponent implements OnInit
+export class FileManagerComponent implements AfterViewInit
 {
   @Input() theme: string = "light"; // theme
+  @ViewChildren(FileFolderComponent) filesAndFolders:FileFolderComponent;
 
   dragging: boolean = false; // currently dragging or not
   drag: dragDimension = new dragDimension();
@@ -25,13 +31,13 @@ export class FileManagerComponent implements OnInit
 
   constructor()
   {
-    let theme:any=localStorage.getItem("theme");
+    let theme:any=localStorage.getItem("theme"); // dark or white mode
     if(theme!=null)
     {
       this.theme=theme;
     }
   }
-  ngOnInit(): void
+  ngAfterViewInit(): void
   {
     this.search=_("#search");
     this.arrange();
@@ -45,6 +51,7 @@ export class FileManagerComponent implements OnInit
   rightClick(event:any):void
   {
     event.preventDefault();
+
     console.log("right click");
   }
   mouseDown(event:any)
@@ -101,10 +108,6 @@ export class FileManagerComponent implements OnInit
   {
     event.preventDefault();
   }
-  preventPropagation(event:any)
-  {
-    event.stopPropagation();
-  }
   shortcut(event:any)
   {
     //Control Key was also pressing
@@ -121,41 +124,40 @@ export class FileManagerComponent implements OnInit
   //split url path to array of drirectory path
   parsePath(url:string):string[]
   {
+    // replaces different types of slashes like ( :// , \ , / ) to one type to ( / ) before spliting
     return url.replace(/(:\/\/|\\)/g,"/").split("/");
   }
   // typing in search box
   searching()
   {
     let key=this.search.value;
-    this.contents.map(content=>{
-      if(content.name.toLowerCase().indexOf(key.toLowerCase())==-1)
+    this.filesAndFolders?._results?.forEach(item=>{
+      if(item.getData().name.toLowerCase().indexOf(key.toLowerCase())==-1)
       {
-        content.hidden=true;// not a match
+        item.hide();// not a match
       }
       else
       {
-        content.hidden=false;
+        item.show();
       }
-      return content;
     });
   }
   strcmp(a:any,b:any):1|-1|0
   {
-    let x=a.name;
-    let y=b.name;
-    if(x<y)
-    {
-      return -1;
-    }
-    else if(x>y)
-    {
-      return 1;
-    }
-    return 0;
+    return a.name<b.name?-1:a.name>b.name?1:0;
   }
   //sort
   arrange()
   {
     console.warn(this.sort);
+  }
+  getSelectorStyle()
+  {
+    return {
+      top: this.drag.top+'px',
+      left: this.drag.left+'px',
+      width: this.drag.width+'px',
+      height: this.drag.height+'px'
+    };
   }
 }

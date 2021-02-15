@@ -1,0 +1,10 @@
+Front End
+-----------------------------------------------------------------------------------------------------
+1   Files and Folders partially componentized and is having Errors
+2   Searching not complete due to componentization
+3   Some stupid error, check command prompt
+
+=====================================================================================================
+
+Back End
+-----------------------------------------------------------------------------------------------------
