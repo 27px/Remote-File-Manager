@@ -42,6 +42,7 @@
   grid-template-columns:280px 1fr;
   grid-template-rows:50px 40px 1fr;
   background:var(--bg);
+  overflow:hidden;
 
   --icon-size:150px;
   --icon-gap:10px;
@@ -250,42 +251,13 @@
 {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(var(--icon-size),1fr));
+  grid-template-rows:calc(var(--icon-size) + 30px);
   grid-gap:var(--icon-gap);
   padding:var(--icon-gap);
   box-sizing:border-box;
   overflow:auto;
+  position:relative;
 }
-/*
-.contents .item .icon
-{
-  width:100%;
-  height:calc(var(--icon-size) - var(--icon-gap) * 2);
-  margin-bottom:5px;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:contain;
-}
-.contents .item .name
-{
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  text-align:center;
-  color:var(--accent-dark);
-}
-.contents .item.folder .icon
-{
-  background-image:url("../../../assets/images/folder.svg");
-}
-.contents .item.folder.folder-filled .icon
-{
-  background-image:url("../../../assets/images/folder-filled.svg");
-}
-.contents .item.file .icon
-{
-  background-image:url("../../../assets/images/file.svg");
-}
-*/
 .selector
 {
   position:fixed;
@@ -296,4 +268,69 @@
   opacity:0.3;
   background:var(--primary6);
   outline:2px solid var(--primary9);
+}
+.no-items
+{
+  color:var(--accent-dark);
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(1);
+  text-align:center;
+  animation:pulse 1s linear infinite alternate;
+  letter-spacing:3px;
+}
+@keyframes pulse
+{
+  0%
+  {
+    transform:translate(-50%,-50%) scale(1);
+  }
+  100%
+  {
+    transform:translate(-50%,-50%) scale(1.2);
+  }
+}
+@media (max-width:750px)
+{
+  .tree
+  {
+    /* Show as popup */
+    display:none;
+  }
+  .top-bar
+  {
+    grid-area:2 / 1 / 3 / 3;
+  }
+  .contents
+  {
+    grid-area:3 / 1 / 4 / 3;
+  }
+}
+.loader
+{
+  width:50px;
+  height:50px;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(0deg);
+  animation:rolling 2.5s linear infinite normal;
+}
+@keyframes rolling
+{
+  0%
+  {
+    transform:translate(-50%,-50%) rotate(0deg);
+  }
+  100%
+  {
+    transform:translate(-50%,-50%) rotate(360deg);
+  }
+}
+.loader svg
+{
+  width:100%;
+  height:100%;
+  stroke:var(--primary3);
 }

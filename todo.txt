@@ -1,10 +1,11 @@
 Front End
 -----------------------------------------------------------------------------------------------------
-1   Files and Folders partially componentized and is having Errors
-2   Searching not complete due to componentization
-3   Some stupid error, check command prompt
+1 Searching is only for current directory, not for sub directory
+2 Add Loading Animation
+3 File/Folder Selection, shortcut key, mouse drag
 
 =====================================================================================================
 
 Back End
 -----------------------------------------------------------------------------------------------------
+1 Connect SSH and Local Files with UI

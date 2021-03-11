@@ -9,8 +9,6 @@ export class FileFolderComponent implements OnInit
 {
   @Input() content:any = null;
 
-  hidden:boolean = false;
-
   constructor(public element:ElementRef)
   {
 

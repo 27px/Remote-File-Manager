@@ -28,9 +28,16 @@ export class FileManagerComponent implements AfterViewInit
   contents: any[] = data.contents; // directory contents
   search: any = null; // search element
   sort: sortType = new sortType("type","asc"); // sort by type and arrange as ascending
+  noItems: boolean = this.contents.length<1;
+  loading: boolean = false;
 
   constructor()
   {
+    this.loading=true;
+    // load items from backend
+    this.loading=false;
+
+
     let theme:any=localStorage.getItem("theme"); // dark or white mode
     if(theme!=null)
     {
@@ -130,7 +137,7 @@ export class FileManagerComponent implements AfterViewInit
   // typing in search box
   searching()
   {
-    let key=this.search.value;
+    let key=this.search.value,i=0;
     this.filesAndFolders?._results?.forEach((item:any)=>{
       if(item.getData().name.toLowerCase().indexOf(key.toLowerCase())==-1)
       {
@@ -139,8 +146,10 @@ export class FileManagerComponent implements AfterViewInit
       else
       {
         item.show();
+        i++;
       }
     });
+    this.noItems=i<1;
   }
   strcmp(a:any,b:any):1|-1|0
   {
