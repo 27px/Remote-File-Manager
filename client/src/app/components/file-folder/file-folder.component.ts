@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-file-folder',
@@ -11,7 +11,7 @@ export class FileFolderComponent implements OnInit
 
   hidden:boolean = false;
 
-  constructor()
+  constructor(public element:ElementRef)
   {
 
   }
@@ -29,10 +29,10 @@ export class FileFolderComponent implements OnInit
   }
   hide()
   {
-    this.hidden=true;
+    this.element.nativeElement.classList.add("hidden");
   }
   show()
   {
-    this.hidden=false;
+    this.element.nativeElement.classList.remove("hidden");
   }
 }

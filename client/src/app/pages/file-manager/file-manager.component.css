@@ -1,3 +1,7 @@
+.hidden
+{
+  display:none;
+}
 .full-container.light-theme
 {
   --bg:#FFFFFF;

@@ -20,7 +20,7 @@ const $=(s:string):any=>document.querySelectorAll(s);
 export class FileManagerComponent implements AfterViewInit
 {
   @Input() theme: string = "light"; // theme
-  @ViewChildren(FileFolderComponent) filesAndFolders:FileFolderComponent;
+  @ViewChildren(FileFolderComponent) filesAndFolders:any;
 
   dragging: boolean = false; // currently dragging or not
   drag: dragDimension = new dragDimension();
@@ -131,7 +131,7 @@ export class FileManagerComponent implements AfterViewInit
   searching()
   {
     let key=this.search.value;
-    this.filesAndFolders?._results?.forEach(item=>{
+    this.filesAndFolders?._results?.forEach((item:any)=>{
       if(item.getData().name.toLowerCase().indexOf(key.toLowerCase())==-1)
       {
         item.hide();// not a match
