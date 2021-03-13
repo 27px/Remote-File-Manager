@@ -1,0 +1,6 @@
+{
+  "SERVER":{
+    "HOST":"localhost",
+    "PORT":4000
+  }
+}

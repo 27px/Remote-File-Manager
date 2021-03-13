@@ -1,4 +1,5 @@
 server/node_modules/
+server/config/config.json
 client/node_modules/
 desktop.ini
 */desktop.ini
