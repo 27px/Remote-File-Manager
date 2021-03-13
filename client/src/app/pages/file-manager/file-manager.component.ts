@@ -132,7 +132,7 @@ export class FileManagerComponent implements AfterViewInit
   parsePath(url:string):string[]
   {
     // replaces different types of slashes like ( :// , \ , / ) to one type to ( / ) before spliting
-    return url.replace(/(:\/\/|\\)/g,"/").split("/");
+    return url.replace(/(:\/\/|\\)/g,"/").split("/").filter(dir=>dir!="");
   }
   // typing in search box
   searching()
