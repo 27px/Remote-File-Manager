@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ElementRef, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-file-folder',
@@ -8,6 +8,7 @@ import { Component, OnInit, Input, ElementRef } from '@angular/core';
 export class FileFolderComponent implements OnInit
 {
   @Input() content:any = null;
+  @Output() openFolder:EventEmitter<any>=new EventEmitter();
 
   constructor(public element:ElementRef)
   {
@@ -16,6 +17,10 @@ export class FileFolderComponent implements OnInit
   ngOnInit(): void
   {
 
+  }
+  openDir(folder:string)
+  {
+    this.openFolder.emit(folder);
   }
   preventPropagation(event:any)
   {

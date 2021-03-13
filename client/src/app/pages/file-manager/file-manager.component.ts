@@ -7,6 +7,7 @@ import { FileFolderComponent } from "../../components/file-folder/file-folder.co
 import data from '../../../assets/data/folder-data';
 import sortType from '../../../model/sortType';
 import dragDimension from "../../../model/dragDimension";
+import config from "../../config/config";
 
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
@@ -24,32 +25,75 @@ export class FileManagerComponent implements AfterViewInit
 
   dragging: boolean = false; // currently dragging or not
   drag: dragDimension = new dragDimension();
-  path: string[] = this.parsePath(data.path); // directory path
-  contents: any[] = data.contents; // directory contents
+  path: string[] = []; // directory path
+  contents: any[] = []; // directory contents
   search: any = null; // search element
   sort: sortType = new sortType("type","asc"); // sort by type and arrange as ascending
-  noItems: boolean = this.contents.length<1;
+  noItems: boolean = false;
   loading: boolean = false;
+  GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/ssh/getDirectoryContents/`;
+  INITIAL_PATH: string = "/";
 
   constructor()
   {
-    this.loading=true;
-    // load items from backend
-    this.loading=false;
-
-
     let theme:any=localStorage.getItem("theme"); // dark or white mode
     if(theme!=null)
     {
       this.theme=theme;
     }
+    this.loadDirContents(this.INITIAL_PATH);
+  }
+  openDir(data:any)
+  {
+    this.loadDirContents(this.getCWD(data));
   }
   ngAfterViewInit(): void
   {
     this.search=_("#search");
     this.arrange();
   }
-
+  refresh()
+  {
+    this.loadDirContents(this.getCWD());
+  }
+  getCWD(extra_path:string="")
+  {
+    let temp=`${this.path.join("/")}/`;
+    temp=temp!="/"?temp:"";
+    return `${temp}${extra_path}`;
+  }
+  loadDirContents(path:string)
+  {
+    this.loading=true;
+    this.contents=[];
+    fetch(`${this.GET_DIR_CONTENTS}`,{
+      method:"POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({
+        path
+      })
+    }).then(resp=>{
+      if(resp.status===200)
+      {
+        return resp.json();
+      }
+      throw new Error();
+    }).then(data=>{
+      this.path=this.parsePath(data.path);
+      this.contents=data.contents;
+      this.noItems=this.contents.length<1;
+    }).catch(err=>{
+      console.log(err);
+      this.path=this.parsePath("/");
+      this.contents=[];
+      this.noItems=true;
+    }).finally(()=>{
+      this.loading=false;
+    });
+  }
   switchTheme()
   {
     this.theme=this.theme=="dark"?"light":"dark";

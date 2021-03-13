@@ -4,6 +4,7 @@ const express=require("express");
 const path=require("path");
 const route=require("./routes/main");
 const chalk=require("chalk");
+const cors=require("cors");
 
 const HOST=config.SERVER.HOST;
 const PORT=process.env.PORT || config.SERVER.PORT;
@@ -12,6 +13,10 @@ var app=express();
 
 // app.set("views","./views");
 // app.set("view engine","ejs");
+
+app.use(cors({
+  origin:"*"
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

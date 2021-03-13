@@ -1,10 +1,10 @@
 <!-- Folder -->
-<div [ngClass]="content.filled?'item folder folder-filled':'item folder'" *ngIf="content.type=='folder'" (mousedown)="preventPropagation($event);" draggable="true" title="{{content.name}}">
+<div [ngClass]="content.filled?'item folder folder-filled':'item folder'" *ngIf="content.folder" (mousedown)="preventPropagation($event);" draggable="true" title="{{content.name}}" (dblclick)="openDir(content.name);">
   <div class="icon"></div>
   <div class="name">{{content.name}}</div>
 </div>
 <!-- File -->
-<div class="item file" *ngIf="content.type=='file'" (mousedown)="preventPropagation($event);" draggable="true" title="{{content.name}}">
+<div class="item file" *ngIf="!content.folder" (mousedown)="preventPropagation($event);" draggable="true" title="{{content.name}}">
   <div class="icon"></div>
   <div class="name">{{content.name}}</div>
 </div>
