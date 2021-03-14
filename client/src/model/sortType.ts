@@ -3,10 +3,10 @@ type order = "asc" | "desc";
 export default class sortType
 {
   "key": sortBy;
-  "type": order;
-  constructor(k:sortBy,t:order)
+  "order": order;
+  constructor(key:sortBy="type",order:order="asc")
   {
-    this.key=k || "type";
-    this.type=t || "asc";
+    this.key=key;
+    this.order=order;
   }
 }

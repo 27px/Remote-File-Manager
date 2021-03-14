@@ -28,11 +28,14 @@ export class FileManagerComponent implements AfterViewInit
   path: string[] = []; // directory path
   contents: any[] = []; // directory contents
   search: any = null; // search element
+  editPathInput: any = null;
   sort: sortType = new sortType("type","asc"); // sort by type and arrange as ascending
   noItems: boolean = false;
+  error_loading: string = ""; // "" for no error else error message
   loading: boolean = false;
   GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/ssh/getDirectoryContents/`;
   INITIAL_PATH: string = "/";
+  editingPath: boolean = false; // currently editing path
 
   constructor()
   {
@@ -56,11 +59,12 @@ export class FileManagerComponent implements AfterViewInit
   ngAfterViewInit(): void
   {
     this.search=_("#search");
+    this.editPathInput=_("#editable-path");
     this.arrange();
   }
   refresh()
   {
-    this.loadDirContents(this.getCWD());
+    this.loadDirContents(this.getCWD() || "/");
   }
   getCWD(extra_path:string="")
   {
@@ -88,16 +92,29 @@ export class FileManagerComponent implements AfterViewInit
       }
       throw new Error();
     }).then(data=>{
-      this.path=this.parsePath(data.path);
-      this.contents=data.contents;
-      this.noItems=this.contents.length<1;
+      // console.log(data);
+      if(data.status)
+      {
+        this.path=this.parsePath(data.path);
+        this.contents=data.contents;
+        this.noItems=this.contents.length<1;
+        this.error_loading="";
+        this.arrange();// sort
+      }
+      else
+      {
+        console.log(`%c${data.error_log}`,"color:#F00");
+        throw new Error(data.message);
+      }
     }).catch(err=>{
-      console.log(err);
+      console.log(err.message);
+      this.error_loading=err.message;
       this.path=this.parsePath("/");
       this.contents=[];
       this.noItems=true;
     }).finally(()=>{
       this.loading=false;
+      this.editingPath=false;
     });
   }
   switchTheme()
@@ -167,22 +184,51 @@ export class FileManagerComponent implements AfterViewInit
   }
   shortcut(event:any)
   {
-    //Control Key was also pressing
-    if(event.ctrlKey)
+    let key=event.keyCode;
+    let ctrl=event.ctrlKey;
+    let shift=event.shiftKey;
+    let alt=event.altKey;
+    // console.log(key);
+    if(ctrl || shift || alt)
     {
-      // key: k
-      if(event.keyCode==70)
+      //Control Key was also pressing
+      if(ctrl)
       {
-        event.preventDefault();
-        _("#search")?.focus()
+        if(key===70)// key: k
+        {
+          event.preventDefault();
+          _("#search")?.focus();
+        }
       }
     }
+    else if(key===114)// F3 : search
+    {
+      event.preventDefault();
+      _("#search")?.focus();
+    }
+    else if(key===115)// F4 : Edit Path
+    {
+      this.editThePath();
+    }
+    else if(key===116)// F5 : Refresh
+    {
+      event.preventDefault();
+      this.refresh()
+    }
+  }
+  editThePath()
+  {
+    this.editPathInput.value=this.path.join("/") || "/";
+    this.editingPath=true;
+    this.editPathInput.selectionStart=0;
+    this.editPathInput.selectionEnd=this.editPathInput.value.length-1;
+    _("#editable-path")?.focus();
   }
   //split url path to array of drirectory path
   parsePath(url:string):string[]
   {
     // replaces different types of slashes like ( :// , \ , / ) to one type to ( / ) before spliting
-    return url.replace(/(:\/\/|\\)/g,"/").split("/").filter(dir=>dir!="");
+    return url?.replace(/(:\/\/|\\)/g,"/")?.split("/")?.filter(dir=>dir!="");
   }
   // typing in search box
   searching()
@@ -203,12 +249,56 @@ export class FileManagerComponent implements AfterViewInit
   }
   strcmp(a:any,b:any):1|-1|0
   {
-    return a.name<b.name?-1:a.name>b.name?1:0;
+    let x=a.name.toLowerCase(),y=b.name.toLowerCase();//ignore case
+    return x<y?-1:x>y?1:0;
   }
   //sort
   arrange()
   {
-    console.warn(this.sort);
+    let {key,order}=this.sort;
+    if(key=="type")// sort by file/folder type
+    {
+      let temp_files:any[]=[],temp_folders:any[]=[];
+      this.contents.forEach(content=>{
+        if(content.folder)
+        {
+          temp_folders.push(content);
+        }
+        else
+        {
+          temp_files.push(content);
+        }
+      });
+      temp_files=this.alphabeticalSort(temp_files) || [];
+      temp_folders=this.alphabeticalSort(temp_folders) || [];
+      this.contents=[...temp_folders,...temp_files];
+    }
+    if(key=="name")// sort by file/folder name
+    {
+      this.contents=this.alphabeticalSort(this.contents) || [];
+    }
+    else if(key=="size")// sort by file size
+    {
+      // incorrect size is returned from ssh plugin
+      console.error("sort by size not implemented");
+      // this.contents.sort((a,b)=>a.properties.size-b.properties.size);
+    }
+    else if(key=="date")// sort by date
+    {
+      // incorrect date is returned from ssh plugin
+      console.error("sort by date not implemented");
+      // this.contents.sort((a,b)=>b.properties.mtime-a.properties.mtime);
+    }
+    if(order=="desc")// descending order
+    {
+      this.contents.reverse();
+    }
+  }
+  alphabeticalSort(data:any[]=[])
+  {
+    let temp=[...data];
+    temp.sort(this.strcmp);
+    return temp;
   }
   getSelectorStyle()
   {
@@ -218,5 +308,28 @@ export class FileManagerComponent implements AfterViewInit
       width: this.drag.width+'px',
       height: this.drag.height+'px'
     };
+  }
+  toggleEditPath()
+  {
+    this.editPathInput.value=this.path.join("/") || "/";
+    this.editingPath=!this.editingPath;
+    _("#editable-path")?.focus();
+  }
+  typingPath(event:any)
+  {
+    let key=event.keyCode;
+    if(key===13)// enter
+    {
+      this.goToPath();
+    }
+    else if(key===27)// escape
+    {
+      // reset path
+      this.editingPath=false;
+    }
+  }
+  goToPath()
+  {
+    this.loadDirContents(this.editPathInput.value || "/");
   }
 }
