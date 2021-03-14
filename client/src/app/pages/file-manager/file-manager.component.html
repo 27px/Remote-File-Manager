@@ -66,7 +66,8 @@
     <!-- Path Explorer -->
     <div class="path mini-scroll-bar">
       <!-- Paths -->
-      <div class="location" *ngFor="let location of path">{{location}}</div>
+      <div class="location" [attr.data-index]="0" (click)="moveToDir($event);">/</div>
+      <div class="location" *ngFor="let location of path;let i=index" [attr.data-index]="i+1" (click)="moveToDir($event);">{{location}}</div>
     </div>
     <!-- Search in Folder-->
     <div class="search">

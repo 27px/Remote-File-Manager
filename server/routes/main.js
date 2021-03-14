@@ -20,9 +20,9 @@ route.post("/ssh/getDirectoryContents",(req,res)=>{
   dir_path=dir_path.replace(/\.$/,"").replace(/\\/g,"/");
 
   let ssh=new SSH2Promise({
-    host: config.SSH.HOST,
-    username: config.SSH.USER,
-    password: config.SSH.PASSWORD
+    host: config.SSH[0].HOST,
+    username: config.SSH[0].USER,
+    password: config.SSH[0].PASSWORD
   });
   ssh.connect()
   .then(()=>ssh.sftp())

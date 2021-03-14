@@ -147,6 +147,7 @@
   flex-direction:row;
   align-items:center;
   overflow-x:auto;
+  overflow-y:hidden;
 }
 .top-bar .path .location
 {
@@ -155,6 +156,9 @@
   color:var(--accent-dark);
   cursor:pointer;
   white-space:nowrap;
+  height:100%;
+  display:inline-flex;
+  align-items:center;
 }
 .top-bar .path .location:hover
 {
@@ -166,9 +170,9 @@
   position:absolute;
   top:50%;
   right:10px;
-  transform:translate(100%,-50%) rotate(45deg);
-  width:10px;
-  height:10px;
+  transform:translate(50%,-50%) rotate(45deg);
+  width:25px;
+  height:25px;
   border-top:var(--border);
   border-right:var(--border);
 }
@@ -177,10 +181,10 @@
   border-top:2px solid var(--primary);
   border-right:2px solid var(--primary);
 }
-.top-bar .path .location:last-child::after
+/* .top-bar .path .location:last-child::after
 {
   display:none;
-}
+} */
 .top-bar .search
 {
   border-left:var(--border);

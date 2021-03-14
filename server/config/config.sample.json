@@ -3,9 +3,11 @@
     "HOST":"localhost",
     "PORT":4000
   },
-  "SSH":{
-    "HOST":"localhost",
-    "USER":"user",
-    "PASSWORD":"password"
-  }
+  "SSH":[
+    {
+      "HOST":"localhost",
+      "USER":"user",
+      "PASSWORD":"password"
+    }
+  ]
 }

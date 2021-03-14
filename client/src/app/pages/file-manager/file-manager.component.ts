@@ -47,6 +47,12 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.loadDirContents(this.getCWD(data));
   }
+  moveToDir(event:any)
+  {
+    let index=event.currentTarget.getAttribute("data-index");
+    let temp=this.path.slice(0,index).join("/") || "/";
+    this.loadDirContents(temp);
+  }
   ngAfterViewInit(): void
   {
     this.search=_("#search");
