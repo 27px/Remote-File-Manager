@@ -36,14 +36,20 @@ export class FileManagerComponent implements AfterViewInit
   GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/ssh/getDirectoryContents/`;
   INITIAL_PATH: string = "/";
   editingPath: boolean = false; // currently editing path
+  iconSizes: string[] = ["ex-sm", "sm", "md", "lg", "ex-lg", "hg"];
+  iconSizeIndex: any = 2; // medium by default
 
   constructor()
   {
+    // set theme
     let theme:any=localStorage.getItem("theme"); // dark or white mode
     if(theme!=null)
     {
       this.theme=theme;
     }
+    // set icon theme
+    this.iconSizeIndex=localStorage.getItem("icon-size") ?? 2; // default is medium
+    // load contents
     this.loadDirContents(this.INITIAL_PATH);
   }
   openDir(data:any)
@@ -199,6 +205,20 @@ export class FileManagerComponent implements AfterViewInit
           event.preventDefault();
           _("#search")?.focus();
         }
+        if(key==82)// key: r
+        {
+          event.preventDefault();
+          this.refresh()
+        }
+        if(shift)// ctrl + shift
+        {
+          let k_start=49,k_end=54,t_n=this.iconSizes.length;
+          if(key>=k_start && key<=k_end)
+          {
+            event.preventDefault();
+            this.iconSizeIndex=(t_n-1)-((key-(k_start-t_n))%t_n);
+          }
+        }
       }
     }
     else if(key===114)// F3 : search
@@ -331,5 +351,10 @@ export class FileManagerComponent implements AfterViewInit
   goToPath()
   {
     this.loadDirContents(this.editPathInput.value || "/");
+  }
+  setNextIconSize()
+  {
+    this.iconSizeIndex=(this.iconSizeIndex+1)%this.iconSizes.length;
+    localStorage.setItem("icon-size",this.iconSizeIndex);
   }
 }

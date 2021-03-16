@@ -6,7 +6,7 @@ Front End
 4 Tree View, load on click
 5 SSH connections
 6 Local files
-7 file icons like zip
+7 file icons like zip, image, text, videos etc
 8 arrange rest api paths
 
 =====================================================================================================

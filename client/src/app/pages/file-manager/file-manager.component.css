@@ -40,8 +40,38 @@
   background:var(--bg);
   overflow:hidden;
 
-  --icon-size:150px;
+  --icon-size:120px; /* Medium - Default */
   --icon-gap:10px;
+}
+.full-container.icon-ex-sm
+{
+  --icon-size:80px; /* Extra Small */
+  --icon-font-size:12px;
+}
+.full-container.icon-sm
+{
+  --icon-size:100px; /* Small */
+  --icon-font-size:13px;
+}
+.full-container.icon-md
+{
+  --icon-size:120px; /* Medium */
+  --icon-font-size:14px;
+}
+.full-container.icon-lg
+{
+  --icon-size:140px; /* Large */
+  --icon-font-size:16px;
+}
+.full-container.icon-ex-lg
+{
+  --icon-size:180px; /* Extra Large */
+  --icon-font-size:18px;
+}
+.full-container.icon-hg
+{
+  --icon-size:220px; /* Huge */
+  --icon-font-size:20px;
 }
 .mini-scroll-bar::-webkit-scrollbar
 {

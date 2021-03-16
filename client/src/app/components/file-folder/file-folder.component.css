@@ -31,6 +31,7 @@
   text-overflow:ellipsis;
   text-align:center;
   color:var(--accent-dark);
+  font-size:var(--icon-font-size);
 }
 .item.folder .icon
 {

@@ -58,7 +58,7 @@ route.post("/ssh/getDirectoryContents",(req,res)=>{
         name:file[i],
         folder:stat[i],
         filled:filled[i],
-        properties:properties[i]
+        // properties:properties[i] // not working properly
       }
     });
   }).then(contents=>{
