@@ -6,6 +6,7 @@ import { FileFolderComponent } from "../../components/file-folder/file-folder.co
 // data models
 import data from '../../../assets/data/folder-data';
 import sortType from '../../../model/sortType';
+import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
 import config from "../../config/config";
 
@@ -38,6 +39,11 @@ export class FileManagerComponent implements AfterViewInit
   editingPath: boolean = false; // currently editing path
   iconSizes: string[] = ["ex-sm", "sm", "md", "lg", "ex-lg", "hg"];
   iconSizeIndex: any = 2; // medium by default
+  keyboard:keyBoardStatus = {
+    ctrl: false,
+    shift: false,
+    alt: false
+  }
 
   constructor()
   {
@@ -102,19 +108,37 @@ export class FileManagerComponent implements AfterViewInit
       if(data.status)
       {
         this.path=this.parsePath(data.path);
-        this.contents=data.contents;
+        this.contents=data.contents.map((x:any)=>{
+          x.selected=false;// file selected (for cut/copy etc) status
+          return x;
+        });
         this.noItems=this.contents.length<1;
         this.error_loading="";
         this.arrange();// sort
       }
       else
       {
+        console.log(`%c${data.message}`,"color:#F00");
         console.log(`%c${data.error_log}`,"color:#F00");
-        throw new Error(data.message);
+        if(data.customError)
+        {
+          throw {
+            name:"customError",
+            message:data.message
+          };
+        }
+        throw new Error("Some Error occured");
       }
     }).catch(err=>{
       console.log(err.message);
-      this.error_loading=err.message;
+      if(err.name==="customError")
+      {
+        this.error_loading=err.message;
+      }
+      else
+      {
+        this.error_loading="Something went wrong";
+      }
       this.path=this.parsePath("/");
       this.contents=[];
       this.noItems=true;
@@ -176,6 +200,14 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.dragging=false;
   }
+  // clear file/folder selection
+  clearSelection()
+  {
+    this.contents=this.contents.map(content=>{
+      content.selected=false;
+      return content;
+    });
+  }
   // set dragging box
   setSelectDimensions(x:number,y:number,w:number,h:number)
   {
@@ -188,29 +220,56 @@ export class FileManagerComponent implements AfterViewInit
   {
     event.preventDefault();
   }
+  clearKeys(event:any)
+  {
+    this.keyboard.ctrl=event.ctrlKey;
+    this.keyboard.shift=event.shiftKey;
+    this.keyboard.alt=event.altKey;
+  }
   shortcut(event:any)
   {
     let key=event.keyCode;
     let ctrl=event.ctrlKey;
     let shift=event.shiftKey;
     let alt=event.altKey;
+
+    // for child elements
+    this.keyboard.ctrl=ctrl;
+    this.keyboard.shift=shift;
+    this.keyboard.alt=alt;
+
     // console.log(key);
     if(ctrl || shift || alt)
     {
       //Control Key was also pressing
       if(ctrl)
       {
-        if(key===70)// key: k
+        // Select all
+        if(key===65)// key: a
+        {
+          event.preventDefault();
+          this.selectAll();
+        }
+        // find/search
+        if(key===70)// key: f
         {
           event.preventDefault();
           _("#search")?.focus();
         }
+        // invert selection
+        if(key===73)// key: i
+        {
+          event.preventDefault();
+          this.invertAllItemSelections();
+        }
+        // refresh
         if(key==82)// key: r
         {
           event.preventDefault();
           this.refresh()
         }
-        if(shift)// ctrl + shift
+        // ctrl + shift
+        if(shift)
         {
           let k_start=49,k_end=54,t_n=this.iconSizes.length;
           if(key>=k_start && key<=k_end)
@@ -356,5 +415,19 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.iconSizeIndex=(this.iconSizeIndex+1)%this.iconSizes.length;
     localStorage.setItem("icon-size",this.iconSizeIndex);
+  }
+  selectAll()
+  {
+    this.contents=this.contents.map(content=>{
+      content.selected=true;
+      return content;
+    });
+  }
+  invertAllItemSelections()
+  {
+    this.contents=this.contents.map(content=>{
+      content.selected=!content.selected;
+      return content;
+    });
   }
 }

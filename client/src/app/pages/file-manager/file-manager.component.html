@@ -1,4 +1,4 @@
-<div [ngClass]="'full-container '+theme+'-theme icon-'+iconSizes[iconSizeIndex]" (contextmenu)="preventDefault($event);" (mouseup)="mouseUp();" (keydown)="shortcut($event);" tabindex="0">
+<div [ngClass]="'full-container '+theme+'-theme icon-'+iconSizes[iconSizeIndex]" (contextmenu)="preventDefault($event);" (mouseup)="mouseUp();" (keydown)="shortcut($event);" (keyup)="clearKeys($event);" tabindex="0">
   <!-- Header -->
   <div class="header mini-scroll-bar">
     <div class="options">
@@ -92,9 +92,9 @@
     </div>
   </div>
   <!-- Directory Container -->
-  <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
+  <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);" (click)="clearSelection();">
     <!-- Files and Folders -->
-    <app-file-folder *ngFor="let content of contents" [content]="content" (openFolder)="openDir($event);"></app-file-folder>
+    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();"></app-file-folder>
     <!-- If no files/folders present -->
     <div *ngIf="noItems && !loading" class="no-items">{{error_loading==""?'No Items':error_loading}}</div>
     <!-- If loading -->

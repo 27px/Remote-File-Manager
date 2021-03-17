@@ -15,6 +15,10 @@
 {
   border-color:var(--accent);
 }
+.item.item-selected
+{
+  border-color:var(--accent-dark)!important; /* selected should have more priority than hover */
+}
 .item .icon
 {
   width:100%;

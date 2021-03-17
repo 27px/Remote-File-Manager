@@ -72,7 +72,8 @@ route.post("/ssh/getDirectoryContents",(req,res)=>{
     res.json({
       status:false,
       message:(err.name==="customError")?err.message:"Some error occured",
-      error_log:err.message
+      error_log:err.message,
+      customError:(err.name==="customError")
     });
   });
 });

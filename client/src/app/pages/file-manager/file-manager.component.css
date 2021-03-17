@@ -41,7 +41,7 @@
   overflow:hidden;
 
   --icon-size:120px; /* Medium - Default */
-  --icon-gap:10px;
+  --icon-gap:15px;
 }
 .full-container.icon-ex-sm
 {

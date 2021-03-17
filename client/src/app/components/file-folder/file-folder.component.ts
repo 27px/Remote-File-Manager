@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, ElementRef, EventEmitter } from '@angular/core';
 
+import keyBoardStatus from '../../../model/keyBoardStatus';
+
 @Component({
   selector: 'app-file-folder',
   templateUrl: './file-folder.component.html',
@@ -7,10 +9,17 @@ import { Component, OnInit, Input, Output, ElementRef, EventEmitter } from '@ang
 })
 export class FileFolderComponent implements OnInit
 {
-  @Input() content:any = null;
-  @Output() openFolder:EventEmitter<any>=new EventEmitter();
+  @Input() content: any = null;
+  @Input() keyboard: keyBoardStatus = {
+    ctrl: false,
+    shift: false,
+    alt: false
+  }
+  @Input('attr-index') index: number = -1;
+  @Output() openFolder: EventEmitter<any> = new EventEmitter();
+  @Output() clearAllSelections: EventEmitter<any> = new EventEmitter();
 
-  constructor(public element:ElementRef)
+  constructor(public element: ElementRef)
   {
 
   }
@@ -21,10 +30,6 @@ export class FileFolderComponent implements OnInit
   openDir(folder:string)
   {
     this.openFolder.emit(folder);
-  }
-  preventPropagation(event:any)
-  {
-    event.stopPropagation();
   }
   getData()
   {
@@ -37,5 +42,22 @@ export class FileFolderComponent implements OnInit
   show()
   {
     this.element.nativeElement.classList.remove("hidden");
+  }
+  clicked(event:any)
+  {
+    event.stopPropagation();
+    if(!this.keyboard.ctrl)
+    {
+      this.clearAllSelections.emit();
+      this.content.selected=true;
+    }
+    else
+    {
+      this.toggleItemSelection();
+    }
+  }
+  toggleItemSelection()
+  {
+    this.content.selected=!this.content.selected;
   }
 }
