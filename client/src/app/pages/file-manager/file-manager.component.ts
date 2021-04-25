@@ -168,37 +168,75 @@ export class FileManagerComponent implements AfterViewInit
   }
   mouseMoving(event:any)
   {
-    if(this.dragging)
+    if(!this.dragging)
     {
-      let {
-        clientX:x,
-        clientY:y
-      }=event;
-      // bottom right drag selection
-      if(this.drag.initY<y && this.drag.initX<x)
-      {
-        this.setSelectDimensions(this.drag.initX,this.drag.initY,x-this.drag.initX,y-this.drag.initY);
-      }
-      // bottom left drag selection
-      else if(this.drag.initY<y && this.drag.initX>=x)
-      {
-        this.setSelectDimensions(x,this.drag.initY,this.drag.initX-x,y-this.drag.initY);
-      }
-      // top right drag selection
-      else if(this.drag.initY>=y && this.drag.initX<x)
-      {
-        this.setSelectDimensions(this.drag.initX,y,x-this.drag.initX,this.drag.initY-y);
-      }
-      // top left drag selectiong
-      else if(this.drag.initY>=y && this.drag.initX>=x)
-      {
-        this.setSelectDimensions(x,y,this.drag.initX-x,this.drag.initY-y);
-      }
+      return;
     }
+    let {
+      clientX:x,
+      clientY:y
+    }=event;
+    // bottom right drag selection
+    if(this.drag.initY<y && this.drag.initX<x)
+    {
+      this.setSelectDimensions(this.drag.initX,this.drag.initY,x-this.drag.initX,y-this.drag.initY);
+    }
+    // bottom left drag selection
+    else if(this.drag.initY<y && this.drag.initX>=x)
+    {
+      this.setSelectDimensions(x,this.drag.initY,this.drag.initX-x,y-this.drag.initY);
+    }
+    // top right drag selection
+    else if(this.drag.initY>=y && this.drag.initX<x)
+    {
+      this.setSelectDimensions(this.drag.initX,y,x-this.drag.initX,this.drag.initY-y);
+    }
+    // top left drag selectiong
+    else if(this.drag.initY>=y && this.drag.initX>=x)
+    {
+      this.setSelectDimensions(x,y,this.drag.initX-x,this.drag.initY-y);
+    }
+    this.selectItemsInDragBox();
   }
   mouseUp()
   {
     this.dragging=false;
+  }
+  selectItemsInDragBox()
+  {
+    // this.filesAndFolders?._results?.forEach((item:any)=>{
+    //   let i=item.getDimensions();
+    //   console.log(i);
+    // });
+    let item=this.filesAndFolders?._results?.[0];
+    let i=item.getDimensions(),d:any=this.drag;
+    d.right=d['left']+d['width'];
+    d.bottom=d["top"]+d['height'];
+    // x: ${i["x"]},
+    // y: ${i["y"]},
+    // console.warn(`
+    //   top: ${i["top"]},
+    //   left: ${i["left"]},
+    //   bottom: ${i["bottom"]},
+    //   right: ${i["right"]},
+    // `);
+    // console.log(`
+    //   top: ${d['top']},
+    //   left: ${d['left']},
+    //   right: ${d['left']+d['width']},
+    //   bottom: ${d["top"]+d['height']},
+    // `);
+
+
+    // if(i['top']<=d['top'] && i['bottom']>=d['top'] && i['left']<=d['left'] && i['right']>=d['left'])
+    // {
+    //   item.redHighlight();
+    // }
+    // else
+    // {
+    //   item.redUnHighlight();
+    // }
+
   }
   // clear file/folder selection
   clearSelection()
@@ -309,9 +347,14 @@ export class FileManagerComponent implements AfterViewInit
     // replaces different types of slashes like ( :// , \ , / ) to one type to ( / ) before spliting
     return url?.replace(/(:\/\/|\\)/g,"/")?.split("/")?.filter(dir=>dir!="");
   }
+  stopPropagation(event:any)
+  {
+    event.stopPropagation();
+  }
   // typing in search box
   searching()
   {
+    event?.stopPropagation();
     let key=this.search.value,i=0;
     this.filesAndFolders?._results?.forEach((item:any)=>{
       if(item.getData().name.toLowerCase().indexOf(key.toLowerCase())==-1)
@@ -396,6 +439,7 @@ export class FileManagerComponent implements AfterViewInit
   }
   typingPath(event:any)
   {
+    event?.stopPropagation();
     let key=event.keyCode;
     if(key===13)// enter
     {

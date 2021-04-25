@@ -8,7 +8,6 @@
   box-sizing:border-box;
   border:2px solid transparent;
   cursor:pointer;
-  border-radius:10px;
   transition:border-color 0.3s;
 }
 .item:hover
@@ -53,3 +52,9 @@
 {
   background-image:url("../../../assets/images/file-zip.svg");
 } */
+
+
+.item.red
+{
+  background:rgba(255,0,0,0.5)!important;
+}
