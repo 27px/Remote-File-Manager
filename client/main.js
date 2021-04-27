@@ -1,31 +1,17 @@
-const express = require('../server/index');
-//
-// app.on('ready',()=>{
-//   express();
-//   mainWindow = new BrowserWindow({
-//     width: 1280,
-//     height: 720,
-//     autoHideMenuBar: true,
-//     useContentSize: true,
-//     resizable: true,
-//   });
-//   mainWindow.loadURL('http://localhost:5000/');
-//   mainWindow.focus();
-// });
-
+const expressApp = require('../server/index');
 
 const { app, BrowserWindow } = require('electron')
 
 let win;
 
 function createWindow () {
-  express();
+  expressApp();
   // Create the browser window.
   win = new BrowserWindow({
     width: 600,
     height: 600,
     backgroundColor: '#FFFFFF',
-    icon: `file://${__dirname}/dist/assets/logo.png`,
+    icon: `file://${__dirname}/dist/favicon.ico`,
     show: false
   })
 

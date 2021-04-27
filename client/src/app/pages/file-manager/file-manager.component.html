@@ -67,9 +67,9 @@
     <div class="path mini-scroll-bar">
       <ng-container *ngIf="!editingPath">
         <!-- Root path / -->
-        <div class="location" [attr.data-index]="0" (click)="moveToDir($event);">/</div>
+        <div class="location" [attr.data-index]="0" (click)="moveToDir($event);" style="z-index:{{path.length+1}}">/</div>
         <!-- Paths -->
-        <div class="location" *ngFor="let location of path;let i=index" [attr.data-index]="i+1" (click)="moveToDir($event);">{{location}}</div>
+        <div class="location" *ngFor="let location of path;let i=index" [attr.data-index]="i+1" (click)="moveToDir($event);" style="z-index:{{path.length-i}}">{{location}}</div>
       </ng-container>
       <ng-container>
         <input type="text" class="editable-path" id="editable-path" [ngClass]="editingPath?'visible':'hidden'" placeholder="Path" autocomplete="off" (keydown)="typingPath($event);">

@@ -4,7 +4,6 @@ import { Component, AfterViewInit, Input, ViewChildren } from '@angular/core';
 import { FileFolderComponent } from "../../components/file-folder/file-folder.component";
 
 // data models
-import data from '../../../assets/data/folder-data';
 import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";

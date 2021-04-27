@@ -8,7 +8,8 @@
     "build": "ng build",
     "build-prod": "ng build --prod",
     "electron": "electron .",
-    "electron-build": "ng build && electron .",
+    "electron-run": "ng build && electron .",
+    "electron-build": "ng build --prod && electron .",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

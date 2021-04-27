@@ -177,7 +177,7 @@
 }
 .top-bar .path .location
 {
-  padding:0px 20px;
+  padding-left:30px;
   position:relative;
   color:var(--accent-dark);
   cursor:pointer;
@@ -185,6 +185,11 @@
   height:100%;
   display:inline-flex;
   align-items:center;
+  z-index:1;
+}
+.top-bar .path .location:first-child
+{
+  padding-left:10px;
 }
 .top-bar .path .location:hover
 {
@@ -195,12 +200,13 @@
   content:"";
   position:absolute;
   top:50%;
-  right:10px;
+  right:0px;
   transform:translate(50%,-50%) rotate(45deg);
   width:25px;
   height:25px;
   border-top:var(--border);
   border-right:var(--border);
+  z-index:-1;
 }
 .top-bar .path .location:hover::after
 {
