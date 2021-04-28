@@ -39,6 +39,7 @@ export class FileManagerComponent implements AfterViewInit
   default_icon_size_index:number = 2; // default 2
   iconSizes: string[] = ["ex-sm", "sm", "md", "lg", "ex-lg", "hg"];
   iconSizeIndex: any = this.default_icon_size_index; // medium by default
+  connections: any[] = [];
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
@@ -48,9 +49,16 @@ export class FileManagerComponent implements AfterViewInit
   constructor()
   {
     // set theme
-    this.theme=localStorage.getItem("theme") || "light"; // dark or light mode // default light
+    this.theme=localStorage.getItem("theme") || "light";
+    document.body.setAttribute("data-theme",this.theme); // dark or light mode // default light
+    
     // set icon size
     this.setIconSizeIndex(localStorage.getItem("icon-size") ?? this.default_icon_size_index); // default is medium
+
+    // set connections
+    this.connections=JSON.parse(atob(localStorage.getItem("connections") ?? "") || "[]") || [];
+    // localStorage.setItem("connections",btoa(JSON.stringify(this.connections)));
+
     // load contents
     this.loadDirContents(this.INITIAL_PATH);
   }
@@ -145,7 +153,9 @@ export class FileManagerComponent implements AfterViewInit
   }
   switchTheme()
   {
-    this.theme=this.theme=="dark"?"light":"dark";
+    let body=document.body;
+    this.theme=body.getAttribute("data-theme")=="dark"?"light":"dark";
+    body.setAttribute("data-theme",this.theme);
     localStorage.setItem("theme",this.theme);
   }
   rightClick(event:any):void
@@ -156,6 +166,10 @@ export class FileManagerComponent implements AfterViewInit
   }
   mouseDown(event:any)
   {
+    if(!this.keyboard.ctrl)
+    {
+      this.clearSelection();
+    }
     let {clientX:x,clientY:y}=event;
     this.drag.initY=y;
     this.drag.initX=x;
@@ -200,11 +214,12 @@ export class FileManagerComponent implements AfterViewInit
   }
   selectItemsInDragBox()
   {
-    // this.filesAndFolders?._results?.forEach((item:any)=>{
-    //   let i=item.getDimensions();
-    //   console.log(i);
-    // });
     this.filesAndFolders?._results?.forEach((item:any)=>{
+      // exit, already selected and ctrl is pressed
+      if(this.keyboard.ctrl && item.content.selected)
+      {
+        return;
+      }
       let i=item.getDimensions(),d:any=this.drag;
       d.right=d.left+d.width;
       d.bottom=d.top+d.height;
@@ -227,8 +242,9 @@ export class FileManagerComponent implements AfterViewInit
 
       let drag_x_between_item_x = drag_x_in_item_x && item_y_in_drag_y;
       let drag_y_between_item_y = drag_y_in_item_y && item_x_in_drag_x;
+      let drag_between_item = drag_x_between_item_x || drag_y_between_item_y;
 
-      let select = item_in_drag || drag_in_item || drag_x_between_item_x || drag_y_between_item_y;
+      let select = item_in_drag || drag_in_item || drag_between_item;
 
       item.setItemSelection(select);
     });

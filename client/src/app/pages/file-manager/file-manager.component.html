@@ -1,21 +1,7 @@
-<div [ngClass]="'full-container '+theme+'-theme icon-'+iconSizes[iconSizeIndex]" (contextmenu)="preventDefault($event);" (mouseup)="mouseUp();" (keydown)="shortcut($event);" (keyup)="clearKeys($event);" tabindex="0">
+<div [ngClass]="'full-container icon-'+iconSizes[iconSizeIndex]" (contextmenu)="preventDefault($event);" (mouseup)="mouseUp();" (keydown)="shortcut($event);" (keyup)="clearKeys($event);" tabindex="0">
   <!-- Header -->
   <div class="header mini-scroll-bar">
     <div class="options">
-      <!-- Option : New Connection -->
-      <div class="option">
-        <div class="icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </div>
-        <div class="title">New Connection</div>
-      </div>
-      <!-- Option : Edit Connection -->
-      <div class="option">
-        <div class="icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        </div>
-        <div class="title">Edit Connection</div>
-      </div>
       <!-- Option : Refresh -->
       <div class="option" (click)="refresh();">
         <div class="icon">
@@ -64,9 +50,22 @@
       </div>
     </div>
   </div>
-  <!-- Directory Tree -->
-  <div class="tree">
-
+  <!-- Connection list -->
+  <div class="connection-list mini-scroll-bar">
+    <div class="connection add-connection">
+      <div class="name">Add Connection</div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </div>
+    <div class="connection" *ngFor="let connection of connections">
+      <div class="name">{{connection.name}}</div>
+      <div class="description">{{connection.description}}</div>
+      <div class="server">{{connection.server}}</div>
+      <div class="user">{{connection.user}}</div>
+      <div class="connection-options">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </div>
+    </div>
   </div>
   <div class="top-bar">
     <!-- Path Explorer -->
@@ -98,7 +97,7 @@
     </div>
   </div>
   <!-- Directory Container -->
-  <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);" (click)="clearSelection();">
+  <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <!-- Files and Folders -->
     <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();"></app-file-folder>
     <!-- If no files/folders present -->

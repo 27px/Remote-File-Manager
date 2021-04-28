@@ -13,6 +13,26 @@
 {
   outline:unset;
 }
+body[data-theme="dark"]
+{
+  --bg:#303030;
+  --accent:#606060;
+  --accent-semi:rgba(128,128,128,0.5);
+  --accent-semi-light:rgba(128,128,128,0.2);
+  --accent-dark:#C0C0C0;
+  --border:2px solid var(--accent);
+  --inverse:#FFFFFF;
+}
+body[data-theme="light"]
+{
+  --bg:#FFFFFF;
+  --accent:#C0C0C0;
+  --accent-semi:rgba(192,192,192,0.5);
+  --accent-semi-light:rgba(192,192,192,0.2);
+  --accent-dark:#606060;
+  --border:2px solid var(--accent);
+  --inverse:#000000;
+}
 body
 {
   --primary:#2196F3;
@@ -30,13 +50,14 @@ body
   --nav-height:65px;
   --font-title:"Lemon","Roboto",sans-serif;
   --font-sub-title:"Roboto",sans-serif;
-  --font-cursive:"Dancing Script",cursive;
+  --font-cursive:"Dancing Script","consolas",cursive;
+
+  background:var(--bg);
 
   font-family:"Roboto";
   letter-spacing:1px;
   overflow-x:hidden;
 }
-
 @media (max-width:650px)
 {
   body
