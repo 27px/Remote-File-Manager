@@ -60,17 +60,12 @@ export class FileFolderComponent implements OnInit
   {
     this.content.selected=!this.content.selected;
   }
+  setItemSelection(state:boolean)
+  {
+    this.content.selected=state;
+  }
   getDimensions()
   {
     return this.element.nativeElement.children[0].getBoundingClientRect();
-  }
-
-  redHighlight()
-  {
-    this.element.nativeElement.children[0].classList.add("red");
-  }
-  redUnHighlight()
-  {
-    this.element.nativeElement.children[0].classList.remove("red");
   }
 }

@@ -36,8 +36,9 @@ export class FileManagerComponent implements AfterViewInit
   GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/ssh/getDirectoryContents/`;
   INITIAL_PATH: string = "/";
   editingPath: boolean = false; // currently editing path
+  default_icon_size_index:number = 2; // default 2
   iconSizes: string[] = ["ex-sm", "sm", "md", "lg", "ex-lg", "hg"];
-  iconSizeIndex: any = 2; // medium by default
+  iconSizeIndex: any = this.default_icon_size_index; // medium by default
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
@@ -47,13 +48,9 @@ export class FileManagerComponent implements AfterViewInit
   constructor()
   {
     // set theme
-    let theme:any=localStorage.getItem("theme"); // dark or white mode
-    if(theme!=null)
-    {
-      this.theme=theme;
-    }
-    // set icon theme
-    this.iconSizeIndex=localStorage.getItem("icon-size") ?? 2; // default is medium
+    this.theme=localStorage.getItem("theme") || "light"; // dark or light mode // default light
+    // set icon size
+    this.setIconSizeIndex(localStorage.getItem("icon-size") ?? this.default_icon_size_index); // default is medium
     // load contents
     this.loadDirContents(this.INITIAL_PATH);
   }
@@ -207,35 +204,34 @@ export class FileManagerComponent implements AfterViewInit
     //   let i=item.getDimensions();
     //   console.log(i);
     // });
-    let item=this.filesAndFolders?._results?.[0];
-    let i=item.getDimensions(),d:any=this.drag;
-    d.right=d['left']+d['width'];
-    d.bottom=d["top"]+d['height'];
-    // x: ${i["x"]},
-    // y: ${i["y"]},
-    // console.warn(`
-    //   top: ${i["top"]},
-    //   left: ${i["left"]},
-    //   bottom: ${i["bottom"]},
-    //   right: ${i["right"]},
-    // `);
-    // console.log(`
-    //   top: ${d['top']},
-    //   left: ${d['left']},
-    //   right: ${d['left']+d['width']},
-    //   bottom: ${d["top"]+d['height']},
-    // `);
+    this.filesAndFolders?._results?.forEach((item:any)=>{
+      let i=item.getDimensions(),d:any=this.drag;
+      d.right=d.left+d.width;
+      d.bottom=d.top+d.height;
 
+      let item_left_in_drag_x = i.left>d.left && i.left<d.right;
+      let item_right_in_drag_x = i.right>d.left && i.right<d.right;
+      let item_x_in_drag_x = item_left_in_drag_x || item_right_in_drag_x;
+      let item_top_in_drag_y = i.top>d.top && i.top<d.bottom;
+      let item_bottom_in_drag_y = i.bottom>d.top && i.bottom<d.bottom;
+      let item_y_in_drag_y = item_top_in_drag_y || item_bottom_in_drag_y;
+      let item_in_drag = item_x_in_drag_x && item_y_in_drag_y;
 
-    // if(i['top']<=d['top'] && i['bottom']>=d['top'] && i['left']<=d['left'] && i['right']>=d['left'])
-    // {
-    //   item.redHighlight();
-    // }
-    // else
-    // {
-    //   item.redUnHighlight();
-    // }
+      let drag_left_in_item_x = d.left>i.left && d.left<i.right;
+      let drag_right_in_item_x = d.right>i.left && d.right<i.right;
+      let drag_x_in_item_x = drag_left_in_item_x || drag_right_in_item_x;
+      let drag_top_in_item_y = d.top>i.top && d.top<i.bottom;
+      let drag_bottom_in_item_y = d.bottom>i.top && d.bottom<i.bottom;
+      let drag_y_in_item_y = drag_top_in_item_y || drag_bottom_in_item_y;
+      let drag_in_item = drag_x_in_item_x && drag_y_in_item_y;
 
+      let drag_x_between_item_x = drag_x_in_item_x && item_y_in_drag_y;
+      let drag_y_between_item_y = drag_y_in_item_y && item_x_in_drag_x;
+
+      let select = item_in_drag || drag_in_item || drag_x_between_item_x || drag_y_between_item_y;
+
+      item.setItemSelection(select);
+    });
   }
   // clear file/folder selection
   clearSelection()
@@ -305,14 +301,32 @@ export class FileManagerComponent implements AfterViewInit
           event.preventDefault();
           this.refresh()
         }
-        // ctrl + shift
+        // increase icon size
+        if(key==107 || key==187)// key: +
+        {
+          event.preventDefault();
+          this.setIconSizeIndex(this.iconSizeIndex+1);
+        }
+        // decrease icon size
+        if(key==109 || key==189)// key: -
+        {
+          event.preventDefault();
+          this.setIconSizeIndex(this.iconSizeIndex-1);
+        }
+        // reset icon size to medium
+        if(key==96 || key==48)// key 0
+        {
+          event.preventDefault();
+          this.setIconSizeIndex(this.default_icon_size_index);
+        }
+        // ctrl + shift + [any number]
         if(shift)
         {
           let k_start=49,k_end=54,t_n=this.iconSizes.length;
           if(key>=k_start && key<=k_end)
           {
             event.preventDefault();
-            this.iconSizeIndex=(t_n-1)-((key-(k_start-t_n))%t_n);
+            this.setIconSizeIndex((t_n-1)-((key-(k_start-t_n))%t_n));
           }
         }
       }
@@ -450,27 +464,31 @@ export class FileManagerComponent implements AfterViewInit
       this.editingPath=false;
     }
   }
-  goToPath()
+  goToPath():void
   {
     this.loadDirContents(this.editPathInput.value || "/");
   }
-  setNextIconSize()
+  updateIconSize(offset:number):void
   {
-    this.iconSizeIndex=(this.iconSizeIndex+1)%this.iconSizes.length;
-    localStorage.setItem("icon-size",this.iconSizeIndex);
+    this.setIconSizeIndex(this.iconSizeIndex+offset);
   }
-  selectAll()
+  selectAll():void
   {
     this.contents=this.contents.map(content=>{
       content.selected=true;
       return content;
     });
   }
-  invertAllItemSelections()
+  invertAllItemSelections():void
   {
     this.contents=this.contents.map(content=>{
       content.selected=!content.selected;
       return content;
     });
+  }
+  setIconSizeIndex(index:any):void
+  {
+    this.iconSizeIndex=Math.min(this.iconSizes.length-1,Math.max(0,index));
+    localStorage.setItem("icon-size",this.iconSizeIndex);
   }
 }

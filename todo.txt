@@ -1,5 +1,9 @@
 Front End
 -----------------------------------------------------------------------------------------------------
+BUG
+1 Ctrl + Drag Selection gets dis-selected
+
+TODO
 1 Searching is only for current directory, not for sub directory
 2 File/Folder Selection
 3 Shortcut key, mouse drag
