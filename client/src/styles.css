@@ -13,6 +13,26 @@
 {
   outline:unset;
 }
+@font-face
+{
+  font-family:"Lemon";
+  src:url("./assets/fonts/lemon.ttf");
+}
+@font-face
+{
+  font-family:"Roboto";
+  src:url("./assets/fonts/roboto.ttf");
+}
+@font-face
+{
+  font-family:"Raleway";
+  src:url("./assets/fonts/raleway.ttf");
+}
+@font-face
+{
+  font-family:"Dancing Script";
+  src:url("./assets/fonts/dancing-script.ttf");
+}
 body[data-theme="dark"]
 {
   --bg:#303030;

@@ -1,6 +1,8 @@
 const expressApp = require('../server/index');
 
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
+const path = require("path");
+const url = require("url");
 
 let win;
 
@@ -12,7 +14,8 @@ function createWindow () {
     height: 600,
     backgroundColor: '#FFFFFF',
     icon: `file://${__dirname}/dist/favicon.ico`,
-    show: false
+    show: false,
+    // frame: false // hide bar and make custom
   })
 
   win.setMenu(null) // hide menu
@@ -21,8 +24,14 @@ function createWindow () {
 
   // win.loadURL('http://localhost:5000/');// server
   // win.loadURL('http://localhost:4200/');// client
-  win.loadURL(`file://${__dirname}/dist/index.html`)
+  // win.loadURL(`file://${__dirname}/dist/index.html`);
+  win.loadURL(url.format({
+    pathname:path.join(__dirname,"dist","index.html"),
+    protocol:"file:",
+    slashes:true
+  }));
   win.focus();
+
 
 
 

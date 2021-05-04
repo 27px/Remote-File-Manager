@@ -7,6 +7,7 @@ import { FileFolderComponent } from "../../components/file-folder/file-folder.co
 import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
+import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import config from "../../config/config";
 
 // Custom Functions
@@ -51,7 +52,7 @@ export class FileManagerComponent implements AfterViewInit
     // set theme
     this.theme=localStorage.getItem("theme") || "light";
     document.body.setAttribute("data-theme",this.theme); // dark or light mode // default light
-    
+
     // set icon size
     this.setIconSizeIndex(localStorage.getItem("icon-size") ?? this.default_icon_size_index); // default is medium
 
@@ -112,9 +113,19 @@ export class FileManagerComponent implements AfterViewInit
       if(data.status)
       {
         this.path=this.parsePath(data.path);
-        this.contents=data.contents.map((x:any)=>{
-          x.selected=false;// file selected (for cut/copy etc) status
-          return x;
+        this.contents=data.contents.map((item:any)=>{
+          item.selected=false;// file selected (for cut/copy etc) status
+          if(!item.folder)
+          {
+            let iconType=item.name.split(".").pop().toLowerCase();
+            if(!AVAILABLE_FILE_ICONS.includes(iconType))
+            {
+              iconType='default';
+            }
+            item.fileIcon=`file-${iconType}.svg`;
+            console.log(item.fileIcon);
+          }
+          return item;
         });
         this.noItems=this.contents.length<1;
         this.error_loading="";
