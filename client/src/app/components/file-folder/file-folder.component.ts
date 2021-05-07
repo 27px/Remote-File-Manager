@@ -18,6 +18,7 @@ export class FileFolderComponent implements OnInit
   @Input('attr-index') index: number = -1;
   @Output() openFolder: EventEmitter<any> = new EventEmitter();
   @Output() clearAllSelections: EventEmitter<any> = new EventEmitter();
+  @Output() shiftSelection: EventEmitter<any> = new EventEmitter();
 
   constructor(public element: ElementRef)
   {
@@ -46,14 +47,18 @@ export class FileFolderComponent implements OnInit
   clicked(event:any)
   {
     event.stopPropagation();
-    if(!this.keyboard.ctrl)
+    if(this.keyboard.ctrl)
     {
-      this.clearAllSelections.emit();
-      this.content.selected=true;
+      this.toggleItemSelection();
+    }
+    else if(this.keyboard.shift)
+    {
+      this.shiftSelection.emit(this.index);
     }
     else
     {
-      this.toggleItemSelection();
+      this.clearAllSelections.emit();
+      this.content.selected=true;
     }
   }
   toggleItemSelection()

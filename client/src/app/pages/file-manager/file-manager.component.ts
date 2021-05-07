@@ -177,7 +177,7 @@ export class FileManagerComponent implements AfterViewInit
   }
   mouseDown(event:any)
   {
-    if(!this.keyboard.ctrl)
+    if(!(this.keyboard.ctrl || this.keyboard.shift))
     {
       this.clearSelection();
     }
@@ -517,5 +517,41 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.iconSizeIndex=Math.min(this.iconSizes.length-1,Math.max(0,index));
     localStorage.setItem("icon-size",this.iconSizeIndex);
+  }
+  shiftSelection(current:number)
+  {
+    let start=this.getFirstSelectedItem();
+    if(start!=null)
+    {
+      this.selectFileFolderFromIndex(start,current);
+    }
+    else
+    {
+      this.contents[current].selected=true;
+    }
+  }
+  selectFileFolderFromIndex(a:number,b:number)
+  {
+    let start=Math.min(a,b),end=Math.max(a,b);
+    for(let i=0,n=this.contents.length;i<n;i++)
+    {
+      this.contents[i].selected=(i>=start && i<=end);
+    }
+  }
+  getFirstSelectedItem():number|null
+  {
+    for(let i=0,n=this.contents.length;i<n;i++)
+    {
+      if(this.contents[i].selected)
+      {
+        return i;
+      }
+    }
+    return null;
+  }
+  deleteConnection(id:number)
+  {
+    // del=index;
+    // [...a.slice(0,del),...a.slice(del+1)]
   }
 }
