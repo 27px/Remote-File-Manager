@@ -5,7 +5,7 @@ TODO
  2 Mouse drag and drop
  3 Shortcut key
  4 right click
- 5 SSH connections click, add, edit, delete
+ 5 SSH connections click, add, edit
  6 Local files
  7 file icons like zip, image, text, videos etc
  8 arrange rest api paths

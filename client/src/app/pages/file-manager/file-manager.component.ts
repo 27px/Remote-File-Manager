@@ -8,6 +8,7 @@ import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
 import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
+import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
 // Custom Functions
@@ -41,6 +42,7 @@ export class FileManagerComponent implements AfterViewInit
   iconSizes: string[] = ["ex-sm", "sm", "md", "lg", "ex-lg", "hg"];
   iconSizeIndex: any = this.default_icon_size_index; // medium by default
   connections: any[] = [];
+  popUp: any = this.initialPopUpState();
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
@@ -58,8 +60,7 @@ export class FileManagerComponent implements AfterViewInit
     this.setIconSizeIndex(localStorage.getItem("icon-size") ?? this.default_icon_size_index); // default is medium
 
     // set connections
-    this.connections=JSON.parse(atob(localStorage.getItem("connections") ?? "") || "[]") || [];
-    // localStorage.setItem("connections",btoa(JSON.stringify(this.connections)));
+    this.connections=this.getConnections();
 
     // load contents
     this.loadDirContents(this.INITIAL_PATH);
@@ -552,15 +553,13 @@ export class FileManagerComponent implements AfterViewInit
     }
     return null;
   }
-  deleteConnection(del:number)
+  setConnections(connections:any[])
   {
-    console.log(del);
-    // del=index;
-    // [...a.slice(0,del),...a.slice(del+1)]
+    localStorage.setItem("connections",btoa(JSON.stringify(connections)));
   }
-  editConnection(id:number)
+  getConnections():any[]
   {
-    console.log(id);
+    return JSON.parse(atob(localStorage.getItem("connections") ?? "") || "[]") || [];
   }
   getNumberOfSelectedItems()
   {
@@ -572,5 +571,61 @@ export class FileManagerComponent implements AfterViewInit
       }
     });
     return count;
+  }
+  deleteConnection(event:any,index:number)
+  {
+    event?.stopPropagation();
+    this.showPopUp("Delete Connection",`Are you sure you want to delete the connection : "${this.connections[index].name}"?`,"delete","Delete",()=>{
+      this.connections=[...this.connections.slice(0,index),...this.connections.slice(index+1)];
+      this.setConnections(this.connections);
+      this.closePopUp();
+    },"Cancel",()=>{
+      this.closePopUp();
+    },true);
+  }
+  editConnection(event:any,id:number)
+  {
+    event?.stopPropagation();
+    console.log("edit in dev");
+  }
+  connectToSystem(id:number)
+  {
+    console.log("connect in dev");
+    console.log(id);
+  }
+  initialPopUpState()
+  {
+    return {
+      active: false, // visible or not
+      icon:"", // icon type
+      title: "", // title
+      body: "", // content
+      ok: null, // ok event
+      cancel: null, // cancel event
+      backgroundCancellation: true // cancel event when clicked on background
+    };
+  }
+  showPopUp(title:string,body:string,icon:string,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true)
+  {
+    icon=AVAILABLE_POP_UP_ICONS.includes(icon)?icon:"default";
+    this.popUp={
+      active: true,
+      icon,
+      title,
+      body,
+      ok: ok==null?null:{
+        text:ok,
+        handler:okHandler
+      },
+      cancel: cancel==null?null:{
+        text:cancel,
+        handler:cancelHandler
+      },
+      backgroundCancellation
+    }
+  }
+  closePopUp()
+  {
+    this.popUp=this.initialPopUpState();
   }
 }
