@@ -44,7 +44,8 @@ export class FileManagerComponent implements AfterViewInit
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
-    alt: false
+    alt: false,
+    caps: false
   }
 
   constructor()
@@ -123,7 +124,6 @@ export class FileManagerComponent implements AfterViewInit
               iconType='default';
             }
             item.fileIcon=`file-${iconType}.svg`;
-            console.log(item.fileIcon);
           }
           return item;
         });
@@ -280,23 +280,22 @@ export class FileManagerComponent implements AfterViewInit
   {
     event.preventDefault();
   }
-  clearKeys(event:any)
+  updateKeyBoardState(event:any)
   {
     this.keyboard.ctrl=event.ctrlKey;
     this.keyboard.shift=event.shiftKey;
     this.keyboard.alt=event.altKey;
+    this.keyboard.caps=event.getModifierState('CapsLock');
   }
   shortcut(event:any)
   {
     let key=event.keyCode;
-    let ctrl=event.ctrlKey;
-    let shift=event.shiftKey;
-    let alt=event.altKey;
+    this.updateKeyBoardState(event);
 
-    // for child elements
-    this.keyboard.ctrl=ctrl;
-    this.keyboard.shift=shift;
-    this.keyboard.alt=alt;
+    let ctrl=this.keyboard.ctrl;
+    let shift=this.keyboard.shift;
+    let alt=this.keyboard.alt;
+    let caps=this.keyboard.caps;
 
     // console.log(key);
     if(ctrl || shift || alt)
@@ -389,12 +388,15 @@ export class FileManagerComponent implements AfterViewInit
   }
   stopPropagation(event:any)
   {
-    event.stopPropagation();
+    event?.stopPropagation();
+    this.updateKeyBoardState(event);
   }
   // typing in search box
-  searching()
+  searching(event:any)
   {
     event?.stopPropagation();
+    this.updateKeyBoardState(event);
+
     let key=this.search.value,i=0;
     this.filesAndFolders?._results?.forEach((item:any)=>{
       if(item.getData().name.toLowerCase().indexOf(key.toLowerCase())==-1)
@@ -480,6 +482,7 @@ export class FileManagerComponent implements AfterViewInit
   typingPath(event:any)
   {
     event?.stopPropagation();
+    this.updateKeyBoardState(event);
     let key=event.keyCode;
     if(key===13)// enter
     {
@@ -549,9 +552,25 @@ export class FileManagerComponent implements AfterViewInit
     }
     return null;
   }
-  deleteConnection(id:number)
+  deleteConnection(del:number)
   {
+    console.log(del);
     // del=index;
     // [...a.slice(0,del),...a.slice(del+1)]
+  }
+  editConnection(id:number)
+  {
+    console.log(id);
+  }
+  getNumberOfSelectedItems()
+  {
+    let count=0;
+    this.contents.forEach(item=>{
+      if(item.selected)
+      {
+        count++;
+      }
+    });
+    return count;
   }
 }

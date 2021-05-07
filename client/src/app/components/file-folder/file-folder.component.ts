@@ -13,7 +13,8 @@ export class FileFolderComponent implements OnInit
   @Input() keyboard: keyBoardStatus = {
     ctrl: false,
     shift: false,
-    alt: false
+    alt: false,
+    caps: false
   }
   @Input('attr-index') index: number = -1;
   @Output() openFolder: EventEmitter<any> = new EventEmitter();

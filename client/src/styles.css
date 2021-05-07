@@ -72,6 +72,10 @@ body
   --font-sub-title:"Roboto",sans-serif;
   --font-cursive:"Dancing Script","consolas",cursive;
 
+  --green:#4CAF50;
+  --red:#f44336;
+  --yellow:#FFEB3B;
+
   background:var(--bg);
 
   font-family:"Roboto";
