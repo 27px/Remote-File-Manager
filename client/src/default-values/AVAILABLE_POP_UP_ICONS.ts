@@ -1,3 +1,7 @@
 export default [
-  "delete"
+  "delete",
+  "warning",
+  "info",
+  "error",
+  "default"
 ];

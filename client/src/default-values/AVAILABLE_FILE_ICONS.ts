@@ -1,3 +1,4 @@
 export default [
-  "zip"
+  "zip",
+  "default"
 ];

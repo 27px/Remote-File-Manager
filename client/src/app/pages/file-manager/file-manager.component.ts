@@ -64,6 +64,7 @@ export class FileManagerComponent implements AfterViewInit
 
     // load contents
     this.loadDirContents(this.INITIAL_PATH);
+
   }
   openDir(data:any)
   {
@@ -605,6 +606,13 @@ export class FileManagerComponent implements AfterViewInit
       backgroundCancellation: true // cancel event when clicked on background
     };
   }
+  //
+  // Example showPopUp
+  //
+  // this.showPopUp("Title",`Message`,"default","Ok",()=>{},"Cancel",()=>{
+  //   this.closePopUp();
+  // },true);
+  //
   showPopUp(title:string,body:string,icon:string,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true)
   {
     icon=AVAILABLE_POP_UP_ICONS.includes(icon)?icon:"default";
@@ -614,12 +622,12 @@ export class FileManagerComponent implements AfterViewInit
       title,
       body,
       ok: ok==null?null:{
-        text:ok,
-        handler:okHandler
+        text: ok,
+        handler: okHandler
       },
       cancel: cancel==null?null:{
-        text:cancel,
-        handler:cancelHandler
+        text: cancel,
+        handler: cancelHandler
       },
       backgroundCancellation
     }

@@ -5,6 +5,6 @@
 </div>
 <!-- File -->
 <div [ngClass]="'item file'+(content.selected?' item-selected':'')" *ngIf="!content.folder" (click)="clicked($event);" draggable="true" title="{{content.name}}">
-  <div class="icon" style="background-image:url('./../../assets/images/{{content.fileIcon}}');"></div>
+  <div class="icon" style="background-image:url('./assets/images/{{content.fileIcon}}');"></div>
   <div class="name">{{content.name}}</div>
 </div>
