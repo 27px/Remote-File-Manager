@@ -57,13 +57,16 @@ export class PopUpComponent implements OnInit
       {
         return;
       }
+      this.alreadySetEditData=false;
+      this.editConnectionData=null;
     }
     this.ok.emit(data);
   }
   emitCancel()
   {
-    this.cancel.emit(null);
     this.alreadySetEditData=false;
+    this.editConnectionData=null;
+    this.cancel.emit(null);
   }
   setEditConnectionData()
   {
