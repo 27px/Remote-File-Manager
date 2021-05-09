@@ -1,0 +1,37 @@
+<div class="bg" *ngIf="popUp.active" (click)="popUp.backgroundCancellation?emitCancel():null;">
+  <div [class]="'pop-up '+popUp.type" (click)="stopPropagation($event);">
+    <!-- For simple alert, into, warning, confirmation, etc. -->
+    <ng-container *ngIf="popUp.type=='confirm'">
+      <div class="icon">
+        <!-- delete icon -->
+        <svg *ngIf="popUp.icon=='delete'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        <!-- warning -->
+        <svg *ngIf="popUp.icon=='warning'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <!-- info -->
+        <svg *ngIf="popUp.icon=='info'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <!-- error -->
+        <svg *ngIf="popUp.icon=='error'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <!-- default (message) -->
+        <svg *ngIf="popUp.icon=='default'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </div>
+      <div class="title">{{popUp.title}}</div>
+      <div class="body">{{popUp.body}}</div>
+    </ng-container>
+    <ng-container *ngIf="popUp.type=='connection-properties'">
+      <div class="title">{{popUp.title}}</div>
+      <div class="form">
+        <app-input type="text" label="Server IP" name="connection-server" placeholder="Enter server ip"></app-input>
+        <app-input type="text" label="User Name" name="connection-user" placeholder="Enter user name"></app-input>
+        <app-input type="password" label="Password" name="connection-password" placeholder="Enter password"></app-input>
+        <app-input type="text" label="Connection Name" name="connection-name" placeholder="Enter connection name"></app-input>
+        <app-input type="text" label="Description" name="connection-description" placeholder="Enter description"></app-input>
+        <!-- just to execute setEditConnectionData() -->
+        <ng-container *ngIf="setEditConnectionData()"></ng-container>
+      </div>
+    </ng-container>
+    <div class="button-container">
+      <div class="button secondary" *ngIf="popUp.cancel!=null" (click)="emitCancel();">{{popUp.cancel.text}}</div>
+      <div class="button primary" *ngIf="popUp.ok!=null" (click)="emitOk();">{{popUp.ok.text}}</div>
+    </div>
+  </div>
+</div>

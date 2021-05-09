@@ -1,19 +1,18 @@
 Front End
 -----------------------------------------------------------------------------------------------------
 TODO
- 1 Searching is only for current directory, not for sub directory
- 2 Mouse drag and drop
- 3 Shortcut key
- 4 right click
- 5 SSH connections click, add, edit
- 6 Local files
- 7 file icons like zip, image, text, videos etc
- 8 arrange rest api paths
- 9 file folder right click
-10 File/folder status in botttom bar
+1 Searching is only for current directory, not for sub directory
+2 Mouse drag and drop
+3 Shortcut key
+4 right click
+5 SSH connections click
+6 Local files
+7 file icons like zip, image, text, videos etc
+8 arrange rest api paths
+9 file folder right click
 =====================================================================================================
 
 Back End
 -----------------------------------------------------------------------------------------------------
 TODO
- 1 Connect SSH and Local Files with UI
+1 Connect SSH and Local Files with UI

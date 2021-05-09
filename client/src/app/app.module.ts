@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +11,7 @@ import { InputComponent } from './components/input/input.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { FileFolderComponent } from './components/file-folder/file-folder.component';
+import { PopUpComponent } from './components/pop-up/pop-up.component';
 
 @NgModule({
   declarations: [
@@ -20,11 +22,13 @@ import { FileFolderComponent } from './components/file-folder/file-folder.compon
     InputComponent,
     SignupComponent,
     FileManagerComponent,
-    FileFolderComponent
+    FileFolderComponent,
+    PopUpComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

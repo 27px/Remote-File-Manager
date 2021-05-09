@@ -6,12 +6,16 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./input.component.css']
 })
 
-export class InputComponent implements OnInit {
+export class InputComponent implements OnInit
+{
+  error:string = "";
 
   @Input() type:string="";
   @Input() label:string="";
   @Input() placeholder:string="";
   @Input() name:string="";
+
+  @Input("ngModel") value:string="";
 
   constructor()
   {
@@ -20,5 +24,26 @@ export class InputComponent implements OnInit {
   ngOnInit(): void
   {
     // this.setError("Test Error");
+  }
+
+  getName()
+  {
+    return this.name;
+  }
+  getValue()
+  {
+    return this.value;
+  }
+  setValue(value:string)
+  {
+    this.value=value;
+  }
+  setError()
+  {
+    this.error="error";
+  }
+  unsetError()
+  {
+    this.error="";
   }
 }

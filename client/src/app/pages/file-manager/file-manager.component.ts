@@ -2,6 +2,7 @@ import { Component, AfterViewInit, Input, ViewChildren } from '@angular/core';
 
 // Components
 import { FileFolderComponent } from "../../components/file-folder/file-folder.component";
+import { PopUpComponent } from "../../components/pop-up/pop-up.component";
 
 // data models
 import sortType from '../../../model/sortType';
@@ -24,6 +25,7 @@ export class FileManagerComponent implements AfterViewInit
 {
   @Input() theme: string = "light"; // theme
   @ViewChildren(FileFolderComponent) filesAndFolders:any;
+  @ViewChildren(PopUpComponent) popUpElement:any;
 
   dragging: boolean = false; // currently dragging or not
   drag: dragDimension = new dragDimension();
@@ -576,18 +578,13 @@ export class FileManagerComponent implements AfterViewInit
   deleteConnection(event:any,index:number)
   {
     event?.stopPropagation();
-    this.showPopUp("Delete Connection",`Are you sure you want to delete the connection : "${this.connections[index].name}"?`,"delete","Delete",()=>{
+    this.showPopUp("confirm","Delete Connection",`Are you sure you want to delete the connection : "${this.connections[index].name}"?`,"delete","Delete",(data:any)=>{
       this.connections=[...this.connections.slice(0,index),...this.connections.slice(index+1)];
       this.setConnections(this.connections);
       this.closePopUp();
-    },"Cancel",()=>{
+    },"Cancel",(data:any)=>{
       this.closePopUp();
     },true);
-  }
-  editConnection(event:any,id:number)
-  {
-    event?.stopPropagation();
-    console.log("edit in dev");
   }
   connectToSystem(id:number)
   {
@@ -598,6 +595,7 @@ export class FileManagerComponent implements AfterViewInit
   {
     return {
       active: false, // visible or not
+      type: "confirm", // normal popup with ok and cancel
       icon:"", // icon type
       title: "", // title
       body: "", // content
@@ -609,15 +607,16 @@ export class FileManagerComponent implements AfterViewInit
   //
   // Example showPopUp
   //
-  // this.showPopUp("Title",`Message`,"default","Ok",()=>{},"Cancel",()=>{
+  // this.showPopUp("confirm","Title",`Message`,"default","Ok",(data:any)=>{},"Cancel",(data:any)=>{
   //   this.closePopUp();
   // },true);
   //
-  showPopUp(title:string,body:string,icon:string,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true)
+  showPopUp(type:string="confirm",title:string,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true)
   {
-    icon=AVAILABLE_POP_UP_ICONS.includes(icon)?icon:"default";
+    icon=AVAILABLE_POP_UP_ICONS.includes(icon ?? "")?icon:"default";
     this.popUp={
       active: true,
+      type,
       icon,
       title,
       body,
@@ -635,5 +634,52 @@ export class FileManagerComponent implements AfterViewInit
   closePopUp()
   {
     this.popUp=this.initialPopUpState();
+  }
+  handlePopUpEvent(type:string,data:any)
+  {
+    this.popUp[type].handler(data);
+  }
+  addConnection()
+  {
+    this.showPopUp("connection-properties","New Connection",null,"default","Add",(data:any)=>{
+      let connection:any={};
+      connection.protocol="ssh";
+      connection.name=data["connection-name"];
+      connection.description=data["connection-description"];
+      connection.server=data["connection-server"];
+      connection.user=data["connection-user"];
+      connection.password=data["connection-password"];
+      this.connections.push(connection);
+      this.setConnections(this.connections);
+      this.closePopUp();
+    },"Cancel",(data:any)=>{
+      this.closePopUp();
+    },false);
+  }
+  editConnection(event:any,id:number)
+  {
+    event.stopPropagation();
+    let connection=this.connections[id];
+    this.popUpElement._results[0].editConnectionData={
+      "connection-name":connection.name,
+      "connection-description":connection.description,
+      "connection-server":connection.server,
+      "connection-user":connection.user,
+      "connection-password":connection.password
+    };
+    this.showPopUp("connection-properties","Edit Connection",null,"default","Save",(data:any)=>{
+      let connection:any={};
+      connection.protocol="ssh";
+      connection.name=data["connection-name"];
+      connection.description=data["connection-description"];
+      connection.server=data["connection-server"];
+      connection.user=data["connection-user"];
+      connection.password=data["connection-password"];
+      this.connections[id]=connection;
+      this.setConnections(this.connections);
+      this.closePopUp();
+    },"Cancel",(data:any)=>{
+      this.closePopUp();
+    },false);
   }
 }

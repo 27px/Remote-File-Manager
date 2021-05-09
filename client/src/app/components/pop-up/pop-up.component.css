@@ -1,0 +1,134 @@
+.bg
+{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:2;
+  background:var(--accent-semi);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pop-up
+{
+  width:90%;
+  max-width:800px;
+  padding:25px;
+  box-sizing:border-box;
+  background:var(--bg);
+  color:var(--accent-dark);
+  border-radius:10px;
+}
+.pop-up.confirm
+{
+  display:grid;
+  grid-auto-columns:115px 1fr;
+  grid-auto-rows:repeat(3,1fr);
+  grid-row-gap:15px;
+  grid-column-gap:5px;
+}
+.pop-up.confirm .icon
+{
+  grid-area:1 / 1 / span 3 / span 1;
+  padding:10px;
+}
+.pop-up.confirm .icon svg
+{
+  width:100%;
+  height:100%;
+  stroke-width:0.6;
+}
+.pop-up.confirm .title
+{
+  grid-area:1 / 2 / span 1 / span 1;
+  padding-top:20px;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+.pop-up.confirm .body
+{
+  grid-area:2 / 2 / span 1 / span 1;
+  font-size:14.5px;
+  font-weight:300;
+  letter-spacing:1px;
+}
+.pop-up.connection-properties .title
+{
+  font-size:25px;
+  color:var(--primary4);
+  text-align:center;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.pop-up.connection-properties .form
+{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-column-gap:25px;
+}
+.pop-up.connection-properties .form>*:last-child
+{
+  grid-area: 3 / 1 / span 1 / span 2;
+}
+@media (max-width:650px)
+{
+  .pop-up
+  {
+    padding:15px;
+  }
+  .pop-up.connection-properties .title
+  {
+    font-size:20px;
+  }
+  .pop-up.connection-properties .form
+  {
+    grid-template-columns:1fr;
+  }
+  .pop-up.connection-properties .form>*:last-child
+  {
+    grid-area:unset;
+  }
+}
+.button-container
+{
+  grid-area:3 / 2 / span 1 / span 1;
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-end;
+}
+.button
+{
+  display:inline-block;
+  padding:5px 15px;
+  margin-left:10px;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.primary
+{
+  background:var(--primary);
+  border:2px solid var(--primary);
+  transition:background-color 0.3s,border-color 0.3s;
+  color:#000;
+  border-radius:5px;
+}
+.primary:hover
+{
+  background:var(--primary3);
+  border:2px solid var(--primary3);
+}
+.secondary
+{
+  border:2px solid var(--primary);
+  color:var(--primary);
+  transition:color 0.3s,border-color 0.3s;
+  border-radius:5px;
+}
+.secondary:hover
+{
+  border:2px solid var(--primary3);
+  color:var(--primary3);
+}
