@@ -23,7 +23,7 @@ import { PopUpComponent } from './components/pop-up/pop-up.component';
     SignupComponent,
     FileManagerComponent,
     FileFolderComponent,
-    PopUpComponent
+    PopUpComponent,
   ],
   imports: [
     BrowserModule,

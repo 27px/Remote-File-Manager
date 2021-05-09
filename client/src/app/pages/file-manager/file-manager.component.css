@@ -18,7 +18,7 @@
   height:100vh;
   display:grid;
   grid-template-columns:280px 1fr;
-  grid-template-rows:50px 40px 1fr 35px;
+  grid-template-rows:40px 40px 1fr 35px;
   background:var(--bg);
   overflow:hidden;
 
@@ -90,12 +90,14 @@
   display:flex;
   flex-direction:row;
   align-items:center;
-  margin:0px 15px;
+  margin:0px 5px;
   cursor:pointer;
+  transform:scale(0.8);
+  transition:transform 0.3s;
 }
 .header .min .option
 {
-  margin:0px 10px;
+  margin:0px 2px;
 }
 .header .option .icon
 {
@@ -108,9 +110,10 @@
 }
 .header .option .icon svg
 {
-  width:20px;
-  height:20px;
+  width:22px;
+  height:22px;
   stroke:var(--accent-dark);
+  stroke-width:1.5;
   transition:stroke 0.3s;
 }
 .header .option .title
@@ -121,13 +124,17 @@
   font-size:14px;
   font-weight:100;
 }
+.header .option:hover
+{
+  transform:scale(1);
+}
 .header .option:hover .icon svg
 {
-  stroke:var(--primary);
+  stroke:var(--inverse);
 }
 .header .option:hover .title
 {
-  color:var(--primary);
+  color:var(--inverse);
 }
 .header .option:focus
 {
@@ -228,11 +235,17 @@
 }
 .connection-list .add-connection:hover svg
 {
-  stroke:var(--primary);
+  stroke:#000000;
 }
 .connection-list .add-connection .name
 {
   margin:unset;
+}
+.connection-list .add-connection:hover
+{
+  border:2px solid var(--primary);
+  color:#000000;
+  background-color:var(--primary);
 }
 .top-bar
 {
@@ -448,7 +461,7 @@
 {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(var(--icon-size),1fr));
-  grid-template-rows:calc(var(--icon-size) + 30px);
+  grid-auto-rows:calc(var(--icon-size) + 30px);
   grid-gap:var(--icon-gap);
   padding:var(--icon-gap);
   box-sizing:border-box;
@@ -589,4 +602,56 @@
 .hidden
 {
   display:none!important;
+}
+.context-menu
+{
+  position:fixed;
+  top:0;
+  left:0;
+  width:180px;
+  height:auto;
+  display:flex;
+  flex-direction:column;
+  background:var(--abstract-light);
+  border:1px solid var(--accent);
+  box-shadow:0px 0px 6px 2px #00000050;
+  backdrop-filter:blur(8px);
+  border-radius:5px;
+  overflow:hidden;
+}
+.context-menu .menu-button
+{
+  display:flex;
+  flex-direction:row;
+  padding:10px;
+  color:var(--inverse);
+  border-bottom:1px solid var(--accent);
+  align-items:center;
+  cursor:pointer;
+  transition:background-color 0.3s;
+}
+.context-menu .menu-button:last-child
+{
+  border-bottom:unset;
+}
+.context-menu .menu-button:not(.menu-disabled):hover
+{
+  background:var(--primary);
+}
+.context-menu .menu-button svg
+{
+  padding-right:10px;
+}
+.context-menu .menu-button svg
+{
+  stroke:var(--inverse);
+}
+.context-menu .menu-button.menu-disabled
+{
+  color:var(--inverse-light);
+  cursor:not-allowed;
+}
+.context-menu .menu-button.menu-disabled svg
+{
+  stroke:var(--inverse-light)!important;
 }

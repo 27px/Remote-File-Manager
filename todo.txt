@@ -10,6 +10,8 @@ TODO
 7 file icons like zip, image, text, videos etc
 8 arrange rest api paths
 9 file folder right click
+BUG
+1 right click menu gets previous size to calculate offset
 =====================================================================================================
 
 Back End

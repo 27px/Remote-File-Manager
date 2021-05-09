@@ -45,6 +45,8 @@ export class FileManagerComponent implements AfterViewInit
   iconSizeIndex: any = this.default_icon_size_index; // medium by default
   connections: any[] = [];
   popUp: any = this.initialPopUpState();
+  contextMenu: any = null;
+  paste:any = null;
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
@@ -68,6 +70,12 @@ export class FileManagerComponent implements AfterViewInit
     this.loadDirContents(this.INITIAL_PATH);
 
   }
+  ngAfterViewInit(): void
+  {
+    this.search=_("#search");
+    this.editPathInput=_("#editable-path");
+    this.arrange();
+  }
   openDir(data:any)
   {
     this.loadDirContents(this.getCWD(data));
@@ -78,11 +86,15 @@ export class FileManagerComponent implements AfterViewInit
     let temp=this.path.slice(0,index).join("/") || "/";
     this.loadDirContents(temp);
   }
-  ngAfterViewInit(): void
+  goBackOneDir()
   {
-    this.search=_("#search");
-    this.editPathInput=_("#editable-path");
-    this.arrange();
+    if(this.path.length<1)
+    {
+      return;
+    }
+    let path=[...this.path];
+    path.pop();
+    this.loadDirContents(path.join("/") || "/");
   }
   refresh()
   {
@@ -172,12 +184,6 @@ export class FileManagerComponent implements AfterViewInit
     this.theme=body.getAttribute("data-theme")=="dark"?"light":"dark";
     body.setAttribute("data-theme",this.theme);
     localStorage.setItem("theme",this.theme);
-  }
-  rightClick(event:any):void
-  {
-    event.preventDefault();
-
-    console.log("right click");
   }
   mouseDown(event:any)
   {
@@ -394,12 +400,14 @@ export class FileManagerComponent implements AfterViewInit
   {
     event?.stopPropagation();
     this.updateKeyBoardState(event);
+    this.closeMenu();
   }
   // typing in search box
   searching(event:any)
   {
     event?.stopPropagation();
     this.updateKeyBoardState(event);
+    this.closeMenu();
 
     let key=this.search.value,i=0;
     this.filesAndFolders?._results?.forEach((item:any)=>{
@@ -487,6 +495,7 @@ export class FileManagerComponent implements AfterViewInit
   {
     event?.stopPropagation();
     this.updateKeyBoardState(event);
+    this.closeMenu();
     let key=event.keyCode;
     if(key===13)// enter
     {
@@ -578,6 +587,7 @@ export class FileManagerComponent implements AfterViewInit
   deleteConnection(event:any,index:number)
   {
     event?.stopPropagation();
+    this.closeMenu();
     this.showPopUp("confirm","Delete Connection",`Are you sure you want to delete the connection : "${this.connections[index].name}"?`,"delete","Delete",(data:any)=>{
       this.connections=[...this.connections.slice(0,index),...this.connections.slice(index+1)];
       this.setConnections(this.connections);
@@ -659,6 +669,7 @@ export class FileManagerComponent implements AfterViewInit
   editConnection(event:any,id:number)
   {
     event.stopPropagation();
+    this.closeMenu();
     let connection=this.connections[id];
     this.popUpElement._results[0].editConnectionData={
       "connection-name":connection.name,
@@ -681,5 +692,68 @@ export class FileManagerComponent implements AfterViewInit
     },"Cancel",(data:any)=>{
       this.closePopUp();
     },false);
+  }
+  rightClick(event:any,fromMain:boolean=true,isFolder:boolean=false):void
+  {
+    event?.preventDefault();
+    let menu=_(".context-menu")?.getBoundingClientRect();
+    let screen=document.body.getBoundingClientRect();
+    let w=menu.width;
+    let h=menu.height;
+    let offsetX=screen.width-w;
+    let offsetY=screen.height-h;
+    let x=event.clientX;
+    let y=event.clientY;
+    let left=(x<offsetX)?x:x-w;
+    let top=(y<offsetY)?y:y-h;
+    this.contextMenu={
+      visibility:"hidden",
+      fromMain,
+      isFolder,
+      top:top+"px",
+      left:left+"px",
+      x,
+      y
+    };
+  }
+  getContextMenuStyle()
+  {
+    return {
+      visibility:this.contextMenu?.visibility ?? "hidden",
+      top:this.contextMenu?.top || 0,
+      left:this.contextMenu?.left || 0
+    };
+  }
+  closeMenu()
+  {
+    this.contextMenu=null;
+  }
+  fileFolderRightClick(event:any,isFolder:boolean)
+  {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.closePopUp();
+    this.rightClick(event,false,isFolder);
+    setTimeout(this.setMenuStyle,0);
+  }
+  setMenuStyle()
+  {
+    if(this.contextMenu!=null)
+    {
+      let menu=_(".context-menu")?.getBoundingClientRect();
+      let screen=document.body.getBoundingClientRect();
+      let w=menu.width;
+      let h=menu.height;
+      let offsetX=screen.width-w;
+      let offsetY=screen.height-h;
+      let x=this.contextMenu.x;
+      let y=this.contextMenu.y;
+      let left=(x<offsetX)?x:x-w;
+      let top=(y<offsetY)?y:y-h;
+      this.contextMenu.top=top+"px";
+      this.contextMenu.left=left+"px";
+      this.contextMenu.visibility="visible";
+    }
+    return false;
   }
 }

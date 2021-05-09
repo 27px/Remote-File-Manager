@@ -36,22 +36,28 @@
 body[data-theme="dark"]
 {
   --bg:#303030;
+  --bg-light:rgba(30,30,30,0.1);
   --accent:#606060;
   --accent-semi:rgba(128,128,128,0.5);
   --accent-semi-light:rgba(128,128,128,0.2);
   --accent-dark:#C0C0C0;
   --border:2px solid var(--accent);
   --inverse:#FFFFFF;
+  --inverse-light:#FFFFFF50;
+  --abstract-light:rgba(0,0,0,0.15);
 }
 body[data-theme="light"]
 {
   --bg:#FFFFFF;
+  --bg-light:rgba(0,0,0,0.1);
   --accent:#C0C0C0;
   --accent-semi:rgba(192,192,192,0.5);
   --accent-semi-light:rgba(192,192,192,0.2);
   --accent-dark:#606060;
   --border:2px solid var(--accent);
   --inverse:#000000;
+  --inverse-light:#00000050;
+  --abstract-light:rgba(255,255,255,0.15);
 }
 body
 {
