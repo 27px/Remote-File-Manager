@@ -45,6 +45,7 @@ body[data-theme="dark"]
   --inverse:#FFFFFF;
   --inverse-light:#FFFFFF50;
   --abstract-light:rgba(0,0,0,0.15);
+  --absolute:#000000;
 }
 body[data-theme="light"]
 {
@@ -58,6 +59,7 @@ body[data-theme="light"]
   --inverse:#000000;
   --inverse-light:#00000050;
   --abstract-light:rgba(255,255,255,0.15);
+  --absolute:#FFFFFF;
 }
 body
 {

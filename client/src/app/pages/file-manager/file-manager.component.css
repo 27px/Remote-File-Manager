@@ -78,6 +78,7 @@
   justify-content:space-between;
   align-items:center;
   overflow-x:auto;
+  background:var(--primary);
 }
 .header .options,.header .min
 {
@@ -127,7 +128,7 @@
 {
   width:22px;
   height:22px;
-  stroke:var(--accent-dark);
+  stroke:var(--bg);
   stroke-width:1.5;
   transition:stroke 0.3s;
 }
@@ -139,7 +140,7 @@
 }
 .header .option .title
 {
-  color:var(--accent-dark);
+  color:var(--bg);
   transition:color 0.3s;
   white-space:nowrap;
   font-size:14px;
@@ -147,6 +148,7 @@
 }
 .header .option.inactive .title
 {
+  color:var(--absolute);
   margin-left:5px;
 }
 .header .option:hover
@@ -155,11 +157,11 @@
 }
 .header .option:hover .icon svg
 {
-  stroke:var(--inverse);
+  stroke:var(--absolute);
 }
-.header .option:not(.inactive):hover .title
+.header .option:hover .title
 {
-  color:var(--inverse);
+  color:var(--absolute);
 }
 .header .option:focus
 {
@@ -175,7 +177,7 @@
 }
 .header .option.win-minimize:hover .icon svg
 {
-  stroke:var(--primary);
+  stroke:var(--yellow);
 }
 .header .option.win-close:hover .icon svg
 {
@@ -327,8 +329,8 @@
   top:50%;
   right:0px;
   transform:translate(50%,-50%) rotate(45deg);
-  width:25px;
-  height:25px;
+  width:30px;
+  height:30px;
   border-top:var(--border);
   border-right:var(--border);
   z-index:-1;
