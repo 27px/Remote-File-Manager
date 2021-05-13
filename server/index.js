@@ -1,16 +1,19 @@
 module.exports=()=>{
   const config=require("./config/config.json");
   const express=require("express");
-  // const fileUpload=require('express-fileupload');
+  const app=express();
+  // const http=require("http").Server(app);
+  // const io=require("socket.io")(http);
   const path=require("path");
-  const route=require("./routes/main");
-  const chalk=require("chalk");
-  const cors=require("cors");
 
+  // const fileUpload=require('express-fileupload');
+  const chalk=require("chalk");
+
+  const route=require("./routes/main");
+  const cors=require("cors");
   const HOST=config.SERVER.HOST;
   const PORT=process.env.PORT || config.SERVER.PORT;
 
-  var app=express();
 
   // app.set("views","./views");
   // app.set("view engine","ejs");
@@ -28,6 +31,22 @@ module.exports=()=>{
   //   resave:false,
   //   saveUninitialized:false
   // }));
+
+  // io.on("connection",socket=>{
+  //   console.log(chalk.yellow("one user Connected"));
+  //   socket.on("operation",data=>{
+  //     console.log(data);
+  //     socket.emit("resp","received");
+  //   });
+  //   // custom kill io server
+  //   socket.on("force-kill-server",()=>{
+  //     console.log("kill server");
+  //     io.server.close();
+  //   });
+  //   socket.on("disconnect",()=>{
+  //     console.log(chalk.red("one user disconnected"));
+  //   });
+  // });
 
   // app.use("/static",express.static(path.join(__dirname,"static")));
   app.use("/favicon.ico",express.static(path.join(__dirname,"favicon.ico")));

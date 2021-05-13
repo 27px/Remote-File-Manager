@@ -30,7 +30,12 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "renderer.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "socket.io-client"
+             ]
           },
           "configurations": {
             "production": {

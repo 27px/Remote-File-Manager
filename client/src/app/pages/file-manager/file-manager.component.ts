@@ -12,6 +12,7 @@ import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
+// import {io} from 'socket.io-client';
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
@@ -53,9 +54,17 @@ export class FileManagerComponent implements AfterViewInit
     alt: false,
     caps: false
   }
+  // socket:any=null;
 
   constructor()
   {
+    // this.socket=io('http://localhost:4500',{
+    //   transports: ['websocket']
+    // });
+    // this.socket.on("resp",(data:any)=>{
+    //   console.log(data);
+    // });
+
     // set theme
     this.theme=localStorage.getItem("theme") || "light";
     document.body.setAttribute("data-theme",this.theme); // dark or light mode // default light
@@ -596,10 +605,18 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },true);
   }
-  connectToSystem(id:number)
+  connectToSystem(id:number|null)
   {
     console.log("connect in dev");
     console.log(id);
+    if(id==null)
+    {
+      //connect to local server
+    }
+    else
+    {
+      // connect to ssh
+    }
   }
   initialPopUpState()
   {
@@ -756,4 +773,15 @@ export class FileManagerComponent implements AfterViewInit
     }
     return false;
   }
+  // test_send_message()
+  // {
+  //   let data={
+  //     test: "value"
+  //   };
+  //   this.socket.emit("operation",data);
+  // }
+  // closeApp()
+  // {
+  //   this.socket.emit("close-app");
+  // }
 }
