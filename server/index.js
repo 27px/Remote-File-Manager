@@ -2,8 +2,13 @@ module.exports=()=>{
   const config=require("./config/config.json");
   const express=require("express");
   const app=express();
-  // const http=require("http").Server(app);
-  // const io=require("socket.io")(http);
+  const http=require("http");
+  const ws=require('ws');
+  const server=http.createServer(app);
+
+  const wss=new ws.Server({
+    server
+  });
   const path=require("path");
 
   // const fileUpload=require('express-fileupload');
@@ -32,28 +37,31 @@ module.exports=()=>{
   //   saveUninitialized:false
   // }));
 
-  // io.on("connection",socket=>{
-  //   console.log(chalk.yellow("one user Connected"));
-  //   socket.on("operation",data=>{
-  //     console.log(data);
-  //     socket.emit("resp","received");
-  //   });
-  //   // custom kill io server
-  //   socket.on("force-kill-server",()=>{
-  //     console.log("kill server");
-  //     io.server.close();
-  //   });
-  //   socket.on("disconnect",()=>{
-  //     console.log(chalk.red("one user disconnected"));
-  //   });
-  // });
+  wss.on("connection",socket=>{
+    // connected
+    console.log(chalk.yellow("one user Connected"));
+
+    // send message
+    socket.send("hi");
+
+    // received message
+    socket.on("message",msg=>{
+      console.log(chalk.green.inverse(msg));
+    });
+
+    // closing connection
+    socket.on("close",()=>{
+      console.log(chalk.red("one user disconnected"));
+    });
+  });
+
 
   // app.use("/static",express.static(path.join(__dirname,"static")));
   app.use("/favicon.ico",express.static(path.join(__dirname,"favicon.ico")));
 
   app.use("/",route);
 
-  app.listen(PORT,()=>{
+  server.listen(PORT,()=>{
     console.log(chalk.green.inverse(` Started server ${HOST} on port ${PORT} `));
   });
 

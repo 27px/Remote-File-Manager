@@ -10,7 +10,9 @@ TODO
 7 file icons like zip, image, text, videos etc
 8 arrange rest api paths
 9 custom menu on top maximize not working
-10 removed socket.io
+BUG
+1 removed socket.io, due to app not closing bug
+2 server not packaged since it is outside the directory
 =====================================================================================================
 
 Back End

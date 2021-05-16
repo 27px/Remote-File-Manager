@@ -12,7 +12,8 @@ import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
-// import {io} from 'socket.io-client';
+let socket:any=new WebSocket("ws://localhost:4500");
+
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
@@ -54,16 +55,25 @@ export class FileManagerComponent implements AfterViewInit
     alt: false,
     caps: false
   }
-  // socket:any=null;
 
   constructor()
   {
-    // this.socket=io('http://localhost:4500',{
-    //   transports: ['websocket']
-    // });
-    // this.socket.on("resp",(data:any)=>{
-    //   console.log(data);
-    // });
+    socket.onopen=(event:any)=>{
+      //connected
+      console.log("connected");
+
+      // send message
+      socket.send("hello");
+    };
+
+    socket.onmessage=(event:any)=>{
+      // receive
+      console.log(event.data);
+    }
+
+    socket.onclose=()=>{
+      socket=null;
+    }
 
     // set theme
     this.theme=localStorage.getItem("theme") || "light";
@@ -773,15 +783,4 @@ export class FileManagerComponent implements AfterViewInit
     }
     return false;
   }
-  // test_send_message()
-  // {
-  //   let data={
-  //     test: "value"
-  //   };
-  //   this.socket.emit("operation",data);
-  // }
-  // closeApp()
-  // {
-  //   this.socket.emit("close-app");
-  // }
 }

@@ -8,8 +8,10 @@
     "build": "ng build",
     "build-prod": "ng build --prod",
     "electron": "electron .",
-    "electron-run": "set ELECTRON_DISABLE_SECURITY_WARNINGS=true && ng build && electron .",
-    "electron-build": "set ELECTRON_DISABLE_SECURITY_WARNINGS=true && ng build --prod && electron .",
+    "electron-run": "ng build && electron .",
+    "electron-build": "ng build --prod && electron .",
+    "electron-generate": "ng build --prod && electron-packager . \"File Manager\" --all --out='../build' --overwrite",
+    "electron-generate-win": "electron-packager . \"File Manager\" --platform='win32' --arch='x64' --out='../build' --overwrite",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -26,7 +28,6 @@
     "@angular/router": "~11.0.5",
     "chalk": "^4.1.1",
     "rxjs": "~6.6.0",
-    "socket.io-client": "^4.1.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },
@@ -49,5 +50,10 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
+  },
+  "build": {
+    "server": [
+      "../server/**"
+    ]
   }
 }
