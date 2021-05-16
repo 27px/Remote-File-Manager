@@ -18,6 +18,14 @@ let socket:any=new WebSocket("ws://localhost:4500");
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
 
+declare global
+{
+  interface Window
+  {
+    main:any;
+  }
+}
+
 @Component({
   selector: 'app-file-manager',
   templateUrl: './file-manager.component.html',
@@ -49,6 +57,7 @@ export class FileManagerComponent implements AfterViewInit
   popUp: any = this.initialPopUpState();
   contextMenu: any = null;
   paste:any = null;
+  inBrowser:boolean = false;
   keyboard:keyBoardStatus = {
     ctrl: false,
     shift: false,
@@ -58,6 +67,7 @@ export class FileManagerComponent implements AfterViewInit
 
   constructor()
   {
+    // web socket
     socket.onopen=(event:any)=>{
       //connected
       console.log("connected");
@@ -78,6 +88,9 @@ export class FileManagerComponent implements AfterViewInit
     // set theme
     this.theme=localStorage.getItem("theme") || "light";
     document.body.setAttribute("data-theme",this.theme); // dark or light mode // default light
+
+    // hide close and minimize if in browser
+    this.inBrowser=(typeof (window?.main) == 'undefined');
 
     // set icon size
     this.setIconSizeIndex(localStorage.getItem("icon-size") ?? this.default_icon_size_index); // default is medium
