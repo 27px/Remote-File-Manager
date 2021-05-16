@@ -70,15 +70,15 @@ export class FileManagerComponent implements AfterViewInit
     // web socket
     socket.onopen=(event:any)=>{
       //connected
-      console.log("connected");
+      // console.log("connected");
 
       // send message
-      socket.send("hello");
+      // socket.send("hello");
     };
 
     socket.onmessage=(event:any)=>{
       // receive
-      console.log(event.data);
+      // console.log(event.data);
     }
 
     socket.onclose=()=>{
@@ -138,8 +138,27 @@ export class FileManagerComponent implements AfterViewInit
     temp=temp!="/"?temp:"";
     return `${temp}${extra_path}`;
   }
+  toast(type:string="info",message:string,delay:number=4000)
+  {
+    let delayOffset=800;
+    let box=document.createElement("div");
+    box.classList.add("toast");
+    box.classList.add(`toast-${type}`);
+    box.innerHTML=message;
+    _(".toast-container")?.appendChild(box);
+    setTimeout(()=>{
+      box.classList.add("toast-fade");
+    },delay);
+    setTimeout(()=>{
+      box?.parentNode?.removeChild(box);
+    },delay+delayOffset);
+  }
   loadDirContents(path:string)
   {
+    if(this.loading)
+    {
+      this.toast("warning","Please wait while finish loading.");
+    }
     this.loading=true;
     this.contents=[];
     fetch(`${this.GET_DIR_CONTENTS}`,{

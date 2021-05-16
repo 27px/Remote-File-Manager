@@ -8,6 +8,7 @@
 {
   width:100%;
   height:100vh;
+  overflow:hidden;
 }
 :focus
 {
@@ -195,5 +196,78 @@ label.icon
   label
   {
     font-size:16px;
+  }
+}
+.toast-container
+{
+  width:350px;
+  height:auto;
+  position:fixed;
+  bottom:50px;
+  right:10px;
+  max-height:75vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:0px 5px;
+  box-sizing:border-box;
+}
+.toast
+{
+  position:relative;
+  width:100%;
+  padding:10px;
+  margin:10px 0px;
+  line-height:25px;
+  box-sizing:border-box;
+  font-family:"Roboto";
+  text-align:justify;
+  box-shadow:0px 0px 5px 0px #000000;
+  border-radius:5px;
+  animation:toast-show 0.2s linear 1 forwards;
+}
+.toast.toast-info
+{
+  background:var(--primary);
+}
+.toast.toast-warning
+{
+  background:var(--yellow);
+}
+.toast.toast-error
+{
+  background:var(--red);
+}
+.toast.toast-success
+{
+  background:var(--green);
+}
+.toast.toast-fade
+{
+  animation:toast-fade 0.8s linear 1 forwards;
+}
+@keyframes toast-show
+{
+  0%
+  {
+    opacity:0;
+    transform:translateY(200%);
+  }
+  100%
+  {
+    opacity:1;
+    transform:translateY(0%);
+  }
+}
+@keyframes toast-fade
+{
+  0%
+  {
+    opacity:1;
+    transform:translateX(0%);
+  }
+  100%
+  {
+    opacity:0;
+    transform:translateX(100%);
   }
 }

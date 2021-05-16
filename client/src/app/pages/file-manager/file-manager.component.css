@@ -175,7 +175,8 @@
 {
   color:var(--primary9);
 }
-.header .option.win-minimize:hover .icon svg
+.header .option.win-minimize:hover .icon svg,
+.header .option.win-maximize:hover .icon svg
 {
   stroke:var(--yellow);
 }

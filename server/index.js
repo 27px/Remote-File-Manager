@@ -39,19 +39,19 @@ module.exports=()=>{
 
   wss.on("connection",socket=>{
     // connected
-    console.log(chalk.yellow("one user Connected"));
+    // console.log(chalk.yellow("one user Connected"));
 
     // send message
-    socket.send("hi");
+    // socket.send("hi");
 
     // received message
     socket.on("message",msg=>{
-      console.log(chalk.green.inverse(msg));
+      // console.log(chalk.green.inverse(msg));
     });
 
     // closing connection
     socket.on("close",()=>{
-      console.log(chalk.red("one user disconnected"));
+      // console.log(chalk.red("one user disconnected"));
     });
   });
 

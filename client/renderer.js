@@ -7,4 +7,7 @@ window.onload=()=>{
   _(".win-minimize")?.addEventListener("click", event => {
     window?.main?.minimize();
   });
+  // _(".win-maximize")?.addEventListener("click", event => {
+  //   window?.main?.maximize();
+  // });
 };

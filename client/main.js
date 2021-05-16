@@ -52,6 +52,18 @@ ipcMain.on("minimize",()=>{
   win.minimize();
 });
 
+// ipcMain.on("maximize",()=>{
+//   console.log("isMaximized "+win.isMaximized());
+//   if(win.isMaximized())
+//   {
+//     win.unmaximize();
+//   }
+//   else
+//   {
+//     win.maximize();
+//   }
+// });
+
 // Create window on electron intialization
 app.on('ready', createWindow)
 
