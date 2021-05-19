@@ -8,23 +8,31 @@ import { PopUpComponent } from "../../components/pop-up/pop-up.component";
 import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
+import { fs } from "../../../model/fs";// file folder operations list
 import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
-let socket:any=new WebSocket("ws://localhost:4500");
+let socket:any = new WebSocket("ws://localhost:4500");
+let isSocketOpen:boolean = false;
 
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
 const $=(s:string):any=>document.querySelectorAll(s);
 
-declare global
+declare global // extending window to contain main attribute (for attaching electron's functions)
 {
   interface Window
   {
     main:any;
   }
 }
+let keyState={
+  ctrl: false,
+  shift: false,
+  alt: false,
+  caps: false
+};
 
 @Component({
   selector: 'app-file-manager',
@@ -58,32 +66,15 @@ export class FileManagerComponent implements AfterViewInit
   contextMenu: any = null;
   paste:any = null;
   inBrowser:boolean = false;
-  keyboard:keyBoardStatus = {
-    ctrl: false,
-    shift: false,
-    alt: false,
-    caps: false
-  }
+  process_id:number = 0; // id to keep track of background tast netween server and client using socket
+  background_processes:any = []; // accessed with process_id (number), not with array index
+  keyboard:keyBoardStatus = keyState;
+  isProgressActive:boolean = false;
 
   constructor()
   {
     // web socket
-    socket.onopen=(event:any)=>{
-      //connected
-      // console.log("connected");
-
-      // send message
-      // socket.send("hello");
-    };
-
-    socket.onmessage=(event:any)=>{
-      // receive
-      // console.log(event.data);
-    }
-
-    socket.onclose=()=>{
-      socket=null;
-    }
+    this.setUpSocket();
 
     // set theme
     this.theme=localStorage.getItem("theme") || "light";
@@ -107,6 +98,98 @@ export class FileManagerComponent implements AfterViewInit
     this.search=_("#search");
     this.editPathInput=_("#editable-path");
     this.arrange();
+  }
+  closeProgress()
+  {
+    this.isProgressActive=false;
+  }
+  toggleProgressState()
+  {
+    this.isProgressActive=!this.isProgressActive;
+  }
+  getProcessTitle(type:string)
+  {
+    if(type==fs.DELETE)
+    {
+      return "Deleting";
+    }
+    else if(type==fs.NEW_FOLDER)
+    {
+      return "Creating New Folder";
+    }
+    else if(type==fs.NEW_FILE)
+    {
+      return "Creating New File";
+    }
+    else if(type==fs.RENAME)
+    {
+      return "Renaming";
+    }
+    else if(type==fs.CUT_PASTE)
+    {
+      return "Moving";
+    }
+    else if(type==fs.COPY_PASTE)
+    {
+      return "Copying";
+    }
+    return "In progress";
+  }
+  setUpSocket()
+  {
+    socket.startBackgroundProcess=(type:fs,data:any)=>{
+      let process={
+        process_id:this.process_id,
+        type,
+        data,
+        progress:0
+      };
+      socket.send(JSON.stringify(process));
+      this.background_processes[this.process_id]=process;
+      return this.process_id++;
+    };
+    socket.onopen=(event:any)=>{
+      //connected
+      isSocketOpen=true;
+
+      // send message
+      // socket.send("hello");
+    };
+
+    socket.onmessage=(event:any)=>{
+      try
+      {
+        let data=JSON.parse(event.data);
+        if(data.type=="progress")
+        {
+          console.log(data.process_id)
+          console.log(data.progress)
+          // update progess
+        }
+        else if(data.type=="completed")
+        {
+          console.log(data.process_id)
+          // update progess
+        }
+        else if(data.type=="failed")
+        {
+          console.log(data.process_id)
+          // update progess
+        }
+      }
+      catch(error)
+      {
+        console.error(error.message);
+        console.warn(event.data);
+      }
+      // receive
+      // console.log(event.data);
+    }
+
+    socket.onclose=()=>{
+      socket=null;
+      isSocketOpen=false;
+    }
   }
   openDir(data:any)
   {

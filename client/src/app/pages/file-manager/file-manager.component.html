@@ -123,7 +123,7 @@
     </div>
   </div>
   <!-- Directory Container -->
-  <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
+  <div [ngClass]="'contents scroller'+(!isProgressActive?' wide':'')" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <!-- Files and Folders -->
     <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();"></app-file-folder>
     <!-- If no files/folders present -->
@@ -214,6 +214,30 @@
     </div>
   </div>
 
+  <div class="progress-container" *ngIf="isProgressActive">
+    <div class="title-box">
+      <div class="title">Background Tasks</div>
+      <div class="close" (click)="closeProgress();">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </div>
+    </div>
+    <div class="process" *ngFor="let process of background_processes">
+      <div class="title">{{getProcessTitle(process.type)}}</div>
+      <ng-container *ngIf="process.data.source!=null">
+        <div class="sub-title">Source : {{process.data.source.server}}</div>
+        <div class="sub-title">Source Directory : {{process.data.source.baseFolder}}</div>
+        <div class="sub-title">Source Files : {{process.data.source.files.join(", ")}}</div>
+      </ng-container>
+      <ng-container *ngIf="process.data.target!=null">
+        <div class="sub-title">Target : {{process.data.target.server}}</div>
+        <div class="sub-title">Target Directory : {{process.data.target.baseFolder}}</div>
+      </ng-container>
+      <div class="progress">
+        <div style="width:{{process.progress}}%;" class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="bottom-bar">
     <div class="bottom-bar-inner bar-left">
       <div class="bar-item">{{this.contents.length}} items</div>
@@ -224,6 +248,9 @@
       <div class="key-state" *ngIf="keyboard.shift">Shift</div>
       <div class="key-state" *ngIf="keyboard.alt">Alt</div>
       <div class="key-state key-green" *ngIf="keyboard.caps">Caps</div>
+      <div class="progress-button" (click)="toggleProgressState();" *ngIf="background_processes.length>0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+      </div>
     </div>
   </div>
 

@@ -1,0 +1,22 @@
+[
+  {
+    "process_id":0,
+    "type":"operation like delete, rename: enum",
+    "data":{
+      "source":{
+        "server":"Server 1",
+        "baseFolder":"C:/Xampp/htdocs/",
+        "files":[
+          "file_1.txt",
+          "file_2.txt",
+          "file_3.txt",
+        ]
+      },
+      "target":{
+        "server":"Server 2",
+        "baseFolder":"D:/New Folder/"
+      }
+    },
+    "progress":80
+  }
+]

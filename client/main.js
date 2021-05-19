@@ -13,7 +13,7 @@ function createWindow()
   win = new BrowserWindow({
     width: 600,
     height: 600,
-    minWidth: 300,
+    minWidth: 750,
     minHeight: 350,
     backgroundColor: '#FFFFFF',
     icon: path.join(__dirname, "dist", "icon.ico"),
