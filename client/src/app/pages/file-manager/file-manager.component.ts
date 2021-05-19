@@ -238,7 +238,8 @@ export class FileManagerComponent implements AfterViewInit
   }
   mouseDown(event:any)
   {
-    if(!(this.keyboard.ctrl || this.keyboard.shift))
+    let isRightClick=event.button===2;
+    if(!(this.keyboard.ctrl || this.keyboard.shift || isRightClick))
     {
       this.clearSelection();
     }
@@ -752,7 +753,7 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },false);
   }
-  rightClick(event:any,fromMain:boolean=true,isFolder:boolean=false):void
+  rightClick(event:any,fromMain:boolean=true,isFolder:boolean=false,multipleSelected:boolean=false):void
   {
     event?.preventDefault();
     let menu=_(".context-menu")?.getBoundingClientRect();
@@ -769,6 +770,7 @@ export class FileManagerComponent implements AfterViewInit
       visibility:"hidden",
       fromMain,
       isFolder,
+      multipleSelected,
       top:top+"px",
       left:left+"px",
       x,
@@ -787,12 +789,14 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.contextMenu=null;
   }
-  fileFolderRightClick(event:any,isFolder:boolean)
+  fileFolderRightClick(event:any,isFolder:boolean,index:number)
   {
     event?.preventDefault();
     event?.stopPropagation();
     this.closePopUp();
-    this.rightClick(event,false,isFolder);
+    let multipleSelected=this.getNumberOfSelectedItems()>0;
+    this.contents[index].selected=true; // select currently right clicked also
+    this.rightClick(event,false,isFolder,multipleSelected);
     setTimeout(this.setMenuStyle,0);
   }
   setMenuStyle()

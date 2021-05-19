@@ -56,11 +56,11 @@
         </div>
       </div>
       <!-- Maximize -->
-      <!-- <div class="option win-maximize win-buttons" *ngIf="!inBrowser">
+      <div class="option win-maximize win-buttons" *ngIf="!inBrowser">
         <div class="icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
         </div>
-      </div> -->
+      </div>
       <!-- Close -->
       <div class="option win-close win-buttons" *ngIf="!inBrowser">
         <div class="icon">
@@ -125,7 +125,7 @@
   <!-- Directory Container -->
   <div class="contents scroller" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <!-- Files and Folders -->
-    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder);" (dblclick)="closeMenu();" (mousedown)="closeMenu();"></app-file-folder>
+    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();"></app-file-folder>
     <!-- If no files/folders present -->
     <div *ngIf="noItems && !loading" class="no-items">{{error_loading==""?'No Items':error_loading}}</div>
     <!-- If loading -->
@@ -166,8 +166,8 @@
         </div>
       </ng-container>
 
-      <!-- folder right click -->
-      <ng-container *ngIf="!contextMenu?.fromMain && contextMenu?.isFolder">
+      <!-- folder right click but only one selected -->
+      <ng-container *ngIf="!contextMenu?.fromMain && contextMenu?.isFolder && !contextMenu.multipleSelected">
         <!-- open -->
         <div class="menu-button">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>

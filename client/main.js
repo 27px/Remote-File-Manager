@@ -13,10 +13,13 @@ function createWindow()
   win = new BrowserWindow({
     width: 600,
     height: 600,
+    minWidth: 300,
+    minHeight: 350,
     backgroundColor: '#FFFFFF',
-    icon: path.join(__dirname, "dist", "favicon.ico"),
+    icon: path.join(__dirname, "dist", "icon.ico"),
     show: false,
     frame: false, // hide bar and make custom
+    title: "File Manager",
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -52,17 +55,17 @@ ipcMain.on("minimize",()=>{
   win.minimize();
 });
 
-// ipcMain.on("maximize",()=>{
-//   console.log("isMaximized "+win.isMaximized());
-//   if(win.isMaximized())
-//   {
-//     win.unmaximize();
-//   }
-//   else
-//   {
-//     win.maximize();
-//   }
-// });
+ipcMain.on("maximize",()=>{
+  let xwin=BrowserWindow.getFocusedWindow();
+  if(xwin.isMaximized())
+  {
+    xwin.unmaximize();
+  }
+  else
+  {
+    xwin.maximize();
+  }
+});
 
 // Create window on electron intialization
 app.on('ready', createWindow)

@@ -57,7 +57,7 @@ module.exports=()=>{
 
 
   // app.use("/static",express.static(path.join(__dirname,"static")));
-  app.use("/favicon.ico",express.static(path.join(__dirname,"favicon.ico")));
+  app.use("/favicon.ico",express.static(path.join(__dirname,"icon.ico")));
 
   app.use("/",route);
 
