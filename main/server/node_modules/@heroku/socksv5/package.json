@@ -1,0 +1,31 @@
+{
+  "name": "@heroku/socksv5",
+  "description": "SOCKS protocol version 5 server and client implementations for node.js",
+  "version": "0.0.9",
+  "author": "Brian White <mscdex@mscdex.net>",
+  "dependencies": {
+    "ip-address": "^5.8.8"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "keywords": [
+    "proxy",
+    "socks",
+    "socks5",
+    "socksv5"
+  ],
+  "license": "MIT",
+  "main": "./index",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/mscdex/socksv5.git"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  }
+}

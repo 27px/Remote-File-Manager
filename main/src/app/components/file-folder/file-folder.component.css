@@ -1,0 +1,50 @@
+.item
+{
+  width:var(--icon-size);
+  max-width:100%;
+  height:calc(var(--icon-size) + 30px);
+  margin:0px auto;
+  padding:var(--icon-gap);
+  box-sizing:border-box;
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:border-color 0.3s;
+}
+.item:hover
+{
+  border-color:var(--accent);
+}
+.item.item-selected
+{
+  border-color:var(--accent-dark)!important; /* selected should have more priority than hover */
+}
+.item .icon
+{
+  width:100%;
+  height:calc(var(--icon-size) - var(--icon-gap) * 2);
+  margin-bottom:5px;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+}
+.item .name
+{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:center;
+  color:var(--accent-dark);
+  font-size:var(--icon-font-size);
+}
+.item.folder .icon
+{
+  background-image:url("../../../assets/images/folder.svg");
+}
+.item.folder.folder-filled .icon
+{
+  background-image:url("../../../assets/images/folder-filled.svg");
+}
+.item.file .icon
+{
+  background-image:url("../../../assets/images/file-default.svg");
+}

@@ -1,0 +1,18 @@
+{
+  "SERVER":{
+    "HOST":"localhost",
+    "PORT":4500
+  },
+  "SSH":[
+    {
+      "HOST":"localhost",
+      "USER":"Admin",
+      "PASSWORD":"@Override$2481632"
+    },
+    {
+      "HOST":"test.rebex.net",
+      "USER":"demo",
+      "PASSWORD":"password"
+    }
+  ]
+}
