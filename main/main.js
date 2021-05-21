@@ -1,13 +1,13 @@
-const expressApp = require('server/index');
-
-const { app, BrowserWindow, ipcMain, remote } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require("path");
+const expressApp = require(path.join(__dirname,"server","index.js"));
 const url = require("url");
 
 let win;
 
 function createWindow()
 {
+  // express server app
   expressApp();
   // Create the browser window.
   win = new BrowserWindow({
