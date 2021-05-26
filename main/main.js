@@ -37,7 +37,7 @@ function createWindow()
 
   win.focus();
 
-  //// uncomment below to open the DevTools.
+  //// DevTools. // remove in production
   win.webContents.openDevTools()
 
   // Event when the window is closed.

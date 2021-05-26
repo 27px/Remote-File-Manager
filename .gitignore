@@ -1,6 +1,6 @@
-server/node_modules/
-server/config/config.json
-client/node_modules/
+main/server/node_modules/
+main/server/config/config.json
+main/node_modules/
 desktop.ini
 */desktop.ini
 build

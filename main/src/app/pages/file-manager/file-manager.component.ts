@@ -55,7 +55,8 @@ export class FileManagerComponent implements AfterViewInit
   noItems: boolean = false;
   error_loading: string = ""; // "" for no error else error message
   loading: boolean = false;
-  GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/ssh/getDirectoryContents/`;
+  GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/directory/ssh/getDirectoryContents/`;
+  GET_LOCAL_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/directory/local/getDirectoryContents/`;
   INITIAL_PATH: string = "/";
   editingPath: boolean = false; // currently editing path
   default_icon_size_index:number = 2; // default 2
@@ -73,6 +74,23 @@ export class FileManagerComponent implements AfterViewInit
 
   constructor()
   {
+    // fetch(this.GET_LOCAL_DIR_CONTENTS,{
+    //   method:"POST",
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body:JSON.stringify({
+    //     path:"/"
+    //   })
+    // }).then(resp=>{
+    //   return resp.json();
+    // }).then(data=>{
+    //   console.warn(data);
+    // }).catch(error=>{
+    //   console.error(error.message);
+    // });
+
     // web socket
     this.setUpSocket();
 

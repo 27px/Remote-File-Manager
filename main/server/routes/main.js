@@ -3,6 +3,8 @@ const express=require("express");
 const route=express.Router();
 const config=require("../config/config.json");
 const path=require("path");
+// const fs=require("fs").promises;
+const nodeDiskInfo=require('node-disk-info');
 const {getPath}=require("../functions/path_functions.js");
 
 const chalk=require("chalk");
@@ -16,66 +18,99 @@ const chalk=require("chalk");
 //   res.redirect("/home");
 // });
 
+
 // Get contents of folder
-route.post("/ssh/getDirectoryContents",(req,res)=>{
+route.post("/directory/:protocol/getDirectoryContents",(req,res)=>{
+  let protocol=req.params.protocol;
   let dir_path=path.normalize(req.body.path) || "/";
   dir_path=dir_path.replace(/\.$/,"").replace(/\\/g,"/");
-  let ssh=new SSH2Promise({
-    host: config.SSH[0].HOST,
-    username: config.SSH[0].USER,
-    password: config.SSH[0].PASSWORD
-  });
-  ssh.connect()
-  .then(()=>ssh.sftp())
-  .then(async sftp=>{
-    let data;
-    try
-    {
-      data=await sftp.readdir(dir_path)
-    }
-    catch(error)
-    {
-      console.log(error.message);
-      throw {
-        name:"customError",
-        message:error.message
-      };
-    }
-    let file=[],stat=[],filled=[],properties=[];// filled or not
-    data.forEach(content=>{
-      let file_path=getPath(content.filename,dir_path);
-      file.push(content.filename);
-      stat.push(sftp.stat(file_path));
+  if(protocol==="ssh")
+  {
+    let ssh=new SSH2Promise({
+      host: config.SSH[0].HOST,
+      username: config.SSH[0].USER,
+      password: config.SSH[0].PASSWORD
     });
-    stat=await Promise.all(stat);
-    properties=[...stat];// file/folder properties like size date etc.
-    stat=await Promise.all(stat.map(s=>s.isDirectory()))
-    filled=await Promise.all(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
-    filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
-    ssh.close();
-    return data.map((content,i)=>{
-      return {
-        name:file[i],
-        folder:stat[i],
-        filled:filled[i],
-        // properties:properties[i] // not working properly
+    ssh.connect()
+    .then(()=>ssh.sftp())
+    .then(async sftp=>{
+      let data;
+      try
+      {
+        data=await sftp.readdir(dir_path)
       }
+      catch(error)
+      {
+        console.log(error.message);
+        throw {
+          name:"customError",
+          message:error.message
+        };
+      }
+      let file=[],stat=[],filled=[],properties=[];// filled or not
+      data.forEach(content=>{
+        let file_path=getPath(content.filename,dir_path);
+        file.push(content.filename);
+        stat.push(sftp.stat(file_path));
+      });
+      stat=await Promise.all(stat);
+      properties=[...stat];// file/folder properties like size date etc.
+      stat=await Promise.all(stat.map(s=>s.isDirectory()))
+      filled=await Promise.all(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
+      filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
+      ssh.close();
+      return data.map((content,i)=>{
+        return {
+          name:file[i],
+          folder:stat[i],
+          filled:filled[i],
+          // properties:properties[i] // not working properly
+        }
+      });
+    }).then(contents=>{
+      res.json({
+        status:true,
+        type:"directory",
+        path:dir_path,
+        contents
+      });
+    }).catch(err=>{
+      console.log(err);
+      res.json({
+        status:false,
+        message:(err.name==="customError")?err.message:"Some error occured",
+        error_log:err.message,
+        customError:(err.name==="customError")
+      });
     });
-  }).then(contents=>{
-    res.json({
-      status:true,
-      path:dir_path,
-      contents
-    });
-  }).catch(err=>{
-    console.log(err);
-    res.json({
-      status:false,
-      message:(err.name==="customError")?err.message:"Some error occured",
-      error_log:err.message,
-      customError:(err.name==="customError")
-    });
-  });
+  }
+  else // local
+  {
+    if(dir_path==="/") // root (get drives)
+    {
+      nodeDiskInfo.getDiskInfo().then(disks=>{
+        res.json({
+          status:true,
+          type:"drive",
+          path:"/",
+          contents:disks
+        });
+      }).catch(err=>{
+        console.log(err);
+        res.json({
+          status:false,
+          message:"Some error occured",
+          error_log:err.message
+        });
+      });
+    }
+    else // get local folders
+    {
+      res.json({
+        in:"dev"
+      });
+    }
+  }
 });
 
 // use another route
