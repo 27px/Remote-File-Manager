@@ -41,22 +41,32 @@ route.post("/directory/:protocol/getDirectoryContents",(req,res)=>{
       }
       catch(error)
       {
-        console.log(error.message);
+        // console.log(error);
         throw {
           name:"customError",
-          message:error.message
+          message:"Failed to open directory, check if you have acccess",
+          error_log:error.message
         };
       }
       let file=[],stat=[],filled=[],properties=[];// filled or not
-      data.forEach(content=>{
+      data.forEach(async content=>{
         let file_path=getPath(content.filename,dir_path);
         file.push(content.filename);
         stat.push(sftp.stat(file_path));
       });
-      stat=await Promise.all(stat);
+      stat=await Promise.allSettled(stat);
+      // handle error in linux for getting stat
+      stat=stat.map(stat_result=>stat_result.status=='fulfilled'?stat_result.value:null);
       properties=[...stat];// file/folder properties like size date etc.
-      stat=await Promise.all(stat.map(s=>s.isDirectory()))
-      filled=await Promise.all(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
+      stat=await Promise.all(stat.map((s,i)=>{
+        if(s==null)
+        {
+          return data[i].longname[0]=='d';
+        }
+        return !s.isFile();
+      }));
+      filled=await Promise.allSettled(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
+      filled=filled.map(filled_result=>filled_result.status=='fulfilled'?filled_result.value:null);
       filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
       ssh.close();
       return data.map((content,i)=>{
@@ -75,11 +85,14 @@ route.post("/directory/:protocol/getDirectoryContents",(req,res)=>{
         contents
       });
     }).catch(err=>{
-      console.log(err);
+      if(err.name!=="customError")
+      {
+        console.log(err);
+      }
       res.json({
         status:false,
         message:(err.name==="customError")?err.message:"Some error occured",
-        error_log:err.message,
+        error_log:(err.name==="customError")?err.error_log:error.message,
         customError:(err.name==="customError")
       });
     });

@@ -259,6 +259,7 @@ export class FileManagerComponent implements AfterViewInit
     if(this.loading)
     {
       this.toast("warning","Please wait while finish loading.");
+      return;
     }
     this.loading=true;
     this.contents=[];
@@ -313,13 +314,13 @@ export class FileManagerComponent implements AfterViewInit
         throw new Error("Some Error occured");
       }
     }).catch(err=>{
-      console.log(err.message);
       if(err.name==="customError")
       {
         this.error_loading=err.message;
       }
       else
       {
+        console.log(err.message);
         this.error_loading="Something went wrong";
       }
       this.path=this.parsePath("/");

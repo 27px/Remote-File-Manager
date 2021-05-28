@@ -10,6 +10,11 @@
       "PASSWORD":"@Override$2481632"
     },
     {
+      "HOST":"14.139.188.87",
+      "USER":"rahul",
+      "PASSWORD":"rahul"
+    },
+    {
       "HOST":"test.rebex.net",
       "USER":"demo",
       "PASSWORD":"password"

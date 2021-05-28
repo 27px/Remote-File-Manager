@@ -539,10 +539,11 @@
 }
 .no-items
 {
-  color:var(--accent-dark);
+  color:var(--red);
   position:absolute;
   top:50%;
   left:50%;
+  line-height:25px;
   transform:translate(-50%,-50%) scale(1);
   text-align:center;
   animation:pulse 1s linear infinite alternate;
