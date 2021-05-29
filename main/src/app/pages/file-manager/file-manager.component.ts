@@ -15,6 +15,7 @@ import config from "../../config/config";
 
 let socket:any = new WebSocket("ws://localhost:4500");
 let isSocketOpen:boolean = false;
+let domain:string = `http://${config.server.HOST}:${config.server.PORT}`;
 
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
@@ -55,8 +56,6 @@ export class FileManagerComponent implements AfterViewInit
   noItems: boolean = false;
   error_loading: string = ""; // "" for no error else error message
   loading: boolean = false;
-  GET_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/directory/ssh/getDirectoryContents/`;
-  GET_LOCAL_DIR_CONTENTS: string = `http://${config.server.HOST}:${config.server.PORT}/directory/local/getDirectoryContents/`;
   INITIAL_PATH: string = "/";
   editingPath: boolean = false; // currently editing path
   default_icon_size_index:number = 2; // default 2
@@ -71,10 +70,11 @@ export class FileManagerComponent implements AfterViewInit
   background_processes:any = []; // accessed with process_id (number), not with array index
   keyboard:keyBoardStatus = keyState;
   isProgressActive:boolean = false;
+  online: boolean = navigator.onLine;
 
   constructor()
   {
-    // fetch(this.GET_LOCAL_DIR_CONTENTS,{
+    // fetch(`${domain}/fs/local/dir-contents/`,{
     //   method:"POST",
     //   headers: {
     //     'Accept': 'application/json',
@@ -109,6 +109,18 @@ export class FileManagerComponent implements AfterViewInit
 
     // load contents
     this.loadDirContents(this.INITIAL_PATH);
+
+    // offline listener
+    window.addEventListener("offline", (event) => {
+      this.online=false;
+      this.toast("error","You are offline");
+    });
+
+    // online listener
+    window.addEventListener("online", (event) => {
+      this.online=true;
+      this.toast("success","Back online");
+    });
 
   }
   ngAfterViewInit(): void
@@ -258,20 +270,18 @@ export class FileManagerComponent implements AfterViewInit
   {
     if(this.loading)
     {
-      this.toast("warning","Please wait while finish loading.");
+      this.toast("warning","Please wait while loading is completed.");
       return;
     }
     this.loading=true;
     this.contents=[];
-    fetch(`${this.GET_DIR_CONTENTS}`,{
+    fetch(`${domain}/fs/ssh/dir-contents/`,{
       method:"POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify({
-        path
-      })
+      body:JSON.stringify({ path })
     }).then(resp=>{
       if(resp.status===200)
       {
@@ -750,17 +760,53 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },true);
   }
-  connectToSystem(id:number|null)
+  connectToSystem(id:any)
   {
-    console.log("connect in dev");
-    console.log(id);
-    if(id==null)
+    if(this.loading)
     {
-      //connect to local server
+      this.toast("warning","Please wait while loading is completed.");
+      return;
+    }
+    this.loading=true;
+    this.contents=[];
+    if(id!=null)
+    {
+      let connection=this.connections[id];
+      fetch(`${domain}/fs/ssh/connect`,{
+        method:"POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+          server:connection.server,
+          user:connection.user,
+          password:connection.password,
+          force:true
+        })
+      }).then(resp=>{
+        return resp.json();
+      }).then(data=>{
+        console.warn(data);
+        this.loading=false;
+        if(data.status)
+        {
+          this.loadDirContents(this.INITIAL_PATH);
+        }
+        else
+        {
+          throw data;
+        }
+      }).catch(error=>{
+        console.error(error);
+        this.loading=false;
+        this.noItems=true;
+        this.error_loading="Connection failed";
+      });
     }
     else
     {
-      // connect to ssh
+      // local system
     }
   }
   initialPopUpState()

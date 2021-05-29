@@ -9,6 +9,8 @@ TODO
 7 file icons like zip, image, text, videos etc
 8 arrange rest api paths
 9 Drives instead of folders
+10 Add current connection variable
+11 get dir contents from current connection variable
 =====================================================================================================
 
 Back End

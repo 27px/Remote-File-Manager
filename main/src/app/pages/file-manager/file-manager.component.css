@@ -199,7 +199,6 @@
   border-radius:5px;
   border:2px solid var(--accent-semi-light);
   color:#808080;
-  cursor:pointer;
   background-color:transparent;
   transition:border-color 0.3s, background-color 0.8s;
 }
@@ -234,6 +233,7 @@
 {
   transition:transform 0.3s,opacity 0.1s;
   padding:5px;
+  cursor:pointer;
 }
 .connection-list .connection .connection-options svg:hover
 {
@@ -268,15 +268,19 @@
 {
   display:flex;
   flex-direction:row;
+  cursor:pointer;
 }
 .connection-list .add-connection svg
 {
   margin-left:auto;
   stroke:var(--accent-dark);
+  transition: transform 0.3s;
+  transform: scale(1);
 }
 .connection-list .add-connection:hover svg
 {
   stroke:#000000!important;
+  transform:scale(1.5);
 }
 .connection-list .add-connection .name
 {

@@ -1,32 +1,82 @@
-const SSH2Promise=require('ssh2-promise');
+// main
 const express=require("express");
 const route=express.Router();
 const config=require("../config/config.json");
-const path=require("path");
-// const fs=require("fs").promises;
-const nodeDiskInfo=require('node-disk-info');
-const {getPath}=require("../functions/path_functions.js");
 
+// plugins
+const SSH2Promise=require('ssh2-promise');
+const nodeDiskInfo=require('node-disk-info');
+
+// modules
+const { getPath, normalize_path }=require("../functions/path_functions.js");
+
+// default
+// const path=require("path");
+// const fs=require("fs").promises;
+
+// dev dependencies
 const chalk=require("chalk");
 
-// const fs=require("fs");
+// global
+let connections={}; // ssh connections with key as user@host and value as connection object
 
-// route.use(cookieParser());
-
-//Main Root
-// route.get("/",(req,res)=>{
-//   res.redirect("/home");
-// });
-
+// Connect to ssh server
+route.post("/fs/ssh/connect",async(req,res)=>{
+  const server=req.body.server;
+  const user=req.body.user;
+  const password=req.body.password;
+  const id=`${user}@${server}`;
+  let ssh=null;
+  try
+  {
+    if(typeof connections[id] !== 'undefined')
+    {
+      await connections[id].ssh.close();
+    }
+    ssh=new SSH2Promise({
+      host: server,
+      username: user,
+      password: password,
+      reconnectTries: 2,
+      reconnectDelay: 0,
+    });
+  }
+  catch(err)
+  {
+    ssh=null;
+    res.json({
+      status:false,
+      message:"Some error occured",
+      error_log:error.message
+    });
+  }
+  if(ssh!==null)
+  {
+    ssh.connect()
+    .then(()=>ssh.sftp())
+    .then(sftp=>{
+      connections[id]={ ssh, sftp };
+      res.json({
+       status:true
+      });
+    }).catch(error=>{
+      // console.log(error);
+      res.json({
+        status:false,
+        message:"Some error occured",
+        error_log:error.message
+      });
+    });
+  }
+});
 
 // Get contents of folder
-route.post("/directory/:protocol/getDirectoryContents",(req,res)=>{
+route.post("/fs/:protocol/dir-contents",(req,res)=>{
   let protocol=req.params.protocol;
-  let dir_path=path.normalize(req.body.path) || "/";
-  dir_path=dir_path.replace(/\.$/,"").replace(/\\/g,"/");
+  let dir_path=normalize_path(req.body.path);
   if(protocol==="ssh")
   {
-    let ssh=new SSH2Promise({
+    var ssh=new SSH2Promise({
       host: config.SSH[0].HOST,
       username: config.SSH[0].USER,
       password: config.SSH[0].PASSWORD
