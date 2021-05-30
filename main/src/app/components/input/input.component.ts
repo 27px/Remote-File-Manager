@@ -26,7 +26,7 @@ export class InputComponent implements OnInit
     // this.setError("Test Error");
   }
 
-  getName()
+  getName(): string
   {
     return this.name;
   }

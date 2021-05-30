@@ -71,6 +71,8 @@ export class FileManagerComponent implements AfterViewInit
   keyboard:keyBoardStatus = keyState;
   isProgressActive:boolean = false;
   online: boolean = navigator.onLine;
+  current_server:string = "Admin@localhost";
+  current_test_connection:string | null = null;
 
   constructor()
   {
@@ -107,8 +109,11 @@ export class FileManagerComponent implements AfterViewInit
     // set connections
     this.connections=this.getConnections();
 
+
+    // Connect and load contents
+    this.connectToFileSystem(0); ////////  0 is first server change to null for local
     // load contents
-    this.loadDirContents(this.INITIAL_PATH);
+    // this.loadDirContents(this.INITIAL_PATH);
 
     // offline listener
     window.addEventListener("offline", (event) => {
@@ -281,13 +286,13 @@ export class FileManagerComponent implements AfterViewInit
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify({ path })
+      body:JSON.stringify({ server_id: this.current_server, path })
     }).then(resp=>{
       if(resp.status===200)
       {
         return resp.json();
       }
-      throw new Error();
+      throw new Error("status error");
     }).then(data=>{
       // console.log(data);
       if(data.status)
@@ -295,15 +300,6 @@ export class FileManagerComponent implements AfterViewInit
         this.path=this.parsePath(data.path);
         this.contents=data.contents.map((item:any)=>{
           item.selected=false;// file selected (for cut/copy etc) status
-          if(!item.folder)
-          {
-            let iconType=item.name.split(".").pop().toLowerCase();
-            if(!AVAILABLE_FILE_ICONS.includes(iconType))
-            {
-              iconType='default';
-            }
-            item.fileIcon=`file-${iconType}.svg`;
-          }
           return item;
         });
         this.noItems=this.contents.length<1;
@@ -753,14 +749,19 @@ export class FileManagerComponent implements AfterViewInit
     event?.stopPropagation();
     this.closeMenu();
     this.showPopUp("confirm","Delete Connection",`Are you sure you want to delete the connection : "${this.connections[index].name}"?`,"delete","Delete",(data:any)=>{
+      let deleting_server_id=`${this.connections[index]['user']}@${this.connections[index]['server']}`;
       this.connections=[...this.connections.slice(0,index),...this.connections.slice(index+1)];
       this.setConnections(this.connections);
       this.closePopUp();
+      if(this.current_server == deleting_server_id)
+      {
+        this.connectToFileSystem(null);
+      }
     },"Cancel",(data:any)=>{
       this.closePopUp();
     },true);
   }
-  connectToSystem(id:any)
+  connectToFileSystem(id:any)
   {
     if(this.loading)
     {
@@ -772,6 +773,7 @@ export class FileManagerComponent implements AfterViewInit
     if(id!=null)
     {
       let connection=this.connections[id];
+      this.current_server=`${connection.user}@${connection.server}`;
       fetch(`${domain}/fs/ssh/connect`,{
         method:"POST",
         headers: {
@@ -782,20 +784,16 @@ export class FileManagerComponent implements AfterViewInit
           server:connection.server,
           user:connection.user,
           password:connection.password,
-          force:true
         })
       }).then(resp=>{
         return resp.json();
       }).then(data=>{
-        console.warn(data);
         this.loading=false;
-        if(data.status)
-        {
+        if(data.status) {
           this.loadDirContents(this.INITIAL_PATH);
         }
-        else
-        {
-          throw data;
+        else {
+          throw data; // to display data in error to view status
         }
       }).catch(error=>{
         console.error(error);
@@ -809,6 +807,38 @@ export class FileManagerComponent implements AfterViewInit
       // local system
     }
   }
+  testConnection(server:string, user:string, password:string)
+  {
+    let testing_connection=`${user}@${server}`;
+    this.current_test_connection=testing_connection;
+    this.popUp.test_connection="loading";
+    fetch(`${domain}/fs/ssh/connect`,{
+      method:"POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({ server, user, password })
+    }).then(resp=>{
+      return resp.json();
+    }).then(data=>{
+      if(data.status) {
+        if(data.data==this.current_test_connection) // if not it is from old request
+        {
+          this.popUp.test_connection="success";
+        }
+        // old test status, no need to update
+      }
+      else {
+        throw new Error("Connection Failed");
+      }
+    }).catch(error=>{
+      if(testing_connection==this.current_test_connection) // if not it is from old request
+      {
+        this.popUp.test_connection="failed";
+      }
+    });
+  }
   initialPopUpState()
   {
     return {
@@ -819,6 +849,8 @@ export class FileManagerComponent implements AfterViewInit
       body: "", // content
       ok: null, // ok event
       cancel: null, // cancel event
+      misk: null, // additional event
+      test_connection: null, // testing status
       backgroundCancellation: true // cancel event when clicked on background
     };
   }
@@ -829,7 +861,7 @@ export class FileManagerComponent implements AfterViewInit
   //   this.closePopUp();
   // },true);
   //
-  showPopUp(type:string="confirm",title:string,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true)
+  showPopUp(type:string="confirm",title:string,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true,misk:string|null=null,miskHandler:any=null)
   {
     icon=AVAILABLE_POP_UP_ICONS.includes(icon ?? "")?icon:"default";
     this.popUp={
@@ -846,6 +878,11 @@ export class FileManagerComponent implements AfterViewInit
         text: cancel,
         handler: cancelHandler
       },
+      misk: misk==null?null:{
+        text: misk,
+        handler: miskHandler
+      },
+      test_connection: null, // testing status
       backgroundCancellation
     }
   }
@@ -872,7 +909,9 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },"Cancel",(data:any)=>{
       this.closePopUp();
-    },false);
+    },false,"Test",(data:any)=>{
+      this.testConnection(data["connection-server"], data["connection-user"], data["connection-password"]);
+    });
   }
   editConnection(event:any,id:number)
   {
@@ -899,7 +938,9 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },"Cancel",(data:any)=>{
       this.closePopUp();
-    },false);
+    },false,"Test",(data:any)=>{
+      this.testConnection(data["connection-server"], data["connection-user"], data["connection-password"]);
+    });
   }
   rightClick(event:any,fromMain:boolean=true,isFolder:boolean=false,multipleSelected:boolean=false):void
   {

@@ -8,7 +8,8 @@ const SSH2Promise=require('ssh2-promise');
 const nodeDiskInfo=require('node-disk-info');
 
 // modules
-const { getPath, normalize_path }=require("../functions/path_functions.js");
+const { getPath, normalize_path } = require("../functions/path_functions.js");
+const { success_response, error_response, response_directory_contents } = require("../functions/response_functions.js");
 
 // default
 // const path=require("path");
@@ -22,87 +23,50 @@ let connections={}; // ssh connections with key as user@host and value as connec
 
 // Connect to ssh server
 route.post("/fs/ssh/connect",async(req,res)=>{
-  const server=req.body.server;
-  const user=req.body.user;
-  const password=req.body.password;
-  const id=`${user}@${server}`;
-  let ssh=null;
-  try
-  {
+  let host=req.body.server, username=req.body.user, password=req.body.password;
+  let ssh=null, id=`${username}@${host}`, reconnectTries=1, reconnectDelay=0; // unique id used to identify server with user
+  try {
     if(typeof connections[id] !== 'undefined')
-    {
       await connections[id].ssh.close();
-    }
-    ssh=new SSH2Promise({
-      host: server,
-      username: user,
-      password: password,
-      reconnectTries: 2,
-      reconnectDelay: 0,
-    });
+    ssh=new SSH2Promise({ host, username, password, reconnectTries, reconnectDelay });
   }
-  catch(err)
-  {
+  catch(err) {
     ssh=null;
-    res.json({
-      status:false,
-      message:"Some error occured",
-      error_log:error.message
-    });
+    res.json(error_response("Some error occured",error.message));
   }
-  if(ssh!==null)
+  if(ssh!==null) // no error
   {
     ssh.connect()
     .then(()=>ssh.sftp())
     .then(sftp=>{
       connections[id]={ ssh, sftp };
-      res.json({
-       status:true
-      });
+      res.json(success_response(id));
     }).catch(error=>{
-      // console.log(error);
-      res.json({
-        status:false,
-        message:"Some error occured",
-        error_log:error.message
-      });
+      res.json(error_response("Some error occured",error.message));
     });
   }
 });
 
 // Get contents of folder
-route.post("/fs/:protocol/dir-contents",(req,res)=>{
+route.post("/fs/:protocol/dir-contents",async(req,res)=>{
   let protocol=req.params.protocol;
+  let server_id=req.body.server_id;
   let dir_path=normalize_path(req.body.path);
+  if(typeof connections[server_id] === 'undefined')
+  {
+    res.json(error_response("Not connected to server, connect first",`connection undefined`,true));
+    return;
+  }
   if(protocol==="ssh")
   {
-    var ssh=new SSH2Promise({
-      host: config.SSH[0].HOST,
-      username: config.SSH[0].USER,
-      password: config.SSH[0].PASSWORD
-    });
-    ssh.connect()
-    .then(()=>ssh.sftp())
-    .then(async sftp=>{
-      let data;
-      try
-      {
-        data=await sftp.readdir(dir_path)
-      }
-      catch(error)
-      {
-        // console.log(error);
-        throw {
-          name:"customError",
-          message:"Failed to open directory, check if you have acccess",
-          error_log:error.message
-        };
-      }
-      let file=[],stat=[],filled=[],properties=[];// filled or not
+    try
+    {
+      let sftp=connections[server_id].sftp;
+      let data=await sftp.readdir(dir_path);
+      let file=[],stat=[],filled=[],properties=[];
       data.forEach(async content=>{
-        let file_path=getPath(content.filename,dir_path);
         file.push(content.filename);
-        stat.push(sftp.stat(file_path));
+        stat.push(sftp.stat(getPath(content.filename,dir_path)));
       });
       stat=await Promise.allSettled(stat);
       // handle error in linux for getting stat
@@ -118,8 +82,7 @@ route.post("/fs/:protocol/dir-contents",(req,res)=>{
       filled=await Promise.allSettled(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
       filled=filled.map(filled_result=>filled_result.status=='fulfilled'?filled_result.value:null);
       filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
-      ssh.close();
-      return data.map((content,i)=>{
+      let contents=data.map((content,i)=>{
         return {
           name:file[i],
           folder:stat[i],
@@ -127,44 +90,23 @@ route.post("/fs/:protocol/dir-contents",(req,res)=>{
           // properties:properties[i] // not working properly
         }
       });
-    }).then(contents=>{
-      res.json({
-        status:true,
-        type:"directory",
-        path:dir_path,
-        contents
-      });
-    }).catch(err=>{
-      if(err.name!=="customError")
-      {
-        console.log(err);
-      }
-      res.json({
-        status:false,
-        message:(err.name==="customError")?err.message:"Some error occured",
-        error_log:(err.name==="customError")?err.error_log:error.message,
-        customError:(err.name==="customError")
-      });
-    });
+      res.json(response_directory_contents("directory",dir_path,contents));
+    }
+    catch(error)
+    {
+      // console.log(error);
+      res.json(error_response("Some error occured",error.message));
+    }
   }
   else // local
   {
+    ////// not for ubuntu !!!!!
     if(dir_path==="/") // root (get drives)
     {
       nodeDiskInfo.getDiskInfo().then(disks=>{
-        res.json({
-          status:true,
-          type:"drive",
-          path:"/",
-          contents:disks
-        });
-      }).catch(err=>{
-        console.log(err);
-        res.json({
-          status:false,
-          message:"Some error occured",
-          error_log:err.message
-        });
+        res.json(response_directory_contents("drive", dir_path, contents));
+      }).catch(error=>{
+        res.json(error_response("Some error occured",error.message));
       });
     }
     else // get local folders
@@ -182,11 +124,7 @@ route.post("/fs/:protocol/dir-contents",(req,res)=>{
 //Not Found
 route.get("/404",function(req,res){
   res.status(404);
-  res.json({
-    status:false,
-    message:"Not found",
-    error_log:404
-  });
+  res.json(error_response("Not found","404"));
 });
 
 //All other routes

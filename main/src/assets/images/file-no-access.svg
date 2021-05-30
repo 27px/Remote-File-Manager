@@ -1,0 +1,24 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="238" y="161" width="524" height="678">
+<path d="M761.328 255.551L666.577 161H238V838.248H761.328V255.551Z" fill="black"/>
+</mask>
+<g mask="url(#mask0)">
+<path d="M728.345 161H269.881C251.665 161 236.898 175.767 236.898 193.983V805.265C236.898 823.481 251.665 838.248 269.881 838.248H728.345C746.561 838.248 761.328 823.481 761.328 805.265V193.983C761.328 175.767 746.561 161 728.345 161Z" fill="#BBDEFB"/>
+</g>
+<path d="M760.9 255.027L667.449 161.575C667.816 185.763 668.549 236.337 668.549 245.132C668.549 253.927 675.145 255.393 678.443 255.027H760.9Z" fill="#90CAF9"/>
+<g filter="url(#filter0_i)">
+<path d="M655.431 623.006L521.3 395.245C516.729 387.567 508.781 383 499.971 383C491.228 383 483.213 387.567 478.709 395.245L344.578 623.006C339.875 630.949 339.808 640.481 344.379 648.49C348.883 656.3 356.898 661 365.84 661H634.169C643.111 661 651.126 656.3 655.563 648.49C660.2 640.481 660.134 630.949 655.431 623.006ZM486.331 481.328H508.725V502.423L503.925 561.458H491.131L486.331 502.423V481.328V481.328ZM506.005 596.124C503.66 598.522 500.859 599.724 497.609 599.724C494.355 599.724 491.554 598.522 489.21 596.124C486.861 593.726 485.691 590.869 485.691 587.54C485.691 584.217 486.861 581.354 489.21 578.956C491.554 576.557 494.355 575.355 497.609 575.355C500.859 575.355 503.66 576.557 506.005 578.956C508.35 581.354 509.524 584.217 509.524 587.54C509.524 590.869 508.35 593.726 506.005 596.124Z" fill="#90CAF9"/>
+</g>
+<defs>
+<filter id="filter0_i" x="341" y="383" width="318" height="278" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="12.5"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow"/>
+</filter>
+</defs>
+</svg>

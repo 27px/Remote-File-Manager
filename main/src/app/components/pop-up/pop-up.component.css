@@ -132,3 +132,39 @@
   border:2px solid var(--primary3);
   color:var(--primary3);
 }
+.test-status
+{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+
+  /* padding:5px 15px; */
+  margin-left:10px;
+  box-sizing:border-box;
+}
+@keyframes rotate
+{
+  0%
+  {
+    transform:rotate(0deg);
+  }
+  100%
+  {
+    transform:rotate(360deg);
+  }
+}
+.test-loading
+{
+  stroke: var(--primary);
+  transform:rotate(0deg);
+  animation: rotate 3s linear infinite;
+}
+.test-success
+{
+  stroke: var(--green);
+}
+.test-failed
+{
+  stroke: var(--red);
+}
