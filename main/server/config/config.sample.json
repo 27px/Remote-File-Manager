@@ -1,13 +1,6 @@
 {
   "SERVER":{
-    "HOST":"localhost",
+    "HOST":"host-name",
     "PORT":4000
-  },
-  "SSH":[
-    {
-      "HOST":"localhost",
-      "USER":"user",
-      "PASSWORD":"password"
-    }
-  ]
+  }
 }

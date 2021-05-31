@@ -5,8 +5,9 @@ TODO
 2 Mouse drag and drop
 3 Shortcut key
 4 Local files
-5 Drives instead of folders
+5 Drives instead of folders (issue in ubuntu)
 6 Admin@localhost is hardcoded as default, change to local server
+7 load ~ for ubuntu
 =====================================================================================================
 
 Back End

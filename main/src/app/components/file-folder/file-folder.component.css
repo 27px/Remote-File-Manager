@@ -40,11 +40,19 @@
 {
   background-image:url("../../../assets/images/folder.svg");
 }
-.item.folder.folder-filled .icon
+.item.folder.filled .icon
 {
   background-image:url("../../../assets/images/folder-filled.svg");
 }
 .item.file .icon
 {
   background-image:url("../../../assets/images/file-default.svg");
+}
+.item.folder.not-readable .icon
+{
+  background-image:url("../../../assets/images/folder-no-access.svg");
+}
+.item.file.not-readable .icon
+{
+  background-image:url("../../../assets/images/file-no-access.svg");
 }

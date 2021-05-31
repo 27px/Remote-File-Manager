@@ -74,4 +74,40 @@ export class FileFolderComponent implements OnInit
   {
     return this.element.nativeElement.children[0].getBoundingClientRect();
   }
+  getFolderClasses()
+  {
+    let classes=[
+      'item',
+      'folder'
+    ];
+    if(!this.content.readable)
+    {
+      classes.push('not-readable');
+    }
+    else if(this.content.filled)
+    {
+      classes.push('filled');
+    }
+    if(this.content.selected)
+    {
+      classes.push('item-selected');
+    }
+    return classes.join(" ");
+  }
+  getFileClasses()
+  {
+    let classes=[
+      'item',
+      'file'
+    ];
+    if(!this.content.readable)
+    {
+      classes.push('not-readable');
+    }
+    if(this.content.selected)
+    {
+      classes.push('item-selected');
+    }
+    return classes.join(" ");
+  }
 }
