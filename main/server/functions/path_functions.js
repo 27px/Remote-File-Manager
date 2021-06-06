@@ -10,5 +10,10 @@ function normalize_path(dir_path)
 
 module.exports={
   normalize_path,
-  getPath:(filename,dir_path)=>dir_path=="/"?filename:path.join(dir_path,filename)
+  getPath:(filename,dir_path)=>{
+    dir_path=dir_path=="/"?filename:path.join(dir_path,filename);
+    dir_path=normalize_path(dir_path);
+    dir_path=dir_path.includes(":")?dir_path:(dir_path.startsWith('/')?dir_path:`/${dir_path}`);
+    return dir_path;
+  }
 };

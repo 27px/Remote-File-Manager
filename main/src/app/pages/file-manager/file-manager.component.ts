@@ -172,12 +172,14 @@ export class FileManagerComponent implements AfterViewInit
   }
   setUpSocket()
   {
-    socket.startBackgroundProcess=(type:fs,data:any)=>{
+    socket.startBackgroundProcess=(type:fs,data:any,progressIndefinite:boolean=true)=>{
       let process={
         process_id:this.process_id,
         type,
         data,
-        progress:0
+        progressIndefinite, // progress calculatable 0 to 100 - false, unknown amount of time - true
+        progress:0,
+        status:"in-progress"
       };
       socket.send(JSON.stringify(process));
       this.background_processes[this.process_id]=process;
@@ -186,9 +188,6 @@ export class FileManagerComponent implements AfterViewInit
     socket.onopen=(event:any)=>{
       //connected
       isSocketOpen=true;
-
-      // send message
-      // socket.send("hello");
     };
 
     socket.onmessage=(event:any)=>{
@@ -208,8 +207,9 @@ export class FileManagerComponent implements AfterViewInit
         }
         else if(data.type=="failed")
         {
-          console.log(data.process_id)
-          // update progess
+          console.error(data)
+          this.background_processes[data.process_id].status="failed";
+          this.toast("error",data.message);
         }
       }
       catch(error)
@@ -217,12 +217,13 @@ export class FileManagerComponent implements AfterViewInit
         console.error(error.message);
         console.warn(event.data);
       }
-      // receive
-      // console.log(event.data);
     }
 
     socket.onclose=()=>{
-      socket=null;
+      socket={
+        // socket is cleared and function returns null;
+        startBackgroundProcess:(a:any={},b:any={},c:any={})=>null
+      };
       isSocketOpen=false;
     }
   }
@@ -248,13 +249,14 @@ export class FileManagerComponent implements AfterViewInit
   }
   refresh()
   {
-    this.loadDirContents(this.getCWD() || "/");
+    this.loadDirContents(this.getCWD());
   }
   getCWD(extra_path:string="")
   {
     let temp=`${this.path.join("/")}/`;
     temp=temp!="/"?temp:"";
-    return `${temp}${extra_path}`;
+    let start=this.path[0]==="home"?"/":"";
+    return `${start}${temp}${extra_path}` || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
   {
@@ -474,37 +476,37 @@ export class FileManagerComponent implements AfterViewInit
       if(ctrl)
       {
         // Select all
-        if(key===65)// key: a
+        if(key===65) // key: a
         {
           event.preventDefault();
           this.selectAll();
         }
         // find/search
-        if(key===70)// key: f
+        if(key===70) // key: f
         {
           event.preventDefault();
           _("#search")?.focus();
         }
         // invert selection
-        if(key===73)// key: i
+        if(key===73) // key: i
         {
           event.preventDefault();
           this.invertAllItemSelections();
         }
         // refresh
-        if(key==82)// key: r
+        if(key==82) // key: r
         {
           event.preventDefault();
           this.refresh()
         }
         // increase icon size
-        if(key==107 || key==187)// key: +
+        if(key==107 || key==187) // key: +
         {
           event.preventDefault();
           this.setIconSizeIndex(this.iconSizeIndex+1);
         }
         // decrease icon size
-        if(key==109 || key==189)// key: -
+        if(key==109 || key==189) // key: -
         {
           event.preventDefault();
           this.setIconSizeIndex(this.iconSizeIndex-1);
@@ -527,19 +529,24 @@ export class FileManagerComponent implements AfterViewInit
         }
       }
     }
-    else if(key===114)// F3 : search
+    else if(key===114) // F3 : search
     {
       event.preventDefault();
       _("#search")?.focus();
     }
-    else if(key===115)// F4 : Edit Path
+    else if(key===115) // F4 : Edit Path
     {
       this.editThePath();
     }
-    else if(key===116)// F5 : Refresh
+    else if(key===116) // F5 : Refresh
     {
       event.preventDefault();
       this.refresh()
+    }
+    else if(key===8) // backspace
+    {
+      event.preventDefault();
+      this.goBackOneDir();
     }
   }
   editThePath()
@@ -1007,5 +1014,40 @@ export class FileManagerComponent implements AfterViewInit
       this.contextMenu.visibility="visible";
     }
     return false;
+  }
+  newFileFolder(type:string)
+  {
+    let max_n=0;
+    let isFolder = type=="folder";
+    let pattern = isFolder?/^New Folder [0-9]+$/:/^Text Document [0-9]+\.txt$/;
+    let operation=isFolder?fs.NEW_FOLDER:fs.NEW_FILE;
+    this.contents
+    .forEach(item=>{
+      if(isFolder==item.folder && pattern.test(item.name))
+      {
+        max_n=Math.max(max_n,parseInt(item.name.split(" ").pop()));
+      }
+    });
+    let status=socket.startBackgroundProcess(operation,{
+      source:{
+        server:this.current_server,
+        baseFolder:this.getCWD(),
+        suggestedNumber:++max_n
+      }
+    });
+    if(status===null)
+    {
+      this.toast("error","Not Connected to Server, Reconnect");
+    }
+  }
+  hideBackgroundProcess(id:number)
+  {
+    delete this.background_processes[id];
+  }
+  isBackgroundProssessesRunning()
+  {
+    return this.background_processes.some((process:any)=>{
+      return process.status=="in-progress";
+    });
   }
 }

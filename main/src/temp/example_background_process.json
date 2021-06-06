@@ -4,7 +4,7 @@
     "type":"operation like delete, rename: enum",
     "data":{
       "source":{
-        "server":"Server 1",
+        "server":"user@host",
         "baseFolder":"C:/Xampp/htdocs/",
         "files":[
           "file_1.txt",
@@ -13,7 +13,7 @@
         ]
       },
       "target":{
-        "server":"Server 2",
+        "server":"user@host",
         "baseFolder":"D:/New Folder/"
       }
     },

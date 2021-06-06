@@ -1,3 +1,7 @@
+// global
+connections={}; // ssh connections with key as user@host and value as connection object
+socket=null;
+
 module.exports=()=>{
   const config=require("./config/config.json");
   const express=require("express");
@@ -5,20 +9,21 @@ module.exports=()=>{
   const http=require("http");
   const ws=require('ws');
   const server=http.createServer(app);
+  const path=require("path");
+  const cors=require("cors");
+  const chalk=require("chalk");
+
+  const route=require("./routes/main");
+  const handleOperations=require("./functions/handle_operations.js");
+
+  const HOST=config.SERVER.HOST;
+  const PORT=process.env.PORT || config.SERVER.PORT;
 
   const wss=new ws.Server({
     server
   });
-  const path=require("path");
 
   // const fileUpload=require('express-fileupload');
-  const chalk=require("chalk");
-
-  const route=require("./routes/main");
-  const cors=require("cors");
-  const HOST=config.SERVER.HOST;
-  const PORT=process.env.PORT || config.SERVER.PORT;
-
 
   // app.set("views","./views");
   // app.set("view engine","ejs");
@@ -37,19 +42,16 @@ module.exports=()=>{
   //   saveUninitialized:false
   // }));
 
-  wss.on("connection",socket=>{
-    // connected
-    // console.log(chalk.yellow("one user Connected"));
-
+  wss.on("connection",socket_object=>{
+    socket=socket_object; // setting as global
     // send message
     // socket.send("hi");
 
-    // received message
-    socket.on("message",msg=>{
-      // console.log(chalk.green.inverse(msg));
+    socket.on("message",data=>{
+      operation=JSON.parse(data);
+      handleOperations(operation);
     });
 
-    // closing connection
     socket.on("close",()=>{
       // console.log(chalk.red("one user disconnected"));
     });

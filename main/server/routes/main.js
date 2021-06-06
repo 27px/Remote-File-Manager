@@ -18,9 +18,6 @@ const { success_response, error_response, response_directory_contents } = requir
 // dev dependencies
 const chalk=require("chalk");
 
-// global
-let connections={}; // ssh connections with key as user@host and value as connection object
-
 // Connect to ssh server
 route.post("/fs/ssh/connect",async(req,res)=>{
   let host=req.body.server, username=req.body.user, password=req.body.password;
@@ -30,7 +27,7 @@ route.post("/fs/ssh/connect",async(req,res)=>{
       await connections[id].ssh.close();
     ssh=new SSH2Promise({ host, username, password, reconnectTries, reconnectDelay });
   }
-  catch(err) {
+  catch(error) {
     ssh=null;
     res.json(error_response("Some error occured",error.message));
   }
@@ -42,7 +39,6 @@ route.post("/fs/ssh/connect",async(req,res)=>{
       connections[id]={ ssh, sftp };
       res.json(success_response(id));
     }).catch(error=>{
-      console.log(2);
       console.log(error);
       res.json(error_response("Some error occured",error.message));
     });
@@ -54,6 +50,7 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
   let protocol=req.params.protocol;
   let server_id=req.body.server_id;
   let dir_path=normalize_path(req.body.path);
+  dir_path=dir_path.startsWith("home")?`/${dir_path}`:dir_path;
   if(typeof connections[server_id] === 'undefined')
   {
     res.json(error_response("Not connected to server, connect first",`connection undefined`,true));
