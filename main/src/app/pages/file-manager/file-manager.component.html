@@ -240,11 +240,17 @@
           <div class="sub-title">Target : {{process.data.target.server}}</div>
           <div class="sub-title">Target Directory : {{process.data.target.baseFolder}}</div>
         </ng-container>
-        <div class="progress" *ngIf="process.status!='failed'">
+        <div class="progress" *ngIf="!['failed','completed'].includes(process.status)">
           <div style="width:{{process.progressIndefinite?'100':process.progress}}%;" class="progress-bar"></div>
         </div>
         <div class="error-status" *ngIf="process.status=='failed'">
           <div class="text">Failed</div>
+          <div class="delete-process" (click)="hideBackgroundProcess(process.process_id);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </div>
+        </div>
+        <div class="success-status" *ngIf="process.status=='completed'">
+          <div class="text">Completed</div>
           <div class="delete-process" (click)="hideBackgroundProcess(process.process_id);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </div>

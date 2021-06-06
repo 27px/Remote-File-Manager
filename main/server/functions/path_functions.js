@@ -5,6 +5,7 @@ function normalize_path(dir_path)
   dir_path=path.normalize(dir_path) || "/"; // normalize path eg: a/b/c/.. -> a/b/
   dir_path=dir_path.replace(/\.$/,""); // path.normalize() adds a . on end some paths like drives, it is removed here
   dir_path=dir_path.replace(/\\/g,"/"); // slash replace \ -> /
+  dir_path=dir_path.includes(":")?dir_path:(dir_path.startsWith("/")?dir_path:`/${dir_path}`); // adds slash in front if linux path (identified by colon : (only present in windows))
   return dir_path;
 }
 

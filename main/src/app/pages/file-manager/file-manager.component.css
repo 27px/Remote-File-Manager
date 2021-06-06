@@ -773,7 +773,8 @@
   font-weight:100;
   margin:10px 0px;
 }
-.progress-container .process .error-status
+.progress-container .process .error-status,
+.progress-container .process .success-status
 {
   display:flex;
   flex-direction:row;
@@ -784,7 +785,11 @@
 {
   color:var(--red);
 }
-.progress-container .process .error-status .delete-process svg
+.progress-container .process .success-status .text
+{
+  color:var(--accent-dark);
+}
+.progress-container .process .delete-process svg
 {
   stroke:var(--red);
   cursor:pointer;
@@ -792,7 +797,7 @@
   transform:scale(1);
   transition:transform 0.3s, stroke-width 0.3s;
 }
-.progress-container .process .error-status .delete-process:hover svg
+.progress-container .process .delete-process:hover svg
 {
   stroke-width:2;
   transform:scale(1.5);

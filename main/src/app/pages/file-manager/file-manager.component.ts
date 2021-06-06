@@ -196,14 +196,16 @@ export class FileManagerComponent implements AfterViewInit
         let data=JSON.parse(event.data);
         if(data.type=="progress")
         {
-          console.log(data.process_id)
-          console.log(data.progress)
-          // update progess
+          this.background_processes[data.process_id].progress=data.progress;
         }
         else if(data.type=="completed")
         {
-          console.log(data.process_id)
-          // update progess
+          this.background_processes[data.process_id].status="completed";
+          if(data.reload)
+          {
+            this.loadDirContents(this.getCWD());
+          }
+          this.toast("success",data.message);
         }
         else if(data.type=="failed")
         {
@@ -255,8 +257,8 @@ export class FileManagerComponent implements AfterViewInit
   {
     let temp=`${this.path.join("/")}/`;
     temp=temp!="/"?temp:"";
-    let start=this.path[0]==="home"?"/":"";
-    return `${start}${temp}${extra_path}` || "/";
+    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:`/${temp}`); // adds slash in front if linux path (identified by colon : (only present in windows))
+    return `${temp}${extra_path}` || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
   {
@@ -1032,7 +1034,9 @@ export class FileManagerComponent implements AfterViewInit
       source:{
         server:this.current_server,
         baseFolder:this.getCWD(),
-        suggestedNumber:++max_n
+        files:[
+          isFolder?`New Folder ${++max_n}`:`Text Document ${++max_n}.txt`
+        ]
       }
     });
     if(status===null)
