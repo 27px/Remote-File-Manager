@@ -61,33 +61,20 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
     {
       let sftp=connections[server_id].sftp;
       let data=await sftp.readdir(dir_path);
-      let file=[],stat=[],filled=[],readable=[],permission=[],folder=[];
-      data.forEach(content=>{
-        file.push(content.filename);
-        folder.push(content.longname[0]=='d');
-        permission.push(content.longname.slice(1,10));
-        stat.push(sftp.stat(getPath(content.filename,dir_path)));
-      });
-      stat=await Promise.allSettled(stat);
-      stat=stat.map(stat_result=>{
-        return (stat_result.status=='fulfilled')?stat_result.value:null;
-      });
-      filled=await Promise.allSettled(data.map((content,i)=>{
-        return folder[i]?sftp.readdir(getPath(content.filename,dir_path)):false
+      let stat=await Promise.allSettled(data.map(content=>sftp.stat(getPath(content.filename,dir_path))));
+      stat=stat.map(stat_result=>stat_result.status=='fulfilled'?stat_result.value:null);
+      let filled=await Promise.allSettled(data.map((content,i)=>{
+        return data[i].longname[0]=='d'?sftp.readdir(getPath(content.filename,dir_path)):false
       }));
-      filled=filled.map(filled_result=>{
-        let fulfilled=filled_result.status=='fulfilled';
-        readable.push(fulfilled);
-        return fulfilled?filled_result.value:null;
-      });
-      filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
       let contents=data.map((content,i)=>{
+        let readable=filled[i].status=='fulfilled'; // read properly
         return {
-          name:file[i],
-          folder:folder[i],
-          filled:filled[i],
-          readable:readable[i],
-        }
+          name:content.filename,
+          folder:content.longname[0]=='d',
+          permissions:content.longname.slice(1,10),
+          filled:readable?filled[i].value.length>0:null,
+          readable
+        };
       });
       res.json(response_directory_contents("directory",dir_path,contents));
     }

@@ -305,7 +305,7 @@ export class FileManagerComponent implements AfterViewInit
       }
       throw new Error("status error");
     }).then(data=>{
-      // console.log(data);
+      console.log(data);
       if(data.status)
       {
         this.path=this.parsePath(data.path);
@@ -607,6 +607,7 @@ export class FileManagerComponent implements AfterViewInit
     {
       let temp_files:any[]=[],temp_folders:any[]=[];
       this.contents.forEach(content=>{
+        // console.log(content);
         if(content.folder)
         {
           temp_folders.push(content);
