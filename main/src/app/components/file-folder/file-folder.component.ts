@@ -29,9 +29,12 @@ export class FileFolderComponent implements OnInit
   {
 
   }
-  openDir(folder:string)
+  openDir(folder:string,readable:boolean=true)
   {
-    this.openFolder.emit(folder);
+    this.openFolder.emit({
+      folder,
+      readable
+    });
   }
   getData()
   {

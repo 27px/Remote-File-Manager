@@ -21,7 +21,7 @@ const chalk=require("chalk");
 // Connect to ssh server
 route.post("/fs/ssh/connect",async(req,res)=>{
   let host=req.body.server, username=req.body.user, password=req.body.password;
-  let ssh=null, id=`${username}@${host}`, reconnectTries=1, reconnectDelay=0, readyTimeout=2000; // unique id used to identify server with user
+  let ssh=null, id=`${username}@${host}`, reconnectTries=1, reconnectDelay=0, readyTimeout=5000; // unique id used to identify server with user
   try {
     if(typeof connections[id] !== 'undefined')
       await connections[id].ssh.close();
@@ -61,26 +61,30 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
     {
       let sftp=connections[server_id].sftp;
       let data=await sftp.readdir(dir_path);
-      let file=[],stat=[],filled=[],readable=[];
+      let file=[],stat=[],filled=[],readable=[],permission=[],folder=[];
       data.forEach(content=>{
         file.push(content.filename);
+        folder.push(content.longname[0]=='d');
+        permission.push(content.longname.slice(1,10));
         stat.push(sftp.stat(getPath(content.filename,dir_path)));
       });
       stat=await Promise.allSettled(stat);
-      // console.log(stat);
       stat=stat.map(stat_result=>{
-        let fulfilled=stat_result.status=='fulfilled';
-        readable.push(fulfilled);
-        return fulfilled?stat_result.value:null;
+        return (stat_result.status=='fulfilled')?stat_result.value:null;
       });
-      stat=stat.map((s,i)=>data[i].longname[0]=='d');
-      filled=await Promise.allSettled(data.map((content,i)=>stat[i]?sftp.readdir(getPath(content.filename,dir_path)):false));
-      filled=filled.map(filled_result=>filled_result.status=='fulfilled'?filled_result.value:null);
+      filled=await Promise.allSettled(data.map((content,i)=>{
+        return folder[i]?sftp.readdir(getPath(content.filename,dir_path)):false
+      }));
+      filled=filled.map(filled_result=>{
+        let fulfilled=filled_result.status=='fulfilled';
+        readable.push(fulfilled);
+        return fulfilled?filled_result.value:null;
+      });
       filled=filled.map(fill=>Array.isArray(fill)?fill.length>0:false);
       let contents=data.map((content,i)=>{
         return {
           name:file[i],
-          folder:stat[i],
+          folder:folder[i],
           filled:filled[i],
           readable:readable[i],
         }

@@ -231,7 +231,14 @@ export class FileManagerComponent implements AfterViewInit
   }
   openDir(data:any)
   {
-    this.loadDirContents(this.getCWD(data));
+    if(data.readable)
+    {
+      this.loadDirContents(this.getCWD(data.folder));
+    }
+    else
+    {
+      this.toast("error",`Directory "${data.folder}" is not accessible`);
+    }
   }
   moveToDir(event:any)
   {
@@ -324,15 +331,10 @@ export class FileManagerComponent implements AfterViewInit
         throw new Error("Some Error occured");
       }
     }).catch(err=>{
-      if(err.name==="customError")
-      {
-        this.error_loading=err.message;
-      }
-      else
-      {
-        console.log(err.message);
-        this.error_loading="Something went wrong";
-      }
+      console.log(err.message);
+      let err_msg=err.name==="customError"?err.message:"Something went wrong";
+      this.toast("error",err_msg);
+      this.error_loading=err_msg;
       this.path=this.parsePath("/");
       this.contents=[];
       this.noItems=true;

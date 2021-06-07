@@ -1,5 +1,5 @@
 <!-- Folder -->
-<div [ngClass]="getFolderClasses()" *ngIf="content.folder" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openDir(content.name);">
+<div [ngClass]="getFolderClasses()" *ngIf="content.folder" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openDir(content.name,content.readable);">
   <div class="icon"></div>
   <div class="name">{{content.name}}</div>
 </div>
