@@ -74,6 +74,10 @@ export class FileManagerComponent implements AfterViewInit
   current_server:string|null = null;
   current_test_connection:string | null = null;
   isWin:boolean|null=null;
+  finished_loaded_init_contents:boolean = false;
+  finished_setting_up_socket:boolean = false;
+  max_spash_visibility_over:boolean = false;
+  minimum_splash_visibility:number = 2000; // default 2000 for visual effects and 0 for performance
 
   constructor()
   {
@@ -93,11 +97,8 @@ export class FileManagerComponent implements AfterViewInit
     // set connections
     this.connections=this.getConnections();
 
-
     // Connect and load contents
-    this.connectToFileSystem(null); ////////  0 is first server change to null for local
-    // load contents
-    // this.loadDirContents(this.INITIAL_PATH);
+    this.connectToFileSystem(null,true); // loading from local file system
 
     // offline listener
     window.addEventListener("offline", (event) => {
@@ -110,6 +111,10 @@ export class FileManagerComponent implements AfterViewInit
       this.online=true;
       this.toast("success","Back online");
     });
+
+    setTimeout(()=>{
+      this.max_spash_visibility_over=true;
+    },this.minimum_splash_visibility);
 
   }
   ngAfterViewInit(): void
@@ -207,6 +212,7 @@ export class FileManagerComponent implements AfterViewInit
         {
           // loaded settings configured in server
           this.isWin=data.data.isWin;
+          this.finished_setting_up_socket=true;
         }
       }
       catch(error)
@@ -279,7 +285,7 @@ export class FileManagerComponent implements AfterViewInit
       box?.parentNode?.removeChild(box);
     },delay+delayOffset);
   }
-  loadDirContents(path:string)
+  loadDirContents(path:string,fromSplash:boolean=false)
   {
     if(this.loading) {
       this.toast("warning","Please wait while loading is completed.");
@@ -347,6 +353,10 @@ export class FileManagerComponent implements AfterViewInit
     }).finally(()=>{
       this.loading=false;
       this.editingPath=false;
+      if(fromSplash)
+      {
+        this.finished_loaded_init_contents=true;
+      }
     });
   }
   switchTheme()
@@ -779,7 +789,7 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },true);
   }
-  connectToFileSystem(id:any)
+  connectToFileSystem(id:any,fromSplash:boolean=false)
   {
     if(this.loading)
     {
@@ -789,7 +799,7 @@ export class FileManagerComponent implements AfterViewInit
     if(id==null)
     {
       this.current_server=null;
-      this.loadDirContents(this.INITIAL_PATH);
+      this.loadDirContents(this.INITIAL_PATH,fromSplash);
       return;
     }
     this.loading=true;
@@ -822,7 +832,7 @@ export class FileManagerComponent implements AfterViewInit
       this.loading=false;
       this.noItems=true;
       this.error_loading="Connection failed";
-    });
+    })
   }
   testConnection(server:string, user:string, password:string)
   {

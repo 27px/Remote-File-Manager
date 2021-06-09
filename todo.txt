@@ -7,3 +7,4 @@ TODO
 6 Permissions
 7 Searching is only for current directory, not for sub directory
 8 Mouse drag and drop
+9 Cannot move electron app using mouse

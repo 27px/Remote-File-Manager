@@ -284,3 +284,8 @@
   <!-- messages -->
   <div class="toast-container mini-scroll-bar"></div>
 </div>
+
+<div class="splash" *ngIf="!finished_loaded_init_contents || !finished_setting_up_socket || !max_spash_visibility_over">
+  <div class="icon" style="background-image:url('./assets/images/logo.svg')"></div>
+  <svg class="splash-load" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+</div>

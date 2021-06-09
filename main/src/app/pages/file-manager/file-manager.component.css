@@ -18,7 +18,7 @@
   height:100vh;
   display:grid;
   grid-template-columns:280px 1fr 280px;
-  grid-template-rows:40px 40px 1fr 35px;
+  grid-template-rows:var(--top-bar-height) var(--top-bar-height) 1fr 35px;
   background:var(--bg);
   overflow:hidden;
 
@@ -183,6 +183,48 @@
 .header .option.win-close:hover .icon svg
 {
   stroke:var(--red);
+}
+.splash
+{
+  width:100%;
+  height:calc(100vh - var(--top-bar-height));
+  position:fixed;
+  top:var(--top-bar-height);
+  left:0;
+  z-index:2147483647; /* max value */
+  background:var(--bg);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:space-evenly;
+}
+.splash .icon
+{
+  width:clamp(50px,60vmin,200px);
+  height:clamp(50px,60vmin,200px);
+  background-image:url("/assets/images/logo.svg");
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+}
+.splash .splash-load
+{
+  width:50px;
+  height:50px;
+  stroke:var(--primary);
+  transform:rotate(0deg);
+  animation: splash-loading 1s ease-in-out infinite normal;
+}
+@keyframes splash-loading
+{
+  0%
+  {
+    transform:rotate(0deg);
+  }
+  100%
+  {
+    transform:rotate(360deg);
+  }
 }
 .connection-list
 {
