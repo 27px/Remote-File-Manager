@@ -1,6 +1,8 @@
 // global
 connections={}; // ssh connections with key as user@host and value as connection object
 socket=null;
+isWin = process.platform == "win32";
+settings = {}; // global settings
 
 module.exports=()=>{
   const config=require("./config/config.json");
@@ -49,6 +51,24 @@ module.exports=()=>{
 
     socket.on("message",data=>{
       operation=JSON.parse(data);
+      if(operation.type=="settings")
+      {
+        // send the server settings to client first
+        socket.send(JSON.stringify({
+          type:"settings",
+          data:{
+            isWin
+          }
+        }));
+        // then save settings client aleady sent
+        let client_settings=operation.data;
+        for(setting in client_settings)
+        {
+          settings[setting]=client_settings[setting];
+        }
+        return;
+      }
+      // if not settings it will be operations like delete, rename etc
       handleOperations(operation);
     });
 

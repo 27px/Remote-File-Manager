@@ -15,6 +15,7 @@ module.exports={
     dir_path=dir_path=="/"?filename:path.join(dir_path,filename);
     dir_path=normalize_path(dir_path);
     dir_path=dir_path.includes(":")?dir_path:(dir_path.startsWith('/')?dir_path:`/${dir_path}`);
+    dir_path=dir_path.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
     return dir_path;
   }
 };

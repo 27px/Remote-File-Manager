@@ -71,28 +71,12 @@ export class FileManagerComponent implements AfterViewInit
   keyboard:keyBoardStatus = keyState;
   isProgressActive:boolean = false;
   online: boolean = navigator.onLine;
-  current_server:string = "Admin@localhost";
+  current_server:string|null = null;
   current_test_connection:string | null = null;
+  isWin:boolean|null=null;
 
   constructor()
   {
-    // fetch(`${domain}/fs/local/dir-contents/`,{
-    //   method:"POST",
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body:JSON.stringify({
-    //     path:"/"
-    //   })
-    // }).then(resp=>{
-    //   return resp.json();
-    // }).then(data=>{
-    //   console.warn(data);
-    // }).catch(error=>{
-    //   console.error(error.message);
-    // });
-
     // web socket
     this.setUpSocket();
 
@@ -111,7 +95,7 @@ export class FileManagerComponent implements AfterViewInit
 
 
     // Connect and load contents
-    this.connectToFileSystem(0); ////////  0 is first server change to null for local
+    this.connectToFileSystem(null); ////////  0 is first server change to null for local
     // load contents
     // this.loadDirContents(this.INITIAL_PATH);
 
@@ -188,6 +172,12 @@ export class FileManagerComponent implements AfterViewInit
     socket.onopen=(event:any)=>{
       //connected
       isSocketOpen=true;
+      socket.send(JSON.stringify({
+        type:"settings",
+        data:{
+          ///// settings_config:"etc."
+        }
+      }));
     };
 
     socket.onmessage=(event:any)=>{
@@ -212,6 +202,11 @@ export class FileManagerComponent implements AfterViewInit
           console.error(data)
           this.background_processes[data.process_id].status="failed";
           this.toast("error",data.message);
+        }
+        else if(data.type=="settings")
+        {
+          // loaded settings configured in server
+          this.isWin=data.data.isWin;
         }
       }
       catch(error)
@@ -264,8 +259,10 @@ export class FileManagerComponent implements AfterViewInit
   {
     let temp=`${this.path.join("/")}/`;
     temp=temp!="/"?temp:"";
-    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:`/${temp}`); // adds slash in front if linux path (identified by colon : (only present in windows))
-    return `${temp}${extra_path}` || "/";
+    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:(this.isWin?temp:`/${temp}`)); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
+    temp =`${temp}${extra_path}`;
+    temp=temp.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
+    return temp || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
   {
@@ -284,23 +281,30 @@ export class FileManagerComponent implements AfterViewInit
   }
   loadDirContents(path:string)
   {
-    if(this.loading)
-    {
+    if(this.loading) {
       this.toast("warning","Please wait while loading is completed.");
       return;
     }
     this.loading=true;
     this.contents=[];
-    fetch(`${domain}/fs/ssh/dir-contents/`,{
+    let protocol,body;
+    if(this.current_server==null) {
+      protocol="local";
+      body=JSON.stringify({ path });
+    }
+    else {
+      protocol="ssh";
+      body=JSON.stringify({ server_id: this.current_server, path });
+    }
+    fetch(`${domain}/fs/${protocol}/dir-contents/`,{
       method:"POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify({ server_id: this.current_server, path })
+      body
     }).then(resp=>{
-      if(resp.status===200)
-      {
+      if(resp.status===200) {
         return resp.json();
       }
       throw new Error("status error");
@@ -308,9 +312,11 @@ export class FileManagerComponent implements AfterViewInit
       console.log(data);
       if(data.status)
       {
+        let isDrive=data.type=="drive";
         this.path=this.parsePath(data.path);
         this.contents=data.contents.map((item:any)=>{
           item.selected=false;// file selected (for cut/copy etc) status
+          item.isDrive=isDrive;
           return item;
         });
         this.noItems=this.contents.length<1;
@@ -319,7 +325,7 @@ export class FileManagerComponent implements AfterViewInit
       }
       else
       {
-        console.log(`%c${data.message}`,"color:#F00");
+        console.log(`%c${data.message}`,"color:#FC0");
         console.log(`%c${data.error_log}`,"color:#F00");
         if(data.customError)
         {
@@ -780,44 +786,43 @@ export class FileManagerComponent implements AfterViewInit
       this.toast("warning","Please wait while loading is completed.");
       return;
     }
+    if(id==null)
+    {
+      this.current_server=null;
+      this.loadDirContents(this.INITIAL_PATH);
+      return;
+    }
     this.loading=true;
     this.contents=[];
-    if(id!=null)
-    {
-      let connection=this.connections[id];
-      this.current_server=`${connection.user}@${connection.server}`;
-      fetch(`${domain}/fs/ssh/connect`,{
-        method:"POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body:JSON.stringify({
-          server:connection.server,
-          user:connection.user,
-          password:connection.password,
-        })
-      }).then(resp=>{
-        return resp.json();
-      }).then(data=>{
-        this.loading=false;
-        if(data.status) {
-          this.loadDirContents(this.INITIAL_PATH);
-        }
-        else {
-          throw data; // to display data in error to view status
-        }
-      }).catch(error=>{
-        console.error(error);
-        this.loading=false;
-        this.noItems=true;
-        this.error_loading="Connection failed";
-      });
-    }
-    else
-    {
-      // local system
-    }
+    let connection=this.connections[id];
+    this.current_server=`${connection.user}@${connection.server}`;
+    fetch(`${domain}/fs/ssh/connect`,{
+      method:"POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({
+        server:connection.server,
+        user:connection.user,
+        password:connection.password,
+      })
+    }).then(resp=>{
+      return resp.json();
+    }).then(data=>{
+      this.loading=false;
+      if(data.status) {
+        this.loadDirContents(this.INITIAL_PATH);
+      }
+      else {
+        throw data; // to display data in error to view status
+      }
+    }).catch(error=>{
+      console.error(error);
+      this.loading=false;
+      this.noItems=true;
+      this.error_loading="Connection failed";
+    });
   }
   testConnection(server:string, user:string, password:string)
   {

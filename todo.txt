@@ -1,20 +1,9 @@
-Front End
------------------------------------------------------------------------------------------------------
 TODO
-1 Searching is only for current directory, not for sub directory
-2 Mouse drag and drop
-3 Shortcut key
-4 Local files
-5 Drives instead of folders (issue in ubuntu)
-6 Admin@localhost is hardcoded as default, change to local server
-7 load ~ for ubuntu
-8 date of file/folder
-9 Sorting
-10 size
-11 Permissions
-=====================================================================================================
-
-Back End
------------------------------------------------------------------------------------------------------
-TODO
-1 Connect SSH and Local Files with UI
+1 File operations like delete, rename, copy, move.
+2 Drives instead of folders (issue in ubuntu)
+3 Configurable settings like handshake wait time etc
+4 Sorting with date or size
+5 Shortcut key
+6 Permissions
+7 Searching is only for current directory, not for sub directory
+8 Mouse drag and drop
