@@ -5,7 +5,7 @@ input
   border:none;
   border-bottom:3px solid rgba(0,0,0,0.3);
   transition:border-color 0.3s;
-  background:var(--bg);
+  background:transparent;
   color:var(--accent-dark);
   /* box-shadow:0px 0px 0px 1000px #FFFFFF inset; */
   border-bottom:var(--border);

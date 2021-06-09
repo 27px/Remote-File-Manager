@@ -817,6 +817,7 @@ export class FileManagerComponent implements AfterViewInit
         server:connection.server,
         user:connection.user,
         password:connection.password,
+        force:false
       })
     }).then(resp=>{
       return resp.json();
@@ -846,7 +847,7 @@ export class FileManagerComponent implements AfterViewInit
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify({ server, user, password })
+      body:JSON.stringify({ server, user, password, force:true })
     }).then(resp=>{
       return resp.json();
     }).then(data=>{

@@ -119,6 +119,10 @@ export class FileFolderComponent implements OnInit
       'item',
       'drive'
     ];
+    if(this.content.selected)
+    {
+      classList.push('item-selected');
+    }
     let percent=parseInt(this.content.capacity.percentage);
     if(percent>80)
     {

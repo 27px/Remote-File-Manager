@@ -1,4 +1,5 @@
 TODO
+0 Use a free port instead of hardcoded value
 1 File operations like delete, rename, copy, move.
 2 Right Click options incorrect sometimes
 3 Configurable settings like handshake wait time etc

@@ -20,14 +20,15 @@ const chalk=require("chalk");
 
 // Connect to ssh server
 route.post("/fs/ssh/connect",async(req,res)=>{
-  let host=req.body.server, username=req.body.user, password=req.body.password;
+  let host=req.body.server, username=req.body.user, password=req.body.password, force=req.body.force;
   let ssh=null, id=`${username}@${host}`, reconnectTries=1, reconnectDelay=0, readyTimeout=5000; // unique id used to identify server with user
   try {
     if(typeof connections[id] == 'undefined')
       ssh=new SSH2Promise({ host, username, password, reconnectTries, reconnectDelay, readyTimeout});
-    // if(typeof connections[id] !== 'undefined')
-    //   await connections[id].ssh.close();
-    // ssh=new SSH2Promise({ host, username, password, reconnectTries, reconnectDelay, readyTimeout});
+    else if(force) {
+      await connections[id].ssh.close();
+      ssh=new SSH2Promise({ host, username, password, reconnectTries, reconnectDelay, readyTimeout});
+    }
   }
   catch(error) {
     ssh=null;
