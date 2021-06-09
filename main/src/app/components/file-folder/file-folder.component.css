@@ -10,6 +10,17 @@
   cursor:pointer;
   transition:border-color 0.3s;
 }
+.item.drive
+{
+  width:100%;
+  height:100%;
+  background:var(--accent-semi-light);
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  border-radius:10px;
+}
 .item:hover
 {
   border-color:var(--accent);
@@ -26,6 +37,12 @@
   background-position:center;
   background-repeat:no-repeat;
   background-size:contain;
+}
+.item.drive .icon
+{
+  width:115px;
+  margin-left:-10px;
+  margin-bottom:unset;
 }
 .item .name
 {
@@ -55,4 +72,62 @@
 .item.file.not-readable .icon
 {
   background-image:url("../../../assets/images/file-no-access.svg");
+}
+.item.drive .icon
+{
+  background-image:url("../../../assets/images/drive.svg");
+}
+.drive .drive-contents
+{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-evenly;
+}
+.drive .drive-contents>*
+{
+  width:100%;
+  height:100%;
+}
+.drive .drive-contents .top
+{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+}
+.drive .drive-contents .name,
+.drive .drive-contents .percent,
+.drive .drive-contents .size-details
+{
+  display:flex;
+  align-items:center;
+  color:var(--inverse);
+  font-size:16px;
+  font-weight:300;
+}
+.drive .drive-contents .name
+{
+  font-weight:900;
+}
+.drive .drive-contents .size-details
+{
+  color:var(--inverse-light);
+}
+.drive .progress
+{
+  width:100%;
+  height:40%!important;
+  background:var(--inverse-light);
+}
+.drive .progress .progress-bar
+{
+  width:100%;
+  height:100%;
+  background:var(--primary);
+}
+.drive.high .progress .progress-bar
+{
+  background:var(--red);
 }

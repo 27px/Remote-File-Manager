@@ -27,7 +27,7 @@ module.exports=operation=>{
   if(typeof connection === 'undefined' && server!=null) { // either connected or local
     return send_error(null,"Not Connected to Server");
   }
-  connection=server!=null?connection.sftp:fs;
+  connection=server!=null?connection.sftp:fs; // if ssh use sftp else if local fs
   if(typeof connection === 'undefined') {
     return send_error(null,"Not Connected");
   }

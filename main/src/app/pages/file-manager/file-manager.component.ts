@@ -9,7 +9,7 @@ import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
 import { fs } from "../../../model/fs";// file folder operations list
-import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
+// import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
@@ -77,7 +77,8 @@ export class FileManagerComponent implements AfterViewInit
   finished_loaded_init_contents:boolean = false;
   finished_setting_up_socket:boolean = false;
   max_spash_visibility_over:boolean = false;
-  minimum_splash_visibility:number = 2000; // default 2000 for visual effects and 0 for performance
+  minimum_splash_visibility:number = 0; // default 2000 for visual effects and 0 for performance
+  isDriveListing:boolean=false; // if loading a list of drives or not (only in local)
 
   constructor()
   {
@@ -318,11 +319,11 @@ export class FileManagerComponent implements AfterViewInit
       console.log(data);
       if(data.status)
       {
-        let isDrive=data.type=="drive";
+        this.isDriveListing=data.type=="drive";
         this.path=this.parsePath(data.path);
         this.contents=data.contents.map((item:any)=>{
           item.selected=false;// file selected (for cut/copy etc) status
-          item.isDrive=isDrive;
+          item.isDrive=this.isDriveListing;
           return item;
         });
         this.noItems=this.contents.length<1;
@@ -1071,5 +1072,21 @@ export class FileManagerComponent implements AfterViewInit
     return this.background_processes.some((process:any)=>{
       return process.status=="in-progress";
     });
+  }
+  getContentContainerStyle()
+  {
+    let classList=[
+      'contents',
+      'scroller'
+    ];
+    if(!this.isProgressActive)
+    {
+      classList.push('wide');
+    }
+    if(this.isDriveListing)
+    {
+      classList.push('drive-container');
+    }
+    return classList.join(" ");
   }
 }

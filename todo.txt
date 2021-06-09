@@ -1,6 +1,6 @@
 TODO
 1 File operations like delete, rename, copy, move.
-2 Drives instead of folders (issue in ubuntu)
+2 Right Click options incorrect sometimes
 3 Configurable settings like handshake wait time etc
 4 Sorting with date or size
 5 Shortcut key

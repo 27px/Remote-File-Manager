@@ -103,7 +103,7 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
         let content = { // unlike dir contents permissions are not sent
           folder:true,
           name:disk._mounted,
-          capcity:{
+          capacity:{
             percentage:disk._capacity, // in case numbers large to calculate
             total_space:disk._blocks,
             available_space:disk._available,
@@ -122,30 +122,37 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
   }
   else // not windows or not loading root path /
   {
-    dir_path=dir_path.endsWith(":")?`${dir_path}//`:dir_path; // add double slash if path does not have "//" after colon
-    let data=await fs.readdir(dir_path);
-    let stat=await Promise.allSettled(data.map(content=>{
-      return fs.stat(getPath(content,dir_path));
-    }));
-    stat=stat.map(stat_result=>stat_result.status=='fulfilled'?stat_result.value:null);
-    let isDir=stat.map((item_stat,i)=>{
-      return item_stat==null?!data[i].includes("."):item_stat.isDirectory(); // stat is not available, probable permission issue, so check if "." is present to check file or not, does not work in different cases;
-    });
-    let filled=await Promise.allSettled(data.map((content,i)=>{
-      return isDir[i]?fs.readdir(getPath(content,dir_path)):false;
-    }));
-    let contents=data.map((content,i)=>{
-      let readable=filled[i].status=='fulfilled'; // read properly
-      return {
-        name:content,
-        folder:isDir[i],
-        permissions:null, ///// cannot get from long name
-        filled:readable?filled[i].value.length>0:null,
-        contentCount:readable?filled[i].value.length:null,
-        readable
-      };
-    });
-    res.json(response_directory_contents("directory",dir_path,contents));
+    try
+    {
+      dir_path=dir_path.endsWith(":")?`${dir_path}//`:dir_path; // add double slash if path does not have "//" after colon
+      let data=await fs.readdir(dir_path);
+      let stat=await Promise.allSettled(data.map(content=>{
+        return fs.stat(getPath(content,dir_path));
+      }));
+      stat=stat.map(stat_result=>stat_result.status=='fulfilled'?stat_result.value:null);
+      let isDir=stat.map((item_stat,i)=>{
+        return item_stat==null?!data[i].includes("."):item_stat.isDirectory(); // stat is not available, probable permission issue, so check if "." is present to check file or not, does not work in different cases;
+      });
+      let filled=await Promise.allSettled(data.map((content,i)=>{
+        return isDir[i]?fs.readdir(getPath(content,dir_path)):false;
+      }));
+      let contents=data.map((content,i)=>{
+        let readable=filled[i].status=='fulfilled'; // read properly
+        return {
+          name:content,
+          folder:isDir[i],
+          permissions:null, ///// cannot get from long name
+          filled:readable?filled[i].value.length>0:null,
+          contentCount:readable?filled[i].value.length:null,
+          readable
+        };
+      });
+      res.json(response_directory_contents("directory",dir_path,contents));
+    }
+    catch(error)
+    {
+      res.json(error_response("Some error occured",error.message));
+    }
   }
 });
 

@@ -79,38 +79,65 @@ export class FileFolderComponent implements OnInit
   }
   getFolderClasses()
   {
-    let classes=[
+    let classList=[
       'item',
       'folder'
     ];
     if(!this.content.readable)
     {
-      classes.push('not-readable');
+      classList.push('not-readable');
     }
     else if(this.content.filled)
     {
-      classes.push('filled');
+      classList.push('filled');
     }
     if(this.content.selected)
     {
-      classes.push('item-selected');
+      classList.push('item-selected');
     }
-    return classes.join(" ");
+    return classList.join(" ");
   }
   getFileClasses()
   {
-    let classes=[
+    let classList=[
       'item',
       'file'
     ];
     if(!this.content.readable)
     {
-      classes.push('not-readable');
+      classList.push('not-readable');
     }
     if(this.content.selected)
     {
-      classes.push('item-selected');
+      classList.push('item-selected');
     }
-    return classes.join(" ");
+    return classList.join(" ");
+  }
+  getDriveClasses()
+  {
+    let classList=[
+      'item',
+      'drive'
+    ];
+    let percent=parseInt(this.content.capacity.percentage);
+    if(percent>80)
+    {
+      classList.push('high');
+    }
+    return classList.join(" ");
+  }
+  getSizeDetails(capacity:any):string
+  {
+    return `${this.byteToUnitString(capacity.used_space)} used of ${this.byteToUnitString(capacity.total_space)}`;
+  }
+  byteToUnitString(size:number):string
+  {
+    let s=size, unit=0, units=['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    while(s>=1024)
+    {
+      unit++;
+      s=Math.floor(s/1024);
+    }
+    return `${s} ${units[unit]}`;
   }
 }

@@ -1,5 +1,19 @@
+<!-- Drive -->
+<div [ngClass]="getDriveClasses()" *ngIf="content.isDrive" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openDir(content.name,content.readable);">
+  <div class="icon"></div>
+  <div class="drive-contents">
+    <div class="top">
+      <div class="name">{{content.name}}</div>
+      <div class="percent">{{content.capacity.percentage}}</div>
+    </div>
+    <div class="progress">
+      <div class="progress-bar" style="width:{{content.capacity.percentage}}"></div>
+    </div>
+    <div class="size-details">{{getSizeDetails(content.capacity)}}</div>
+  </div>
+</div>
 <!-- Folder -->
-<div [ngClass]="getFolderClasses()" *ngIf="content.folder" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openDir(content.name,content.readable);">
+<div [ngClass]="getFolderClasses()" *ngIf="content.folder && !content.isDrive" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openDir(content.name,content.readable);">
   <div class="icon"></div>
   <div class="name">{{content.name}}</div>
 </div>
