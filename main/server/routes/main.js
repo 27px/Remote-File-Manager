@@ -93,16 +93,16 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
   else if(isWin && dir_path==="/") // local and windows and loading root path, so load drives
   {
     nodeDiskInfo.getDiskInfo().then(async disks=>{
-      let in_drive_contains=await Promise.allSettled(disks.map(disk=>{
-        return fs.readdir(disk._mounted);
-      }));
+      // let in_drive_contains=await Promise.allSettled(disks.map(disk=>{
+      //   return fs.readdir(disk._mounted);
+      // }));
       let contents=disks.map((disk,i)=>{
-        let readable=in_drive_contains[i].status=="fulfilled";
-        let sub_content=in_drive_contains[i].value; // not sent to client
-        let filled=readable?sub_content.length>0:null;
-        let contentCount=readable?sub_content.length:null; // contents inside the dives
+        // let readable=in_drive_contains[i].status=="fulfilled";
+        // let sub_content=in_drive_contains[i].value; // not sent to client
+        // let filled=readable?sub_content.length>0:null;
+        // let contentCount=readable?sub_content.length:null; // contents inside the dives
         let content = { // unlike dir contents permissions are not sent
-          folder:true,
+          folder:true, // otherwise in front-end file-icon will also show up
           name:disk._mounted,
           capacity:{
             percentage:disk._capacity, // in case numbers large to calculate
@@ -110,9 +110,9 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
             available_space:disk._available,
             used_space:disk._used,
           },
-          contentCount,
-          filled,
-          readable
+          // contentCount,
+          // filled,
+          // readable
         };
         return content;
       });
