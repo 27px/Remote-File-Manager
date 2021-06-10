@@ -1,10 +1,17 @@
+BUG
+1 BUG After clicking path, all operations are failing
+2 Right Click options incorrect sometimes
+3 Cannot move electron app using mouse
+
 TODO
-1 Right Click options incorrect sometimes
-2 File operations like delete, rename, copy, move.
-3 Configurable settings like handshake wait time etc
-4 Sorting with date or size
-5 Shortcut key
-6 Permissions
-7 Searching is only for current directory, not for sub directory
-8 Mouse drag and drop
-9 Cannot move electron app using mouse
+1 delete
+2 rename
+3 move
+4 copy
+5 Configurable settings like handshake wait time etc
+6 Shortcut key
+7 properties
+8 Permissions
+9 Sorting with date or size
+11 Searching is only for current directory, not for sub directory
+12 Mouse drag and drop

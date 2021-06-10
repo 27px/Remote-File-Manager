@@ -70,7 +70,7 @@ module.exports=(USE_PORT)=>{
         return;
       }
       // if not settings it will be operations like delete, rename etc
-      handleOperations(operation);
+      handleOperations(operation); // asynchronously send result to client via ws
     });
 
     socket.on("close",()=>{

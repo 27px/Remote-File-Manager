@@ -741,6 +741,7 @@
   backdrop-filter:blur(8px);
   border-radius:5px;
   overflow:hidden;
+  z-index:2147483646; /* max z-index - 1 */
 }
 .context-menu .menu-button
 {

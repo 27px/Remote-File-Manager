@@ -191,27 +191,29 @@ export class FileManagerComponent implements AfterViewInit
       try
       {
         let data=JSON.parse(event.data);
-        if(data.type=="progress")
-        {
+        if(data.type=="progress") {
           this.background_processes[data.process_id].progress=data.progress;
         }
-        else if(data.type=="completed")
-        {
+        else if(data.type=="completed") {
           this.background_processes[data.process_id].status="completed";
-          if(data.reload)
-          {
+          if(data.reload) {
             this.loadDirContents(this.getCWD());
           }
           this.toast("success",data.message);
         }
-        else if(data.type=="failed")
-        {
+        else if(data.type=="failed") {
           console.error(data)
           this.background_processes[data.process_id].status="failed";
           this.toast("error",data.message);
         }
-        else if(data.type=="settings")
-        {
+        else if(data.type=="partial-success") {
+          this.background_processes[data.process_id].status="failed"; // partial is also fail
+          if(data.reload) {
+            this.loadDirContents(this.getCWD());
+          }
+          this.toast("warning",data.message);
+        }
+        else if(data.type=="settings") {
           // loaded settings configured in server
           this.isWin=data.data.isWin;
           this.finished_setting_up_socket=true;
@@ -247,6 +249,7 @@ export class FileManagerComponent implements AfterViewInit
   {
     let index=event.currentTarget.getAttribute("data-index");
     let temp=this.path.slice(0,index).join("/") || "/";
+    temp=this.normalize_path(temp);
     this.loadDirContents(temp);
   }
   goBackOneDir()
@@ -263,13 +266,17 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.loadDirContents(this.getCWD());
   }
+  normalize_path(path:string):string
+  {
+    return path.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
+  }
   getCWD(extra_path:string="")
   {
     let temp=`${this.path.join("/")}/`;
     temp=temp!="/"?temp:"";
     temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:(this.isWin?temp:`/${temp}`)); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
     temp =`${temp}${extra_path}`;
-    temp=temp.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
+    temp=this.normalize_path(temp);
     return temp || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
@@ -317,7 +324,7 @@ export class FileManagerComponent implements AfterViewInit
       }
       throw new Error("status error");
     }).then(data=>{
-      console.log(data);
+      // console.log(data);
       if(data.status)
       {
         this.isDriveListing=data.type=="drive";
@@ -766,7 +773,7 @@ export class FileManagerComponent implements AfterViewInit
   getNumberOfSelectedItems()
   {
     let count=0;
-    this.contents.forEach(item=>{
+    this.contents.forEach((item:any)=>{
       if(item.selected)
       {
         count++;
@@ -985,6 +992,10 @@ export class FileManagerComponent implements AfterViewInit
     let y=event.clientY;
     let left=(x<offsetX)?x:x-w;
     let top=(y<offsetY)?y:y-h;
+    let selectedItems=null;
+    if(!fromMain) {
+      selectedItems=this.contents.filter((item:any)=>item.selected);
+    }
     this.contextMenu={
       visibility:"hidden",
       fromMain,
@@ -993,7 +1004,8 @@ export class FileManagerComponent implements AfterViewInit
       top:top+"px",
       left:left+"px",
       x,
-      y
+      y,
+      selectedItems
     };
   }
   getContextMenuStyle()
@@ -1043,27 +1055,49 @@ export class FileManagerComponent implements AfterViewInit
     let max_n=0;
     let isFolder = type=="folder";
     let pattern = isFolder?/^New Folder [0-9]+$/:/^Text Document [0-9]+\.txt$/;
-    let operation=isFolder?fs.NEW_FOLDER:fs.NEW_FILE;
-    this.contents
-    .forEach(item=>{
-      if(isFolder==item.folder && pattern.test(item.name))
-      {
+    let operation = isFolder?fs.NEW_FOLDER:fs.NEW_FILE;
+    this.contents.forEach((item:any)=>{
+      if(isFolder==item.folder && pattern.test(item.name)) {
         max_n=Math.max(max_n,parseInt(item.name.split(" ").pop()));
       }
     });
-    let status=socket.startBackgroundProcess(operation,{
-      source:{
-        server:this.current_server,
-        baseFolder:this.getCWD(),
-        files:[
+    let status = socket.startBackgroundProcess(operation, {
+      source: {
+        server: this.current_server,
+        baseFolder: this.getCWD(),
+        files: [
           isFolder?`New Folder ${++max_n}`:`Text Document ${++max_n}.txt`
         ]
       }
     });
-    if(status===null)
-    {
+    if(status===null) {
       this.toast("error","Not Connected to Server, Reconnect");
     }
+  }
+  deleteFileFolder()
+  {
+    let operation = fs.DELETE;
+    let list = this.contextMenu.selectedItems.map((item:any)=>{
+      return {
+        name:item.name,
+        isFolder:item.folder
+      }
+    });
+    this.showPopUp("confirm","Delete",`Are you sure you want to delete ${list.map((item:any)=>`"${item.name}"`).join(", ")}`,"delete","Delete",(data:any)=>{
+      let status = socket.startBackgroundProcess(operation, {
+        source: {
+          server: this.current_server,
+          baseFolder: this.getCWD(),
+          files: list
+        }
+      });
+      if(status===null) {
+        this.toast("error","Not Connected to Server, Reconnect");
+      }
+      this.closePopUp();
+    },"Cancel",(data:any)=>{
+      this.closePopUp();
+    },true);
   }
   hideBackgroundProcess(id:number)
   {
@@ -1090,5 +1124,15 @@ export class FileManagerComponent implements AfterViewInit
       classList.push('drive-container');
     }
     return classList.join(" ");
+  }
+  printSourceFiles(list:any)
+  {
+    if(typeof list[0] == "string") {
+      return list?.join(", ");
+    }
+    if(typeof list[0] == "object") {
+      return list?.map((item:any)=>item.name)?.join(", ");
+    }
+    return '';
   }
 }
