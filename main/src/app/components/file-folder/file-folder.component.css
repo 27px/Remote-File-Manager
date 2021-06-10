@@ -114,6 +114,11 @@
 .drive .drive-contents .size-details
 {
   color:var(--inverse-light);
+  transition:color 0.6s;
+}
+.item.drive:hover .size-details
+{
+  color:var(--inverse);
 }
 .drive .progress
 {

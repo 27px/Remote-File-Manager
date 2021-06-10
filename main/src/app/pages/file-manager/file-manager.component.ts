@@ -191,29 +191,36 @@ export class FileManagerComponent implements AfterViewInit
       try
       {
         let data=JSON.parse(event.data);
-        if(data.type=="progress") {
+        if(data.type=="progress")
+        {
           this.background_processes[data.process_id].progress=data.progress;
         }
-        else if(data.type=="completed") {
+        else if(data.type=="completed")
+        {
           this.background_processes[data.process_id].status="completed";
-          if(data.reload) {
+          if(data.reload)
+          {
             this.loadDirContents(this.getCWD());
           }
           this.toast("success",data.message);
         }
-        else if(data.type=="failed") {
+        else if(data.type=="failed")
+        {
           console.error(data)
           this.background_processes[data.process_id].status="failed";
           this.toast("error",data.message);
         }
-        else if(data.type=="partial-success") {
+        else if(data.type=="partial-success")
+        {
           this.background_processes[data.process_id].status="failed"; // partial is also fail
-          if(data.reload) {
+          if(data.reload)
+          {
             this.loadDirContents(this.getCWD());
           }
           this.toast("warning",data.message);
         }
-        else if(data.type=="settings") {
+        else if(data.type=="settings")
+        {
           // loaded settings configured in server
           this.isWin=data.data.isWin;
           this.finished_setting_up_socket=true;
@@ -1065,10 +1072,10 @@ export class FileManagerComponent implements AfterViewInit
       source: {
         server: this.current_server,
         baseFolder: this.getCWD(),
-        files: [
-          isFolder?`New Folder ${++max_n}`:`Text Document ${++max_n}.txt`
-        ]
-      }
+      },
+      files: [
+        isFolder?`New Folder ${++max_n}`:`Text Document ${++max_n}.txt`
+      ]
     });
     if(status===null) {
       this.toast("error","Not Connected to Server, Reconnect");
@@ -1088,8 +1095,8 @@ export class FileManagerComponent implements AfterViewInit
         source: {
           server: this.current_server,
           baseFolder: this.getCWD(),
-          files: list
-        }
+        },
+        files: list
       });
       if(status===null) {
         this.toast("error","Not Connected to Server, Reconnect");

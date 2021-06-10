@@ -59,7 +59,7 @@ module.exports=async operation=>{
   }
   if(operation.type==='new-folder')
   {
-    let name=operation.data.source.files[0];
+    let name=operation.data.files[0];
     let new_path = getPath(name,operation.data.source.baseFolder);
     connection.mkdir(new_path)
     .then(()=>{
@@ -70,7 +70,7 @@ module.exports=async operation=>{
   }
   else if(operation.type==='new-file')
   {
-    let name=operation.data.source.files[0];
+    let name=operation.data.files[0];
     let new_path = getPath(name,operation.data.source.baseFolder);
     connection.writeFile(new_path,"")
     .then(()=>{
@@ -82,7 +82,7 @@ module.exports=async operation=>{
   else if(operation.type==='delete')
   {
     try {
-      let queue=operation.data.source.files,baseFolder=operation.data.source.baseFolder;
+      let queue=operation.data.files,baseFolder=operation.data.source.baseFolder;
       queue=queue.map(item=>{
         let del_path=getPath(item.name,baseFolder)
         if(item.isFolder) {
