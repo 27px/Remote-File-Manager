@@ -20,7 +20,7 @@ function send_success(message="Completed Successfully", reload=false, type="comp
   send({ process_id, message, type, reload });
 }
 
-function recursiveFolderDelete(connection,root_path,main=false)
+function recursiveFolderDelete(connection,root_path)
 {
   return new Promise(async(resolve, reject)=>{
     try {
@@ -29,21 +29,18 @@ function recursiveFolderDelete(connection,root_path,main=false)
         try {
           let full_path=getPath(item.filename,root_path);
           if(item.longname[0]=='d') {
-            await recursiveFolderDelete(connection,full_path);
-          }
-          else {
-            await connection.unlink(full_path);
+            return recursiveFolderDelete(connection,full_path);
+          } else {
+            return connection.unlink(full_path);
           }
         } catch (error) {
-          reject(error);
+          reject(error.message);
         }
       }));
       await connection.rmdir(root_path);
-    }
-    catch(error) {
+    } catch(error) {
       reject(error.message);
-    }
-    finally {
+    } finally {
       resolve(true);
     }
   });
@@ -92,7 +89,7 @@ module.exports=async operation=>{
           if(server==null) {
             return connection.rmdir(del_path, { recursive: true });
           }
-          return recursiveFolderDelete(connection,del_path,true);
+          return recursiveFolderDelete(connection,del_path);
         }
         return connection.unlink(del_path);
       });
@@ -101,16 +98,12 @@ module.exports=async operation=>{
       let allFailed=queue.every(del=>del.status!="fulfilled");
       if(allSuccess) {
         send_success("Deleted items successfully",true);
-      }
-      else if(allFailed) {
+      } else if(allFailed) {
         send_error("Failed to delete");
-      }
-      else {
+      } else { // partial success
         send_success("Some items deleted, but some items could not be deleted",true,"partial-success");
       }
     } catch (error) {
-      console.log(chalk.red.inverse(error.message));
-      console.log(chalk.red(error));
       send_error(error.message);
     }
   }
