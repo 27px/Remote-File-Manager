@@ -1,7 +1,6 @@
 TODO
-0 Use a free port instead of hardcoded value
-1 File operations like delete, rename, copy, move.
-2 Right Click options incorrect sometimes
+1 Right Click options incorrect sometimes
+2 File operations like delete, rename, copy, move.
 3 Configurable settings like handshake wait time etc
 4 Sorting with date or size
 5 Shortcut key

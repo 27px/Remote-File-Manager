@@ -3,8 +3,9 @@ connections={}; // ssh connections with key as user@host and value as connection
 socket=null;
 isWin = process.platform == "win32";
 settings = {}; // global settings
+instance = null;
 
-module.exports=()=>{
+module.exports=(USE_PORT)=>{
   const config=require("./config/config.json");
   const express=require("express");
   const app=express();
@@ -18,8 +19,8 @@ module.exports=()=>{
   const route=require("./routes/main");
   const handleOperations=require("./functions/handle_operations.js");
 
-  const HOST=config.SERVER.HOST;
-  const PORT=process.env.PORT || config.SERVER.PORT;
+  const HOST = config.SERVER.HOST;
+  const PORT = USE_PORT ?? config.SERVER.PORT;
 
   const wss=new ws.Server({
     server
@@ -83,8 +84,9 @@ module.exports=()=>{
 
   app.use("/",route);
 
-  server.listen(PORT,()=>{
-    console.log(chalk.green.inverse(` Started server ${HOST} on port ${PORT} `));
+  instance=server.listen(PORT,()=>{
+    console.log(chalk.green.inverse(` Started server ${HOST} on port ${instance.address().port} `));
   });
 
+  return instance.address().port; // send which port is used
 }

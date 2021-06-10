@@ -1,3 +1,6 @@
+//global
+USED_PORT=0; // port will be assigned
+
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require("path");
 const expressApp = require(path.join(__dirname,"server","index.js"));
@@ -5,10 +8,12 @@ const url = require("url");
 
 let win;
 
+
 function createWindow()
 {
   // express server app
-  expressApp();
+  USED_PORT = expressApp(0); // port as 0 so uses any free port
+
   // Create the browser window.
   win = new BrowserWindow({
     width: 600,
@@ -26,6 +31,7 @@ function createWindow()
   })
 
   win.setMenu(null) // hide menu
+  win.webContents.send('USED_PORT', USED_PORT);
   win.maximize();
   win.show();
 

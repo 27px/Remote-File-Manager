@@ -13,9 +13,10 @@ import { fs } from "../../../model/fs";// file folder operations list
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
-let socket:any = new WebSocket("ws://localhost:4500");
+let dynamic_port = localStorage.getItem("USED_PORT") || config.server.PORT;
+let domain:string = `http://${config.server.HOST}:${dynamic_port}`;
+let socket:any = new WebSocket(`ws://localhost:${dynamic_port}`);
 let isSocketOpen:boolean = false;
-let domain:string = `http://${config.server.HOST}:${config.server.PORT}`;
 
 // Custom Functions
 const _=(s:string):any=>document.querySelector(s);
