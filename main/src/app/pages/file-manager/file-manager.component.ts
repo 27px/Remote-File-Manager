@@ -284,6 +284,7 @@ export class FileManagerComponent implements AfterViewInit
     temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:(this.isWin?temp:`/${temp}`)); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
     temp =`${temp}${extra_path}`;
     temp=this.normalize_path(temp);
+    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:`/${temp}`); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
     return temp || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
@@ -1141,5 +1142,37 @@ export class FileManagerComponent implements AfterViewInit
       return list?.map((item:any)=>item.name)?.join(", ");
     }
     return '';
+  }
+  cutCopy(type:any)
+  {
+    let list = this.contextMenu.selectedItems.map((item:any)=>{
+      return {
+        name: item.name,
+        isFolder: item.folder
+      }
+    });
+    this.paste = {
+      type: type=='cut'?fs.CUT_PASTE:fs.COPY_PASTE,
+      source: {
+        server: this.current_server,
+        baseFolder: this.getCWD()
+      },
+      files: list
+    }
+  }
+  pasteIt()
+  {
+    let paste_data=this.paste;
+    let status = socket.startBackgroundProcess(paste_data.type, {
+      source: paste_data.source,
+      target: {
+        server: this.current_server,
+        baseFolder: this.getCWD()
+      },
+      files: paste_data.files
+    });
+    if(status===null) {
+      this.toast("error","Not Connected to Server, Reconnect");
+    }
   }
 }

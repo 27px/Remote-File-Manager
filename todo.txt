@@ -13,3 +13,9 @@ TODO
 8 Sorting with date or size
 9 Searching is only for current directory, not for sub directory
 10 Mouse drag and drop
+
+COPY/MOVE
+file ->  file
+file ->  ssh
+ssh  ->  file
+ssh  ->  ssh

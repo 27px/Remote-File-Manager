@@ -152,7 +152,7 @@
           <div class="menu-title">Refresh</div>
         </div>
         <!-- paste -->
-        <div [class]="'menu-button'+((paste!=null)?'':' menu-disabled')">
+        <div [class]="'menu-button'+((paste!=null)?'':' menu-disabled')" (click)="pasteIt();">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
           <div class="menu-title">Paste</div>
         </div>
@@ -195,12 +195,12 @@
           <div class="menu-title">Delete</div>
         </div>
         <!-- cut -->
-        <div class="menu-button">
+        <div class="menu-button" (click)="cutCopy('cut');">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
           <div class="menu-title">Cut</div>
         </div>
         <!-- copy -->
-        <div class="menu-button">
+        <div class="menu-button" (click)="cutCopy('copy');">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0C0C0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           <div class="menu-title">Copy</div>
         </div>

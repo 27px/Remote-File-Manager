@@ -1,7 +1,8 @@
 // global
 process_id=null;
 
-const fs=require("fs").promises;
+const fs=require("fs");
+const fsp=fs.promises;
 const { getPath } = require("../functions/path_functions.js");
 const chalk=require("chalk");
 
@@ -46,6 +47,75 @@ function recursiveFolderDelete(connection,root_path)
   });
 }
 
+async function checkIsFolder(item, path)
+{
+  // if long name not available it is local
+  if(typeof item.longname === 'undefined') {
+    const stat = await fsp.lstat(path);
+    return stat.isDirectory();
+  } else {
+    return item.longname[0]=='d';
+  }
+}
+
+function copyToPath(source,source_promise,source_path,target,target_promise,target_path,isFolder)
+{
+  return new Promise(async(resolve,reject)=>{
+    try {
+      // TODO if file or folder exist rename as next number
+      if(isFolder) {
+        let [ _ , data ] = await Promise.all([
+          target_promise.mkdir(target_path),
+          source_promise.readdir(source_path)
+        ]);
+        await Promise.all(data.map(async item=>{
+          try {
+            let filename=typeof item === 'string' ? item : item.filename;
+            console.log(filename);
+            let full_source_path=getPath(filename,source_path);
+            let full_target_path=getPath(filename,target_path);
+            let isItemDirectory=await checkIsFolder(item,full_source_path);
+            return copyToPath(source,source_promise,full_source_path,target,target_promise,full_target_path,isItemDirectory);
+          } catch (error) {
+            console.log(chalk.yellow.inverse("1"));
+            console.log(error);
+            reject(error.message);
+          }
+        }));
+        // TODO delete source folder if move
+      }
+      else {
+        await new Promise(async(res,rej)=>{
+          try {
+            let [source_stream, target_stream] = await Promise.all([
+              source.createReadStream(source_path),
+              target.createWriteStream(target_path)
+            ]);
+            source_stream.on("error",error=>{
+              rej(error); // reject
+            });
+            source_stream.pipe(target_stream);
+            source_stream.on("end",()=>{
+              res(true); // resolve
+            });
+            // TODO delete source file if move
+          } catch (err) {
+            console.log(chalk.yellow.inverse("2"));
+            console.log(err);
+            rej(err); // reject
+          }
+        })
+      }
+    } catch(error) {
+      console.log(chalk.yellow.inverse("3"));
+      console.log(error);
+      reject(error.message);
+    } finally {
+      resolve(true);
+    }
+  });
+}
+
 module.exports=async operation=>{
   process_id = operation.process_id;
   let server=operation.data.source.server;
@@ -53,7 +123,7 @@ module.exports=async operation=>{
   if(typeof connection === 'undefined' && server!=null) { // either connected or local
     return send_error(null,"Not Connected to Server");
   }
-  connection=server!=null?connection.sftp:fs; // if ssh use sftp else if local fs
+  connection=server!=null?connection.sftp:fsp; // if ssh use sftp else if local fs.promises
   if(typeof connection === 'undefined') {
     return send_error(null,"Not Connected");
   }
@@ -104,6 +174,44 @@ module.exports=async operation=>{
         send_success("Some items deleted, but some items could not be deleted",true,"partial-success");
       }
     } catch (error) {
+      send_error(error.message);
+    }
+  }
+  else if(operation.type == 'copy-paste')
+  {
+    connection=server!=null?connection:fs; // if not sftp use local fs // not fsp
+    let target=operation.data.target.server;
+    let target_connection = connections[target];
+    if(typeof target_connection === 'undefined' && target!=null) { // either connected or local
+      return send_error(null,"Not Connected to Server");
+    }
+    target_connection=target!=null?target_connection.sftp:fs; // if ssh use sftp else if local fs // not fsp
+    if(typeof target_connection === 'undefined') {
+      return send_error(null,"Not Connected");
+    }
+    let connection_promise=server==null?fsp:connection;
+    let target_promise=target==null?fsp:target_connection;
+    try {
+      let queue=operation.data.files,baseFolder=operation.data.source.baseFolder;
+      let targetBaseFolder=operation.data.target.baseFolder;
+      queue=queue.map(item=>{
+        let source_path=getPath(item.name,baseFolder);
+        let target_path=getPath(item.name,targetBaseFolder);
+        return copyToPath(connection,connection_promise,source_path,target_connection,target_promise,target_path,item.isFolder);
+      });
+      queue=await Promise.allSettled(queue);
+      let allSuccess=!(queue.some(del=>del.status!="fulfilled"));
+      let allFailed=queue.every(del=>del.status!="fulfilled");
+      if(allSuccess) {
+        send_success("Copied successfully",true);
+      } else if(allFailed) {
+        send_error("Failed to copy");
+      } else { // partial success
+        send_success("Some items copied, but some items could not be copied",true,"partial-success");
+      }
+    } catch (error) {
+      console.log(chalk.yellow.inverse("4"));
+      console.log(error);
       send_error(error.message);
     }
   }
