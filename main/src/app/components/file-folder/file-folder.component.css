@@ -46,12 +46,15 @@
 }
 .item .name
 {
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
   text-align:center;
   color:var(--accent-dark);
   font-size:var(--icon-font-size);
+}
+.item:not(.item-selected) .name
+{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .item.folder .icon
 {
