@@ -83,13 +83,14 @@ export class PopUpComponent implements OnInit
   emitMisk()
   {
     let data;
-    if(this.popUp.misk.text=="Test") // test connection
-    {
+    if(this.popUp.misk.text=="Test") { // test connection
       data=this.getConnectionProperties();
-      if(data!==null)
-      {
+      if(data!==null) {
         this.misk.emit(data);
       }
+    }
+    else { // others
+      this.misk.emit(data);
     }
   }
   setEditConnectionData()

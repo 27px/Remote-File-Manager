@@ -64,14 +64,21 @@ function copyToPath(source,source_promise,source_path,target,target_promise,targ
     try {
       // TODO if file or folder exist rename as next number
       if(isFolder) {
-        let [ _ , data ] = await Promise.all([
-          target_promise.mkdir(target_path),
-          source_promise.readdir(source_path)
-        ]);
+        try { // create Folder
+          await target_promise.mkdir(target_path)
+        }
+        catch (e) {
+          try{ // check if failed because already exists
+            let stat = await target_promise.stat(target_path);
+          }
+          catch(err) {
+            reject(err);
+          }
+        }
+        let data = await source_promise.readdir(source_path);
         await Promise.all(data.map(async item=>{
           try {
             let filename=typeof item === 'string' ? item : item.filename;
-            console.log(filename);
             let full_source_path=getPath(filename,source_path);
             let full_target_path=getPath(filename,target_path);
             let isItemDirectory=await checkIsFolder(item,full_source_path);

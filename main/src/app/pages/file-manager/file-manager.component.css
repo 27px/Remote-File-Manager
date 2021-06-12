@@ -444,6 +444,7 @@
   padding:5px 10px;
   box-sizing:border-box;
   font-size:18px;
+  font-family:monospace;
   letter-spacing:2px;
   color:var(--accent-dark);
 }

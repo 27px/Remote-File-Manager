@@ -308,6 +308,9 @@ export class FileManagerComponent implements AfterViewInit
       this.toast("warning","Please wait while loading is completed.");
       return;
     }
+    if(this.search!=null) {
+      this.search.value=""; // clear search input if text exists
+    }
     this.loading=true;
     this.contents=[];
     let protocol,body;
@@ -904,11 +907,11 @@ export class FileManagerComponent implements AfterViewInit
   //
   // this.showPopUp("confirm","Title",`Message`,"default","Ok",(data:any)=>{},"Cancel",(data:any)=>{
   //   this.closePopUp();
-  // },true);
+  // },true,"Misk",(data:any)=>{});
   //
   showPopUp(type:string="confirm",title:string,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true,misk:string|null=null,miskHandler:any=null)
   {
-    icon=AVAILABLE_POP_UP_ICONS.includes(icon ?? "")?icon:"default";
+    icon=AVAILABLE_POP_UP_ICONS.includes(icon ?? "default")?icon:"default";
     this.popUp={
       active: true,
       type,
@@ -927,7 +930,7 @@ export class FileManagerComponent implements AfterViewInit
         text: misk,
         handler: miskHandler
       },
-      test_connection: null, // testing status
+      test_connection: null, // testing status // tick, loading, failed
       backgroundCancellation
     }
   }
@@ -1160,7 +1163,86 @@ export class FileManagerComponent implements AfterViewInit
       files: list
     }
   }
+  isValidPaste(src_base:string, target_base:string, files:any[])
+  {
+    src_base=this.parsePath(src_base).join("/");
+    target_base=this.parsePath(target_base).join("/");
+    if(src_base==target_base) {
+      return {
+        status : "warning",
+        message : "You cannot paste in same folder"
+      };
+    }
+    let isInSourceFolder=files
+    .filter(item=>item.isFolder)
+    .map(item=>this.parsePath(`${src_base}/${item.name}`).join("/"))
+    .some(new_path=>target_base.startsWith(new_path));
+    if(isInSourceFolder) {
+      return {
+        status : "warning",
+        message : "You cannot paste inside copied folder"
+      };
+    }
+    let list:any={
+      files:[],
+      folders:[]
+    };
+    this.contents.forEach(item=>{
+      list[item.folder?"folders":"files"].push(item.name);
+    });
+    let doesAlreadyExist=files.some(item=>{
+      return list[item.isFolder?"folders":"files"].includes(item.name);
+    });
+    if(doesAlreadyExist) {
+      return {
+        status : "confirm",
+        message : "Some Files/Folders already exists"
+      };
+    }
+    return {
+      status : "success",
+    };
+  }
+  getNonExistingItemsForPaste(files:any[])
+  {
+    let list:any={
+      files:[],
+      folders:[]
+    };
+    this.contents.forEach(item=>{
+      list[item.folder?"folders":"files"].push(item.name);
+    });
+    files=files.filter(item=>{
+      return !list[item.isFolder?"folders":"files"].includes(item.name);
+    });
+    return files;
+  }
   pasteIt()
+  {
+    let paste_data = this.paste;
+    let targetBaseFolder = this.getCWD();
+    let isValid=this.isValidPaste(paste_data.source.baseFolder,targetBaseFolder,paste_data.files);
+    if(isValid.status=="warning") {
+      this.toast("warning", isValid.message || "Something went wrong");
+      return;
+    }
+    if(isValid.status=="confirm") {
+      this.showPopUp("confirm","Paste Conflict",isValid.message || "Some Files/Folders already exists","paste","Skip",(data:any)=>{
+        paste_data.files=this.getNonExistingItemsForPaste(paste_data.files);
+        this.forcePaste(paste_data.files);
+        this.closePopUp();
+      },"Cancel",(data:any)=>{
+        this.closePopUp();
+      },true,"Overwrite",(data:any)=>{
+        this.forcePaste(paste_data.files);
+        this.closePopUp();
+      });
+    }
+    else {
+      this.forcePaste(paste_data.files);
+    }
+  }
+  forcePaste(files:any[])
   {
     let paste_data=this.paste;
     let status = socket.startBackgroundProcess(paste_data.type, {
@@ -1169,7 +1251,7 @@ export class FileManagerComponent implements AfterViewInit
         server: this.current_server,
         baseFolder: this.getCWD()
       },
-      files: paste_data.files
+      files: files
     });
     if(status===null) {
       this.toast("error","Not Connected to Server, Reconnect");

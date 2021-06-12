@@ -3,5 +3,6 @@ export default [
   "warning",
   "info",
   "error",
+  "paste",
   "default"
 ];
