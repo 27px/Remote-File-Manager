@@ -1,0 +1,26 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="238" y="161" width="524" height="678">
+<path d="M761.328 255.551L666.577 161H238V838.248H761.328V255.551Z" fill="black"/>
+</mask>
+<g mask="url(#mask0)">
+<path d="M728.345 161H269.881C251.665 161 236.898 175.767 236.898 193.983V805.265C236.898 823.481 251.665 838.248 269.881 838.248H728.345C746.561 838.248 761.328 823.481 761.328 805.265V193.983C761.328 175.767 746.561 161 728.345 161Z" fill="#BBDEFB"/>
+</g>
+<path d="M760.901 255.027L667.449 161.575C667.816 185.763 668.549 236.337 668.549 245.132C668.549 253.927 675.145 255.393 678.443 255.027H760.901Z" fill="#90CAF9"/>
+<path d="M430 365.877C430 352.07 440.501 337.003 453.455 332.224L593.245 280.653C606.199 275.874 616.7 283.193 616.7 297V383L430 451.877V365.877Z" fill="#42A5F5"/>
+<rect x="430" y="360" width="22" height="209" fill="#42A5F5"/>
+<rect x="595" y="307" width="22" height="209" fill="#42A5F5"/>
+<ellipse cx="561" cy="515.5" rx="56" ry="33.5" fill="#42A5F5"/>
+<ellipse cx="561" cy="515.5" rx="56" ry="33.5" fill="#42A5F5"/>
+<ellipse cx="396" cy="568.5" rx="56" ry="33.5" fill="#42A5F5"/>
+<ellipse cx="396" cy="568.5" rx="56" ry="33.5" fill="#42A5F5"/>
+<rect x="338.162" y="698" width="21.5806" height="32.9655" rx="10.7903" fill="#1E88E5"/>
+<rect x="381" y="685" width="22" height="60" rx="11" fill="#1E88E5"/>
+<rect x="424.484" y="664" width="21.5806" height="101.763" rx="10.7903" fill="#1E88E5"/>
+<rect x="467.646" y="631" width="21.5806" height="167.694" rx="10.7903" fill="#1E88E5"/>
+<rect x="510.807" y="664" width="21.5806" height="101.763" rx="10.7903" fill="#1E88E5"/>
+<rect x="553.968" y="685" width="21.5806" height="58.7646" rx="10.7903" fill="#1E88E5"/>
+<rect x="597.355" y="697" width="21" height="34.7783" rx="10.5" fill="#1E88E5"/>
+<rect x="640" y="685" width="22" height="59" rx="11" fill="#1E88E5"/>
+<rect x="683" y="664" width="22" height="102" rx="11" fill="#1E88E5"/>
+<rect x="295" y="685" width="22" height="60" rx="11" fill="#1E88E5"/>
+</svg>

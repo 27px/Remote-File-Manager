@@ -9,7 +9,7 @@ import sortType from '../../../model/sortType';
 import keyBoardStatus from '../../../model/keyBoardStatus';
 import dragDimension from "../../../model/dragDimension";
 import { fs } from "../../../model/fs";// file folder operations list
-// import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
+import AVAILABLE_FILE_ICONS from "../../../default-values/AVAILABLE_FILE_ICONS";
 import AVAILABLE_POP_UP_ICONS from "../../../default-values/AVAILABLE_POP_UP_ICONS";
 import config from "../../config/config";
 
@@ -133,31 +133,31 @@ export class FileManagerComponent implements AfterViewInit
   {
     this.isProgressActive=!this.isProgressActive;
   }
-  getProcessTitle(type:string)
+  getProcessTitle(type:string,status:string)
   {
     if(type==fs.DELETE)
     {
-      return "Deleting";
+      return status=='in-progress'?"Deleting":"Delete";
     }
     else if(type==fs.NEW_FOLDER)
     {
-      return "Creating New Folder";
+      return status=='in-progress'?"Creating New Folder":"New Folder";
     }
     else if(type==fs.NEW_FILE)
     {
-      return "Creating New File";
+      return status=='in-progress'?"Creating New File":"New File";
     }
     else if(type==fs.RENAME)
     {
-      return "Renaming";
+      return status=='in-progress'?"Renaming":"Rename";
     }
     else if(type==fs.CUT_PASTE)
     {
-      return "Moving";
+      return status=='in-progress'?"Moving":"Move";
     }
     else if(type==fs.COPY_PASTE)
     {
-      return "Copying";
+      return status=='in-progress'?"Copying":"Copy";
     }
     return "In progress";
   }
@@ -339,6 +339,13 @@ export class FileManagerComponent implements AfterViewInit
         this.isDriveListing=data.type=="drive";
         this.path=this.parsePath(data.path);
         this.contents=data.contents.map((item:any)=>{
+          let mime_type=item.mime_type;
+          if(AVAILABLE_FILE_ICONS.includes(mime_type)) {
+            item.file_icon = `file-${mime_type}`;
+          }
+          else {
+            item.file_icon = "file-default";
+          }
           item.selected=false;// file selected (for cut/copy etc) status
           item.isDrive=this.isDriveListing;
           return item;
@@ -1286,21 +1293,26 @@ export class FileManagerComponent implements AfterViewInit
       if(data!=null) {
         if(data != item.name) // not same name
         {
-          let status = socket.startBackgroundProcess(fs.RENAME, {
-            source: {
-              server: this.current_server,
-              baseFolder: this.getCWD()
-            },
-            files: [ item.name, data ] // original name, new name
-          });
-          if(status===null) {
-            this.toast("error","Not Connected to Server, Reconnect");
+          if(this.contents.some(existing=>existing.name==data)) { // already another file/folder exists with same name
+            this.toast("error",`A file/folder exists with same name`);
+          }
+          else {
+            let status = socket.startBackgroundProcess(fs.RENAME, {
+              source: {
+                server: this.current_server,
+                baseFolder: this.getCWD()
+              },
+              files: [ item.name, data ] // original name, new name
+            });
+            if(status===null) {
+              this.toast("error","Not Connected to Server, Reconnect");
+            }
           }
         }
         this.closePopUp();
       }
     },"Cancel",(data:any)=>{
       this.closePopUp();
-    },true);
+    },false);
   }
 }

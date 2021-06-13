@@ -102,7 +102,8 @@ export class FileFolderComponent implements OnInit
   {
     let classList=[
       'item',
-      'file'
+      'file',
+      this.content.file_icon
     ];
     if(!this.content.readable) {
       classList.push('not-readable');

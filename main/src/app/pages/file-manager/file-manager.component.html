@@ -207,7 +207,7 @@
     </div>
     <div [ngClass]="'process'+(process==undefined?' hidden':'')" *ngFor="let process of background_processes">
       <ng-container *ngIf="process!=undefined">
-        <div class="title">{{getProcessTitle(process.type)}}</div>
+        <div class="title">{{getProcessTitle(process.type,process.status)}}</div>
         <ng-container *ngIf="process.data.source!=null">
           <div class="sub-title">Source : {{process.data.source?.server || "Local"}}</div>
           <div class="sub-title">Source Directory : {{process.data.source?.baseFolder}}</div>

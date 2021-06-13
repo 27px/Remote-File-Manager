@@ -6,6 +6,7 @@ const route=express.Router();
 // plugins
 const SSH2Promise=require('ssh2-promise');
 const nodeDiskInfo=require('node-disk-info');
+const mime=require("mime");
 
 // modules
 const { getPath, normalize_path } = require("../functions/path_functions.js");
@@ -34,8 +35,7 @@ route.post("/fs/ssh/connect",async(req,res)=>{
     ssh=null;
     res.json(error_response("Some error occured",error.message));
   }
-  if(ssh!==null) // no error
-  {
+  if(ssh!==null) { // no error
     ssh.connect()
     .then(()=>ssh.sftp())
     .then(sftp=>{
@@ -46,8 +46,7 @@ route.post("/fs/ssh/connect",async(req,res)=>{
       res.json(error_response("Some error occured",error.message));
     });
   }
-  else
-  {
+  else {
     res.json(success_response(id));
   }
 });
@@ -56,15 +55,12 @@ route.post("/fs/ssh/connect",async(req,res)=>{
 route.post("/fs/:protocol/dir-contents",async(req,res)=>{
   let protocol=req.params.protocol, server_id=req.body.server_id;
   let dir_path=normalize_path(req.body.path);
-  if(protocol==="ssh")
-  {
-    if(typeof connections[server_id] === 'undefined')
-    {
+  if(protocol==="ssh") {
+    if(typeof connections[server_id] === 'undefined') {
       res.json(error_response("Not connected to server, connect first",`connection undefined`,true));
       return;
     }
-    try
-    {
+    try {
       let sftp=connections[server_id].sftp;
       let data=await sftp.readdir(dir_path);
       let stat=await Promise.allSettled(data.map(content=>sftp.stat(getPath(content.filename,dir_path))));
@@ -74,24 +70,25 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
       }));
       let contents=data.map((content,i)=>{
         let readable=filled[i].status=='fulfilled'; // read properly
+        let folder=content.longname[0]=='d';
+        let mime_type=!folder?mime.getType(content.filename.split(".").pop()):null;
         return {
           name:content.filename,
-          folder:content.longname[0]=='d',
+          folder:folder,
           permissions:content.longname.slice(1,10),
           filled:readable?filled[i].value.length>0:null,
           contentCount:readable?filled[i].value.length:null,
-          readable
+          readable,
+          mime_type:mime_type?.split("/")?.shift()
         };
       });
       res.json(response_directory_contents("directory",dir_path,contents));
     }
-    catch(error)
-    {
+    catch(error) {
       res.json(error_response("Some error occured",error.message));
     }
   }
-  else if(isWin && dir_path==="/") // local and windows and loading root path, so load drives
-  {
+  else if(isWin && dir_path==="/") { // local and windows and loading root path, so load drives
     nodeDiskInfo.getDiskInfo().then(async disks=>{
       // let in_drive_contains=await Promise.allSettled(disks.map(disk=>{
       //   return fs.readdir(disk._mounted);
@@ -121,10 +118,8 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
       res.json(error_response("Some error occured",error.message));
     });
   }
-  else // not windows or not loading root path /
-  {
-    try
-    {
+  else { // not windows or not loading root path /
+    try {
       dir_path=dir_path.endsWith(":")?`${dir_path}//`:dir_path; // add double slash if path does not have "//" after colon
       let data=await fs.readdir(dir_path);
       let stat=await Promise.allSettled(data.map(content=>{
@@ -139,19 +134,21 @@ route.post("/fs/:protocol/dir-contents",async(req,res)=>{
       }));
       let contents=data.map((content,i)=>{
         let readable=filled[i].status=='fulfilled'; // read properly
+        let folder=isDir[i];
+        let mime_type=!folder?mime.getType(content.split(".").pop()):null;
         return {
           name:content,
-          folder:isDir[i],
           permissions:null, ///// cannot get from long name
           filled:readable?filled[i].value.length>0:null,
           contentCount:readable?filled[i].value.length:null,
-          readable
+          folder,
+          readable,
+          mime_type:mime_type?.split("/")?.shift()
         };
       });
       res.json(response_directory_contents("directory",dir_path,contents));
     }
-    catch(error)
-    {
+    catch(error) {
       res.json(error_response("Some error occured",error.message));
     }
   }

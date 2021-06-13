@@ -1,4 +1,7 @@
 export default [
-  "zip",
-  "default"
+  "image",
+  "video",
+  "audio",
+  "application",
+  "text"
 ];
