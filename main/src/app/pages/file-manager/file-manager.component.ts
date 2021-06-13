@@ -240,15 +240,14 @@ export class FileManagerComponent implements AfterViewInit
       isSocketOpen=false;
     }
   }
-  openDir(data:any)
+  openDir(data:any,fallback=false)
   {
-    if(data.readable)
-    {
-      this.loadDirContents(this.getCWD(data.folder));
+    let name=fallback?data.name:data.folder;
+    if(data.readable || data.isDrive) {
+      this.loadDirContents(this.getCWD(name));
     }
-    else
-    {
-      this.toast("error",`Directory "${data.folder}" is not accessible`);
+    else {
+      this.toast("error",`Directory "${name}" is not accessible`);
     }
   }
   moveToDir(event:any)
@@ -908,7 +907,7 @@ export class FileManagerComponent implements AfterViewInit
   //   this.closePopUp();
   // },true,"Misk",(data:any)=>{});
   //
-  showPopUp(type:string="confirm",title:string,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true,misk:string|null=null,miskHandler:any=null)
+  showPopUp(type:string="confirm",title:string|null,body:string|null,icon:string|null,ok:string|null,okHandler:any,cancel:string|null,cancelHandler:any,backgroundCancellation:boolean=true,misk:string|null=null,miskHandler:any=null)
   {
     icon=AVAILABLE_POP_UP_ICONS.includes(icon ?? "default")?icon:"default";
     this.popUp={
@@ -998,14 +997,21 @@ export class FileManagerComponent implements AfterViewInit
     let offsetX=screen.width-w, offsetY=screen.height-h;
     let x=event.clientX, y=event.clientY;
     let left=(x<offsetX)?x:x-w, top=(y<offsetY)?y:y-h;
-    let selectedItems=null, visibleOptions=[];
+    let selectedItems=null, visibleOptions:any=[];
     if(!fromMain) {
       selectedItems=this.contents.filter((item:any)=>item.selected);
-      visibleOptions = ["delete", "cut", "copy"];
-      if(selectedItems.length==1) {
-        visibleOptions.push("rename");
-        visibleOptions.push(`open-${this.isDriveListing?'drive':'folder'}`);
-        visibleOptions.push("properties");
+      if(this.isDriveListing) {
+        if(selectedItems.length==1) {
+          visibleOptions = ["open"];
+        }
+      }
+      else{
+        visibleOptions = ["delete", "cut", "copy", "rename", "properties"];
+        if(selectedItems.length==1) {
+          if(selectedItems[0].folder) {
+            visibleOptions.push(`open`);
+          }
+        }
       }
     }
     else {
@@ -1271,5 +1277,30 @@ export class FileManagerComponent implements AfterViewInit
     else if(paste_data.type == "cut-paste") {
       this.paste=null;
     }
+  }
+  rename()
+  {
+    let item=this.contextMenu?.selectedItems[0];
+    this.popUpElement._results[0].renameData=item.name;
+    this.showPopUp("rename",`Rename ${item.folder?'Folder':'File'}`,null,"rename","Rename",(data:any)=>{
+      if(data!=null) {
+        if(data != item.name) // not same name
+        {
+          let status = socket.startBackgroundProcess(fs.RENAME, {
+            source: {
+              server: this.current_server,
+              baseFolder: this.getCWD()
+            },
+            files: [ item.name, data ] // original name, new name
+          });
+          if(status===null) {
+            this.toast("error","Not Connected to Server, Reconnect");
+          }
+        }
+        this.closePopUp();
+      }
+    },"Cancel",(data:any)=>{
+      this.closePopUp();
+    },true);
   }
 }

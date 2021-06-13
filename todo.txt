@@ -1,6 +1,5 @@
 BUG
-1 Right Click options incorrect sometimes
-2 Cannot move electron app using mouse
+1 Cannot move electron app using mouse
 
 TODO
 3 rename
@@ -9,5 +8,5 @@ TODO
 6 Configurable settings like handshake wait time etc
 7 Permissions
 8 Sorting with date or size
-9 Searching is only for current directory, not for sub directory
+9 Searching is only for current directory, not for sub directory // if implementing, also implement as shortcuts to other paths instead of opendir() to same folder
 10 Mouse drag and drop

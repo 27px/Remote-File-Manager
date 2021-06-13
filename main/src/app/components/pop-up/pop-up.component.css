@@ -29,6 +29,10 @@
 {
   z-index:20;
 }
+.pop-up.rename,.pop-up.rename .form
+{
+  position:relative;
+}
 .pop-up.confirm
 {
   display:grid;

@@ -266,7 +266,7 @@
 {
   border:2px solid var(--primary);
   color:var(--primary);
-  background-color:var(--accent-semi-light);
+  background:var(--accent-semi-light);
 }
 .connection-list .connection:hover .connection-options
 {

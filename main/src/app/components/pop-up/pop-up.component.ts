@@ -44,35 +44,51 @@ export class PopUpComponent implements OnInit
   {
     let data=null;
     // connection properties
-    if(this.popUp.type=="connection-properties")
-    {
+    if(this.popUp.type=="connection-properties") {
       data = this.getConnectionProperties();
       this.alreadySetEditData=false;
       this.editConnectionData=null;
+    }
+    else if(this.popUp.type=="rename") {
+      data = this.getRenameNewName();
     }
     this.ok.emit(data);
   }
   getConnectionProperties()
   {
-    let data={};
-    let error=false;
+    let data={}, error=false;
     this.elements._results.forEach((item:stringKey)=>{
-      if(item.getValue()=="")
-      {
+      if(item.getValue()=="") {
         error=true;
         item.setError();
       }
-      else
-      {
+      else {
         item.unsetError();
         data[item.getName()]=item.getValue();
       }
     });
-    if(error)
-    {
+    if(error) {
       return null;
     }
     return data;
+  }
+  getRenameNewName()
+  {
+    let item=this.elements._results[0];
+    // querySelector used due to getValue returns old value
+    let name=document?.querySelector("#rename-new-name")?.value ?? item.getValue();
+    if(name=="") {
+      item.setError();
+      return null;
+    }
+    if(/[/\\:*?"<>|]/.test(name)) {
+      item.setError("Cannot contain symbols /\\:*?\"<>| ");
+      return null;
+    }
+    else {
+      item.unsetError();
+      return name;
+    }
   }
   emitCancel()
   {
@@ -103,6 +119,11 @@ export class PopUpComponent implements OnInit
       });
       this.alreadySetEditData=true;
     }
-    return false;
+    return false; // to not render the dummy element
+  }
+  setRenameData()
+  {
+    this.elements?._results?.[0]?.setValue(this.renameData);
+    return false; // to not render the dummy element
   }
 }

@@ -41,3 +41,8 @@ input.error::placeholder
     margin-bottom:12px;
   }
 }
+.error-message
+{
+  color:var(--red);
+  margin-top:-20px;
+}

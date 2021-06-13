@@ -207,9 +207,18 @@ module.exports=async operation=>{
         send_success("Some items copied, but some items could not be copied",true,"partial-success");
       }
     } catch (error) {
-      console.log(chalk.yellow.inverse("4"));
-      console.log(error);
       send_error(error.message);
     }
+  }
+  else if(operation.type == 'rename') {
+    let [old_name, new_name]=operation.data.files;
+    let old_path = getPath(old_name,operation.data.source.baseFolder);
+    let new_path = getPath(new_name,operation.data.source.baseFolder);
+    connection.rename(old_path, new_path)
+    .then(()=>{
+      send_success(`Renamed "${old_name}" to "${new_name}" Successfully`,true);
+    }).catch(error=>{
+      send_error(error.message);
+    });
   }
 };

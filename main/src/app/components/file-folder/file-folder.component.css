@@ -41,6 +41,7 @@
 .item.drive .icon
 {
   width:115px;
+  height:110px;
   margin-left:-10px;
   margin-bottom:unset;
 }
@@ -84,6 +85,11 @@
 {
   background-image:url("../../../assets/images/drive.svg");
 }
+/* Not used, disk looks like faulty */
+/* .item.drive.high .icon
+{
+  background-image:url("../../../assets/images/drive-high.svg");
+} */
 .drive .drive-contents
 {
   width:100%;

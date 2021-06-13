@@ -1,4 +1,5 @@
 <div class="row">
   <label for="{{name}}">{{label}}</label>
   <input class="{{error}}" type="{{type}}" placeholder="{{placeholder}}" name="{{name}}" id="{{name}}" [(ngModel)]="value" (keydown)="$event.stopPropagation();" (keyup)="$event.stopPropagation();">
+  <div class="error-message" *ngIf="error_message!=null">{{error_message}}</div>
 </div>

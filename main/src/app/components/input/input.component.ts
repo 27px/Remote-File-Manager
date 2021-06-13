@@ -9,6 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class InputComponent implements OnInit
 {
   error:string = "";
+  error_message:string|null = null;
 
   @Input() type:string="";
   @Input() label:string="";
@@ -38,12 +39,16 @@ export class InputComponent implements OnInit
   {
     this.value=value;
   }
-  setError()
+  setError(message:string|null=null)
   {
     this.error="error";
+    if(message!=null) {
+      this.error_message=message;
+    }
   }
   unsetError()
   {
     this.error="";
+    this.error_message=null;
   }
 }
