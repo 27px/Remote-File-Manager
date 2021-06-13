@@ -566,7 +566,7 @@
 .contents.drive-container
 {
   grid-template-columns:repeat(auto-fill,minmax(var(--drive-icon-size),1fr));
-  grid-auto-rows:var(--icon-size);
+  grid-auto-rows:120px;
 }
 .contents.wide
 {

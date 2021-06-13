@@ -127,7 +127,7 @@
   <!-- Directory Container -->
   <div [ngClass]="getContentContainerStyle()" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <!-- Files and Folders -->
-    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();"></app-file-folder>
+    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();" [isCut]="isItemCutForPaste(i)"></app-file-folder>
     <!-- If no files/folders present -->
     <div *ngIf="noItems && !loading" class="no-items">{{error_loading==""?'No Items':error_loading}}</div>
     <!-- If loading -->
@@ -232,12 +232,12 @@
       <ng-container *ngIf="process!=undefined">
         <div class="title">{{getProcessTitle(process.type)}}</div>
         <ng-container *ngIf="process.data.source!=null">
-          <div class="sub-title">Source : {{process.data.source?.server}}</div>
+          <div class="sub-title">Source : {{process.data.source?.server || "Local"}}</div>
           <div class="sub-title">Source Directory : {{process.data.source?.baseFolder}}</div>
           <div class="sub-title" *ngIf="process.data.source.files!==undefined">Source Files : {{printSourceFiles(process.data.source?.files)}}</div>
         </ng-container>
         <ng-container *ngIf="process.data.target!=null">
-          <div class="sub-title">Target : {{process.data.target.server}}</div>
+          <div class="sub-title">Target : {{process.data.target?.server || "Local"}}</div>
           <div class="sub-title">Target Directory : {{process.data.target.baseFolder}}</div>
         </ng-container>
         <div class="progress" *ngIf="!['failed','completed'].includes(process.status)">

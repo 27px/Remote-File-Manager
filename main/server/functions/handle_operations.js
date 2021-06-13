@@ -58,23 +58,14 @@ async function checkIsFolder(item, path)
   }
 }
 
-function copyToPath(source,source_promise,source_path,target,target_promise,target_path,isFolder)
+function copyToPath(source,source_promise,source_path,target,target_promise,target_path,isFolder,isMove=false)
 {
   return new Promise(async(resolve,reject)=>{
     try {
-      // TODO if file or folder exist rename as next number
-      if(isFolder) {
-        try { // create Folder
-          await target_promise.mkdir(target_path)
-        }
-        catch (e) {
-          try{ // check if failed because already exists
-            let stat = await target_promise.stat(target_path);
-          }
-          catch(err) {
-            reject(err);
-          }
-        }
+      if(isFolder) { // create folder
+        await target_promise.mkdir(target_path).catch(async e=>{ // check if failed due to already exixts error
+          stat = await target_promise.stat(target_path).catch(err=>reject(err));
+        });
         let data = await source_promise.readdir(source_path);
         await Promise.all(data.map(async item=>{
           try {
@@ -82,14 +73,14 @@ function copyToPath(source,source_promise,source_path,target,target_promise,targ
             let full_source_path=getPath(filename,source_path);
             let full_target_path=getPath(filename,target_path);
             let isItemDirectory=await checkIsFolder(item,full_source_path);
-            return copyToPath(source,source_promise,full_source_path,target,target_promise,full_target_path,isItemDirectory);
+            return copyToPath(source,source_promise,full_source_path,target,target_promise,full_target_path,isItemDirectory,isMove);
           } catch (error) {
-            console.log(chalk.yellow.inverse("1"));
-            console.log(error);
             reject(error.message);
           }
         }));
-        // TODO delete source folder if move
+        if(isMove) {
+          await source_promise.rmdir(source_path);
+        }
       }
       else {
         await new Promise(async(res,rej)=>{
@@ -102,20 +93,18 @@ function copyToPath(source,source_promise,source_path,target,target_promise,targ
               rej(error); // reject
             });
             source_stream.pipe(target_stream);
-            source_stream.on("end",()=>{
+            source_stream.on("end",async()=>{
+              if(isMove) {
+                await source_promise.unlink(source_path);
+              }
               res(true); // resolve
             });
-            // TODO delete source file if move
           } catch (err) {
-            console.log(chalk.yellow.inverse("2"));
-            console.log(err);
             rej(err); // reject
           }
         })
       }
     } catch(error) {
-      console.log(chalk.yellow.inverse("3"));
-      console.log(error);
       reject(error.message);
     } finally {
       resolve(true);
@@ -184,8 +173,9 @@ module.exports=async operation=>{
       send_error(error.message);
     }
   }
-  else if(operation.type == 'copy-paste')
+  else if(operation.type == 'copy-paste' || operation.type == 'cut-paste')
   {
+    let isMove = operation.type == 'cut-paste'; // move
     connection=server!=null?connection:fs; // if not sftp use local fs // not fsp
     let target=operation.data.target.server;
     let target_connection = connections[target];
@@ -204,7 +194,7 @@ module.exports=async operation=>{
       queue=queue.map(item=>{
         let source_path=getPath(item.name,baseFolder);
         let target_path=getPath(item.name,targetBaseFolder);
-        return copyToPath(connection,connection_promise,source_path,target_connection,target_promise,target_path,item.isFolder);
+        return copyToPath(connection,connection_promise,source_path,target_connection,target_promise,target_path,item.isFolder,isMove);
       });
       queue=await Promise.allSettled(queue);
       let allSuccess=!(queue.some(del=>del.status!="fulfilled"));

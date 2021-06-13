@@ -17,6 +17,7 @@ export class FileFolderComponent implements OnInit
     caps: false
   }
   @Input('attr-index') index: number = -1;
+  @Input('isCut') isCut: boolean = false;
   @Output() openFolder: EventEmitter<any> = new EventEmitter();
   @Output() clearAllSelections: EventEmitter<any> = new EventEmitter();
   @Output() shiftSelection: EventEmitter<any> = new EventEmitter();
@@ -83,17 +84,17 @@ export class FileFolderComponent implements OnInit
       'item',
       'folder'
     ];
-    if(!this.content.readable)
-    {
+    if(!this.content.readable) {
       classList.push('not-readable');
     }
-    else if(this.content.filled)
-    {
+    else if(this.content.filled) {
       classList.push('filled');
     }
-    if(this.content.selected)
-    {
+    if(this.content.selected) {
       classList.push('item-selected');
+    }
+    if(this.isCut) {
+      classList.push('item-cut');
     }
     return classList.join(" ");
   }
@@ -103,13 +104,14 @@ export class FileFolderComponent implements OnInit
       'item',
       'file'
     ];
-    if(!this.content.readable)
-    {
+    if(!this.content.readable) {
       classList.push('not-readable');
     }
-    if(this.content.selected)
-    {
+    if(this.content.selected) {
       classList.push('item-selected');
+    }
+    if(this.isCut) {
+      classList.push('item-cut');
     }
     return classList.join(" ");
   }
@@ -119,13 +121,11 @@ export class FileFolderComponent implements OnInit
       'item',
       'drive'
     ];
-    if(this.content.selected)
-    {
+    if(this.content.selected) {
       classList.push('item-selected');
     }
     let percent=parseInt(this.content.capacity.percentage);
-    if(percent>80)
-    {
+    if(percent>80) {
       classList.push('high');
     }
     return classList.join(" ");

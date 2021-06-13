@@ -1,21 +1,13 @@
 BUG
-2 Right Click options incorrect sometimes
-3 Cannot move electron app using mouse
+1 Right Click options incorrect sometimes
+2 Cannot move electron app using mouse
 
 TODO
-1 rename
-3 copy
-2 move
-5 Shortcut key
-6 properties
-4 Configurable settings like handshake wait time etc
+3 rename
+4 Shortcut key
+5 properties
+6 Configurable settings like handshake wait time etc
 7 Permissions
 8 Sorting with date or size
 9 Searching is only for current directory, not for sub directory
 10 Mouse drag and drop
-
-COPY/MOVE
-file ->  file
-file ->  ssh
-ssh  ->  file
-ssh  ->  ssh

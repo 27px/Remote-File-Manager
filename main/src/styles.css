@@ -18,21 +18,25 @@
 {
   font-family:"Lemon";
   src:url("./assets/fonts/lemon.ttf");
+  font-display: swap;
 }
 @font-face
 {
   font-family:"Roboto";
   src:url("./assets/fonts/roboto.ttf");
+  font-display: swap;
 }
 @font-face
 {
   font-family:"Raleway";
   src:url("./assets/fonts/raleway.ttf");
+  font-display: swap;
 }
 @font-face
 {
   font-family:"Dancing Script";
   src:url("./assets/fonts/dancing-script.ttf");
+  font-display: swap;
 }
 body[data-theme="dark"]
 {

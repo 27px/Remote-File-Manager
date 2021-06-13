@@ -234,8 +234,7 @@ export class FileManagerComponent implements AfterViewInit
     }
 
     socket.onclose=()=>{
-      socket={
-        // socket is cleared and function returns null;
+      socket={ // socket is cleared and function returns null;
         startBackgroundProcess:(a:any={},b:any={},c:any={})=>null
       };
       isSocketOpen=false;
@@ -995,17 +994,22 @@ export class FileManagerComponent implements AfterViewInit
     event?.preventDefault();
     let menu=_(".context-menu")?.getBoundingClientRect();
     let screen=document.body.getBoundingClientRect();
-    let w=menu.width;
-    let h=menu.height;
-    let offsetX=screen.width-w;
-    let offsetY=screen.height-h;
-    let x=event.clientX;
-    let y=event.clientY;
-    let left=(x<offsetX)?x:x-w;
-    let top=(y<offsetY)?y:y-h;
-    let selectedItems=null;
+    let w=menu.width, h=menu.height;
+    let offsetX=screen.width-w, offsetY=screen.height-h;
+    let x=event.clientX, y=event.clientY;
+    let left=(x<offsetX)?x:x-w, top=(y<offsetY)?y:y-h;
+    let selectedItems=null, visibleOptions=[];
     if(!fromMain) {
       selectedItems=this.contents.filter((item:any)=>item.selected);
+      visibleOptions = ["delete", "cut", "copy"];
+      if(selectedItems.length==1) {
+        visibleOptions.push("rename");
+        visibleOptions.push(`open-${this.isDriveListing?'drive':'folder'}`);
+        visibleOptions.push("properties");
+      }
+    }
+    else {
+      visibleOptions = ["back", "refresh", "paste", "new-folder", "new-file"];
     }
     this.contextMenu={
       visibility:"hidden",
@@ -1016,7 +1020,8 @@ export class FileManagerComponent implements AfterViewInit
       left:left+"px",
       x,
       y,
-      selectedItems
+      selectedItems,
+      visibleOptions
     };
   }
   getContextMenuStyle()
@@ -1146,6 +1151,13 @@ export class FileManagerComponent implements AfterViewInit
     }
     return '';
   }
+  isItemCutForPaste(index:number):boolean
+  {
+    let element = this.contents[index];
+    return (this.paste?.type!="cut-paste" || this.paste?.source?.baseFolder!=this.getCWD() || this.paste?.source?.server!=this.current_server)?false:this.paste?.files?.some((item:any)=>{
+      return item.name == element.name && item.isFolder == element.folder;
+    });
+  }
   cutCopy(type:any)
   {
     let list = this.contextMenu.selectedItems.map((item:any)=>{
@@ -1255,6 +1267,9 @@ export class FileManagerComponent implements AfterViewInit
     });
     if(status===null) {
       this.toast("error","Not Connected to Server, Reconnect");
+    }
+    else if(paste_data.type == "cut-paste") {
+      this.paste=null;
     }
   }
 }

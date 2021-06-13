@@ -56,6 +56,10 @@
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.item.item-cut
+{
+  opacity:0.3;
+}
 .item.folder .icon
 {
   background-image:url("../../../assets/images/folder.svg");
@@ -134,8 +138,18 @@
   width:0%;
   height:100%;
   background:var(--primary);
+  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0);
+  transition: box-shadow 0.5s;
 }
 .drive.high .progress .progress-bar
 {
   background:var(--red);
+}
+.item.drive:hover .progress-bar
+{
+  box-shadow: 0px 0px 10px 1px var(--primary);
+}
+.item.drive.high:hover .progress-bar
+{
+  box-shadow: 0px 0px 10px 1px var(--red);
 }

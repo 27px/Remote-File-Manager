@@ -1,5 +1,8 @@
 <div class="bg" *ngIf="popUp.active" (click)="popUp.backgroundCancellation?emitCancel():null;">
   <div [class]="'pop-up '+popUp.type" (click)="stopPropagation($event);">
+    <video class="bg-video" src="./assets/videos/tech_bg.mp4" poster="./assets/videos/tech_bg.png" autoplay muted loop></video>
+    <div class="bg-overlay"></div>
+    <div class="bg-shade"></div>
     <!-- For simple alert, into, warning, confirmation, etc. -->
     <ng-container *ngIf="popUp.type=='confirm'">
       <div class="icon">
