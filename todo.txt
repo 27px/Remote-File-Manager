@@ -2,11 +2,8 @@ BUG
 1 Cannot move electron app using mouse
 
 TODO
-3 rename
-4 Shortcut key
-5 properties
-6 Configurable settings like handshake wait time etc
-7 Permissions
-8 Sorting with date or size
-9 Searching is only for current directory, not for sub directory // if implementing, also implement as shortcuts to other paths instead of opendir() to same folder
-10 Mouse drag and drop
+2 Shortcut keys
+3 properties
+4 Permissions
+5 Configurable settings like handshake wait time etc
+6 Sorting with date or size

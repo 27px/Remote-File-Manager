@@ -44,7 +44,7 @@ function createWindow()
   win.focus();
 
   //// DevTools. // remove in production
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   // Event when the window is closed.
   win.on('closed',()=>{

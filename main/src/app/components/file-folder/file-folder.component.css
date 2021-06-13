@@ -77,19 +77,10 @@
 {
   background-image:url("../../../assets/images/folder-no-access.svg");
 }
-.item.file.not-readable .icon
-{
-  background-image:url("../../../assets/images/file-no-access.svg");
-}
 .item.drive .icon
 {
   background-image:url("../../../assets/images/drive.svg");
 }
-/* Not used, disk looks like faulty */
-/* .item.drive.high .icon
-{
-  background-image:url("../../../assets/images/drive-high.svg");
-} */
 .drive .drive-contents
 {
   width:100%;

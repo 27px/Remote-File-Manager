@@ -135,28 +135,22 @@ export class FileManagerComponent implements AfterViewInit
   }
   getProcessTitle(type:string,status:string)
   {
-    if(type==fs.DELETE)
-    {
+    if(type==fs.DELETE) {
       return status=='in-progress'?"Deleting":"Delete";
     }
-    else if(type==fs.NEW_FOLDER)
-    {
+    else if(type==fs.NEW_FOLDER) {
       return status=='in-progress'?"Creating New Folder":"New Folder";
     }
-    else if(type==fs.NEW_FILE)
-    {
+    else if(type==fs.NEW_FILE) {
       return status=='in-progress'?"Creating New File":"New File";
     }
-    else if(type==fs.RENAME)
-    {
+    else if(type==fs.RENAME) {
       return status=='in-progress'?"Renaming":"Rename";
     }
-    else if(type==fs.CUT_PASTE)
-    {
+    else if(type==fs.CUT_PASTE) {
       return status=='in-progress'?"Moving":"Move";
     }
-    else if(type==fs.COPY_PASTE)
-    {
+    else if(type==fs.COPY_PASTE) {
       return status=='in-progress'?"Copying":"Copy";
     }
     return "In progress";
