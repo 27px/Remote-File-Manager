@@ -8,7 +8,7 @@
   box-sizing:border-box;
   border:2px solid transparent;
   cursor:pointer;
-  transition:border-color 0.3s;
+  transition:border-color 0.3s, border-radius 0.3s;
 }
 .item.drive
 {
@@ -28,6 +28,10 @@
 .item.item-selected
 {
   border-color:var(--accent-dark)!important; /* selected should have more priority than hover */
+}
+.item:not(.drive):hover,.item.item-selected:not(.drive)
+{
+  border-radius: 5px;
 }
 .item .icon
 {

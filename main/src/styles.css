@@ -42,6 +42,7 @@ body[data-theme="dark"]
 {
   --bg:#303030;
   --bg-light:rgba(30,30,30,0.1);
+  --bg-semi:rgba(30,30,30,0.6);
   --accent:#606060;
   --accent-semi:rgba(128,128,128,0.5);
   --accent-semi-light:rgba(128,128,128,0.2);
@@ -51,11 +52,14 @@ body[data-theme="dark"]
   --inverse-light:#FFFFFF50;
   --abstract-light:rgba(0,0,0,0.15);
   --absolute:#000000;
+
+  --gradient-bg: linear-gradient(200deg, rgba(171, 171, 171,0.05) 0%, rgba(171, 171, 171,0.05) 23%,rgba(90, 90, 90,0.05) 23%, rgba(90, 90, 90,0.05) 48%,rgba(65, 65, 65,0.05) 48%, rgba(65, 65, 65,0.05) 61%,rgba(232, 232, 232,0.05) 61%, rgba(232, 232, 232,0.05) 100%),linear-gradient(126deg, rgba(194, 194, 194,0.05) 0%, rgba(194, 194, 194,0.05) 11%,rgba(127, 127, 127,0.05) 11%, rgba(127, 127, 127,0.05) 33%,rgba(117, 117, 117,0.05) 33%, rgba(117, 117, 117,0.05) 99%,rgba(248, 248, 248,0.05) 99%, rgba(248, 248, 248,0.05) 100%),linear-gradient(144deg, rgba(64, 64, 64,0.05) 0%, rgba(64, 64, 64,0.05) 33%,rgba(211, 211, 211,0.05) 33%, rgba(211, 211, 211,0.05) 50%,rgba(53, 53, 53,0.05) 50%, rgba(53, 53, 53,0.05) 75%,rgba(144, 144, 144,0.05) 75%, rgba(144, 144, 144,0.05) 100%),linear-gradient(329deg, hsl(148,0%,0%),hsl(148,0%,0%));
 }
 body[data-theme="light"]
 {
   --bg:#FFFFFF;
   --bg-light:rgba(0,0,0,0.1);
+  --bg-semi:rgba(255,255,255,0.6);
   --accent:#C0C0C0;
   --accent-semi:rgba(192,192,192,0.5);
   --accent-semi-light:rgba(192,192,192,0.2);
@@ -65,6 +69,8 @@ body[data-theme="light"]
   --inverse-light:#00000050;
   --abstract-light:rgba(255,255,255,0.15);
   --absolute:#FFFFFF;
+
+  --gradient-bg: linear-gradient(45deg, transparent 0%, transparent 55%,rgba(64, 64, 64,0.04) 55%, rgba(64, 64, 64,0.04) 76%,transparent 76%, transparent 100%),linear-gradient(135deg, transparent 0%, transparent 14%,rgba(64, 64, 64,0.04) 14%, rgba(64, 64, 64,0.04) 41%,transparent 41%, transparent 100%),linear-gradient(45deg, transparent 0%, transparent 2%,rgba(64, 64, 64,0.04) 2%, rgba(64, 64, 64,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(135deg, transparent 0%, transparent 61%,rgba(64, 64, 64,0.04) 61%, rgba(64, 64, 64,0.04) 71%,transparent 71%, transparent 100%),linear-gradient(90deg, rgb(255,255,255),rgb(255,255,255));
 }
 body
 {
@@ -173,7 +179,7 @@ label
   width:100%;
   font-size:18px;
   margin-bottom:10px;
-  color:var(--primary3);
+  color:var(--primary5);
 }
 label.icon
 {

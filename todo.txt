@@ -7,3 +7,9 @@ TODO
 4 Permissions
 5 Configurable settings like handshake wait time etc
 6 Sorting with date or size
+
+UI TODO
+7 Collapsible Connections
+
+Others TODO
+presentation document

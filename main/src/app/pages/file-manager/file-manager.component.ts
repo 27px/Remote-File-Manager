@@ -1309,4 +1309,12 @@ export class FileManagerComponent implements AfterViewInit
       this.closePopUp();
     },false);
   }
+  showSourceGit()
+  {
+    window.open('https://github.com/27px/Remote-File-Manager','_blank');
+  }
+  showMyDevProfile()
+  {
+    window.open('https://www.linkedin.com/in/27px/','_blank');
+  }
 }

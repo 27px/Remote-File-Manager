@@ -1,7 +1,7 @@
 //global
 USED_PORT=0; // port will be assigned
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require("path");
 const expressApp = require(path.join(__dirname,"server","index.js"));
 const url = require("url");
@@ -45,6 +45,11 @@ function createWindow()
 
   //// DevTools. // remove in production
   // win.webContents.openDevTools()
+
+  win.webContents.on('new-window', function(event, url) {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
 
   // Event when the window is closed.
   win.on('closed',()=>{

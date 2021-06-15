@@ -13,7 +13,7 @@
     "electron-build": "ng build --prod && electron .",
     "electron-generate": "ng build --prod && electron-packager . \"File Manager\" --all --out='../build' --overwrite --icon=\"./src/icon.icns\"",
     "electron-generate-win": "ng build --prod && electron-packager . \"File Manager\" --platform='win32' --arch='x64' --asar --out='../build' --overwrite --icon=\"./src/icon.icns\"",
-    "electron-generate-linux": "ng build --prod && electron-packager . \"File Manager\" --platform='linux' --arch='x64' --asar --out='../build' --overwrite --icon=\"./src/icon.icns\"",
+    "electron-generate-linux": "ng build --prod && electron-packager . \"File Manager\" --platform='linux' --arch='x64' --asar --out='../build' --overwrite --icon=\"./src/icon.png\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -6,7 +6,7 @@ input
   border-bottom:3px solid rgba(0,0,0,0.3);
   transition:border-color 0.3s;
   background:transparent;
-  color:#FFFFFF;
+  color:var(--inverse);
   /* box-shadow:0px 0px 0px 1000px #FFFFFF inset; */
   border-bottom:var(--border);
   letter-spacing:1px;
