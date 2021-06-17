@@ -3,6 +3,7 @@ process_id=null;
 
 const fs=require("fs");
 const fsp=fs.promises;
+const { shell } = require("electron"); // only works if on electron
 const { getPath } = require("../functions/path_functions.js");
 const chalk=require("chalk");
 
@@ -220,5 +221,15 @@ module.exports=async operation=>{
     }).catch(error=>{
       send_error(error.message);
     });
+  }
+  else if(operation.type == 'open-file') {
+    let file=operation.data.files[0];
+    let base_path = getPath(file,operation.data.source.baseFolder);
+    try {
+      await shell.openPath(base_path);
+      send_success(`Opened ${file} in System App`);
+    } catch (error) {
+      send_error(error.message);
+    }
   }
 };

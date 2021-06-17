@@ -5,5 +5,6 @@ export enum fs
   NEW_FILE = "new-file",
   RENAME = "rename",
   CUT_PASTE = "cut-paste",
-  COPY_PASTE = "copy-paste"
+  COPY_PASTE = "copy-paste",
+  OPEN_FILE = "open-file"
 }

@@ -19,6 +19,7 @@ export class FileFolderComponent implements OnInit
   @Input('attr-index') index: number = -1;
   @Input('isCut') isCut: boolean = false;
   @Output() openFolder: EventEmitter<any> = new EventEmitter();
+  @Output() openFile: EventEmitter<any> = new EventEmitter();
   @Output() clearAllSelections: EventEmitter<any> = new EventEmitter();
   @Output() shiftSelection: EventEmitter<any> = new EventEmitter();
 
@@ -36,6 +37,10 @@ export class FileFolderComponent implements OnInit
       folder,
       readable
     });
+  }
+  openFileinSystem(file:string)
+  {
+    this.openFile.emit(file);
   }
   getData()
   {

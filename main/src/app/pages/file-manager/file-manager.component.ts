@@ -153,6 +153,9 @@ export class FileManagerComponent implements AfterViewInit
     else if(type==fs.COPY_PASTE) {
       return status=='in-progress'?"Copying":"Copy";
     }
+    else if(type==fs.OPEN_FILE) {
+      return status=='in-progress'?"Opening":"Opened";
+    }
     return "In progress";
   }
   setUpSocket()
@@ -259,7 +262,7 @@ export class FileManagerComponent implements AfterViewInit
     }
     let path=[...this.path];
     path.pop();
-    this.loadDirContents(path.join("/") || "/");
+    this.loadDirContents(this.normalize_path(path.join("/")) || "/");
   }
   refresh()
   {
@@ -267,16 +270,16 @@ export class FileManagerComponent implements AfterViewInit
   }
   normalize_path(path:string):string
   {
-    return path.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
+    path=path.replace("://",":").replace(":/",":").replace(":","://"); // if collon(:) is present then it should be ://
+    return path.includes(":")?path:(path.startsWith("/")?path:`/${path}`); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
   }
   getCWD(extra_path:string="")
   {
     let temp=`${this.path.join("/")}/`;
     temp=temp!="/"?temp:"";
-    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:(this.isWin?temp:`/${temp}`)); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
+    // temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:(this.isWin?temp:`/${temp}`)); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
     temp =`${temp}${extra_path}`;
     temp=this.normalize_path(temp);
-    temp=temp.includes(":")?temp:(temp.startsWith("/")?temp:`/${temp}`); // adds slash in front if linux path (identified by colon : (only present in windows, but not present in root path of windows))
     return temp || "/";
   }
   toast(type:string="info",message:string,delay:number=4000)
@@ -590,7 +593,7 @@ export class FileManagerComponent implements AfterViewInit
   }
   editThePath()
   {
-    this.editPathInput.value=this.path.join("/") || "/";
+    this.editPathInput.value=this.getCWD() || "/";
     this.editingPath=true;
     this.editPathInput.selectionStart=0;
     this.editPathInput.selectionEnd=this.editPathInput.value.length-1;
@@ -694,7 +697,7 @@ export class FileManagerComponent implements AfterViewInit
   }
   toggleEditPath()
   {
-    this.editPathInput.value=this.path.join("/") || "/";
+    this.editPathInput.value=this.getCWD() || "/";
     this.editingPath=!this.editingPath;
     _("#editable-path")?.focus();
   }
@@ -1316,5 +1319,26 @@ export class FileManagerComponent implements AfterViewInit
   showMyDevProfile()
   {
     window.open('https://www.linkedin.com/in/27px/','_blank');
+  }
+  openFileInDefaultApp(filename:any)
+  {
+    if(this.current_server != null) { // if not local system
+      this.toast("warning","You cannot open a file in server, copy it and paste it to your local system to open");
+    }
+    else if(this.inBrowser) {
+      this.toast("warning","Opening a file feature is not available in browser, try in the executable version");
+    }
+    else {
+      let status = socket.startBackgroundProcess(fs.OPEN_FILE, {
+        source: {
+          server: this.current_server,
+          baseFolder: this.getCWD()
+        },
+        files: [ filename ] // file to open
+      });
+      if(status===null) {
+        this.toast("error","Not Connected to Server, Reconnect");
+      }
+    }
   }
 }

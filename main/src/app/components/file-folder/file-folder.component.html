@@ -18,7 +18,7 @@
   <div class="name">{{content.name}}</div>
 </div>
 <!-- File -->
-<div [ngClass]="getFileClasses()" *ngIf="!content.folder" (click)="clicked($event);" draggable="false" title="{{content.name}}">
+<div [ngClass]="getFileClasses()" *ngIf="!content.folder" (click)="clicked($event);" draggable="false" title="{{content.name}}" (dblclick)="openFileinSystem(content.name);">
   <!--  style="background-image:url('./assets/images/{{content.fileIcon}}');" -->
   <div class="icon" style="background-image:url('./assets/images/{{content.file_icon}}.svg');"></div>
   <div class="name">{{content.name}}</div>

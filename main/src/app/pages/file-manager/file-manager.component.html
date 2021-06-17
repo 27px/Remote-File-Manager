@@ -135,7 +135,7 @@
   <!-- Directory Container -->
   <div [ngClass]="getContentContainerStyle()" (contextmenu)="rightClick($event);" (mousedown)="mouseDown($event);" (mousemove)="mouseMoving($event);">
     <!-- Files and Folders -->
-    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();" [isCut]="isItemCutForPaste(i)"></app-file-folder>
+    <app-file-folder *ngFor="let content of contents; let i=index" [attr-index]="i" [content]="content" [keyboard]="keyboard" (openFolder)="openDir($event);" (openFile)="openFileInDefaultApp($event);" (clearAllSelections)="clearSelection();" (shiftSelection)="shiftSelection($event);" (contextmenu)="fileFolderRightClick($event,content.folder,i);" (dblclick)="closeMenu();" (mousedown)="closeMenu();" [isCut]="isItemCutForPaste(i)"></app-file-folder>
     <!-- If no files/folders present -->
     <div *ngIf="noItems && !loading" class="no-items">{{error_loading==""?'No Items':error_loading}}</div>
     <!-- If loading -->
