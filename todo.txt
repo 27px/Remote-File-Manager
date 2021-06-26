@@ -8,6 +8,7 @@ TODO
 5 Configurable settings like handshake wait time etc
 6 Sorting with date or size
 7 short cut link
+8 Recycle Bin
 
 UI TODO
 7 Collapsible Connections

@@ -188,6 +188,7 @@ export class FileManagerComponent implements AfterViewInit
       try
       {
         let data=JSON.parse(event.data);
+        console.log(data);
         if(data.type=="progress")
         {
           this.background_processes[data.process_id].progress=data.progress;
@@ -215,6 +216,11 @@ export class FileManagerComponent implements AfterViewInit
             this.loadDirContents(this.getCWD());
           }
           this.toast("warning",data.message);
+        }
+        else if(data.type=="open-short-folder")
+        {
+          this.background_processes[data.process_id].status="completed";
+          this.loadDirContents(data.extra_data.path); // opening the shortcut file path
         }
         else if(data.type=="settings")
         {

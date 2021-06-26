@@ -17,9 +17,9 @@ function send_error(log = null, message="Something went wrong", type="failed")
   send({ process_id, type, message, log });
 }
 
-function send_success(message="Completed Successfully", reload=false, type="completed")
+function send_success(message="Completed Successfully", reload=false, type="completed", extra_data=null)
 {
-  send({ process_id, message, type, reload });
+  send({ process_id, message, type, reload, extra_data });
 }
 
 function recursiveFolderDelete(connection,root_path)
@@ -48,11 +48,10 @@ function recursiveFolderDelete(connection,root_path)
   });
 }
 
-async function checkIsFolder(item, path)
+async function checkIsFolder(item, item_path)
 {
-  // if long name not available it is local
-  if(typeof item.longname === 'undefined') {
-    const stat = await fsp.lstat(path);
+  if(typeof item?.longname === 'undefined') { // if long name not available it is local
+    const stat = await fsp.stat(item_path);
     return stat.isDirectory();
   } else {
     return item.longname[0]=='d';
@@ -111,6 +110,16 @@ function copyToPath(source,source_promise,source_path,target,target_promise,targ
       resolve(true);
     }
   });
+}
+
+async function openItemInSystemApp(item_path,file)
+{
+  try {
+    await shell.openPath(item_path);
+    send_success(`Opened ${file} in System App`);
+  } catch (error) {
+    send_error(error.message);
+  }
 }
 
 module.exports=async operation=>{
@@ -226,10 +235,16 @@ module.exports=async operation=>{
     let file=operation.data.files[0];
     let base_path = getPath(file,operation.data.source.baseFolder);
     try {
-      await shell.openPath(base_path);
-      send_success(`Opened ${file} in System App`);
-    } catch (error) {
-      send_error(error.message);
+      let short = await shell.readShortcutLink(base_path);
+      let link = getPath("", short.target);
+      if(await checkIsFolder({}, link)) {
+        send_success("Open", false, "open-short-folder", { path: link });
+      } else {
+        await openItemInSystemApp(link, file);
+      }
+    }
+    catch(error) { // not a shortcut file
+      await openItemInSystemApp(base_path, file);
     }
   }
 };
