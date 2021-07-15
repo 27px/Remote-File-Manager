@@ -129,3 +129,8 @@ GUI File Manager, access both local and ssh files, X-OS (Built on electron), Tes
 
 ### Ctrl + Select
 ![Screenshot1](https://raw.githubusercontent.com/27px/Remote-File-Manager/main/docs/Screenshots/screenshot%20(23).png)
+
+
+#### Icons used are opensource
+GIT : [feathericons](https://github.com/feathericons/feathericons.com)
+Website : [feathericons.com](https://feathericons.com/)
