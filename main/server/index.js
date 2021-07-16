@@ -6,7 +6,7 @@ settings = {}; // global settings
 instance = null;
 
 module.exports = (USE_PORT) => {
-  const config = require("./config/config.json");
+  const config = require("./config/config.sample.json");
   const express = require("express");
   const app = express();
   const http = require("http");
