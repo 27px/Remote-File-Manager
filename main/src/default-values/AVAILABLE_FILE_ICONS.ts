@@ -1,7 +1,1 @@
-export default [
-  "image",
-  "video",
-  "audio",
-  "application",
-  "text"
-];
+export default ["image", "video", "audio", "application", "text"];

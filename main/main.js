@@ -1,16 +1,14 @@
 //global
-USED_PORT=0; // port will be assigned
+USED_PORT = 0; // port will be assigned
 
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
-const expressApp = require(path.join(__dirname,"server","index.js"));
+const expressApp = require(path.join(__dirname, "server", "index.js"));
 const url = require("url");
 
 let win;
 
-
-function createWindow()
-{
+function createWindow() {
   // express server app
   USED_PORT = expressApp(0); // port as 0 so uses any free port
 
@@ -20,80 +18,77 @@ function createWindow()
     height: 600,
     minWidth: 750,
     minHeight: 350,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     icon: path.join(__dirname, "dist", "icon.ico"),
     show: false,
     frame: false, // hide bar and make custom
     title: "File Manager",
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  })
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
 
-  win.setMenu(null) // hide menu
-  win.webContents.send('USED_PORT', USED_PORT);
+  win.setMenu(null); // hide menu
+  win.webContents.send("USED_PORT", USED_PORT);
   win.maximize();
   win.show();
 
-  win.loadURL(url.format({
-    pathname:path.join(__dirname,"dist","index.html"),
-    protocol:"file:",
-    slashes:true
-  }));
+  win.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "dist", "index.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
 
   win.focus();
 
   //// DevTools. // remove in production
   // win.webContents.openDevTools()
 
-  win.webContents.on('new-window', function(event, url) {
+  win.webContents.on("new-window", function (event, url) {
     event.preventDefault();
     shell.openExternal(url);
   });
 
   // Event when the window is closed.
-  win.on('closed',()=>{
-    win = null
-  })
+  win.on("closed", () => {
+    win = null;
+  });
 }
 
 // custom
-ipcMain.on("close",()=>{
+ipcMain.on("close", () => {
   win.close();
 });
 
-ipcMain.on("minimize",()=>{
+ipcMain.on("minimize", () => {
   win.minimize();
 });
 
-ipcMain.on("maximize",()=>{
-  let xwin=BrowserWindow.getFocusedWindow();
-  if(xwin.isMaximized())
-  {
+ipcMain.on("maximize", () => {
+  let xwin = BrowserWindow.getFocusedWindow();
+  if (xwin.isMaximized()) {
     xwin.unmaximize();
-  }
-  else
-  {
+  } else {
     xwin.maximize();
   }
 });
 
 // Create window on electron intialization
-app.on('ready', createWindow)
+app.on("ready", createWindow);
 
 // Quit when all windows are closed.
-app.on('window-all-closed',()=>{
+app.on("window-all-closed", () => {
   // On macOS specific close process
-  if(process.platform !== 'darwin')
-  {
-    app.quit()
+  if (process.platform !== "darwin") {
+    app.quit();
   }
-})
+});
 
-app.on('activate',()=>{
+app.on("activate", () => {
   // macOS specific close process
-  if(win === null)
-  {
+  if (win === null) {
     createWindow();
   }
-})
+});

@@ -1,41 +1,36 @@
-function success_response(data=null)
-{
-  let success={
-    status:true
-  }
-  if(data!==null)
-  {
-    success.data=data;
+function success_response(data = null) {
+  let success = {
+    status: true,
+  };
+  if (data !== null) {
+    success.data = data;
   }
   return success;
 }
 
-function error_response(message, error_log, customError=null)
-{
+function error_response(message, error_log, customError = null) {
   let error = {
-    status:false,
+    status: false,
     message,
-    error_log
+    error_log,
   };
-  if(customError!==null)
-  {
-    error.customError=customError;
+  if (customError !== null) {
+    error.customError = customError;
   }
   return error;
 }
 
-function response_directory_contents(type, path, contents)
-{
+function response_directory_contents(type, path, contents) {
   return {
-    status:true,
+    status: true,
     type,
     path,
-    contents
+    contents,
   };
 }
 
-module.exports={
+module.exports = {
   error_response,
   success_response,
-  response_directory_contents
+  response_directory_contents,
 };

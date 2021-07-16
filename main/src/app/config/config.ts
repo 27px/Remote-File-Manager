@@ -1,6 +1,6 @@
 export default {
-  "server":{
-    "HOST":"localhost",
-    "PORT":4500
+  server: {
+    HOST: "localhost",
+    PORT: 4500
   }
-}
+};

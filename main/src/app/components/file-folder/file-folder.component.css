@@ -1,156 +1,132 @@
-.item
-{
-  width:var(--icon-size);
-  max-width:100%;
-  height:calc(var(--icon-size) + 30px);
-  margin:0px auto;
-  padding:var(--icon-gap);
-  box-sizing:border-box;
-  border:2px solid transparent;
-  cursor:pointer;
-  transition:border-color 0.3s, border-radius 0.3s;
+.item {
+  width: var(--icon-size);
+  max-width: 100%;
+  height: calc(var(--icon-size) + 30px);
+  margin: 0px auto;
+  padding: var(--icon-gap);
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s, border-radius 0.3s;
 }
-.item.drive
-{
-  width:100%;
-  height:100%;
-  background:var(--accent-semi-light);
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
-  align-items:center;
-  border-radius:10px;
+.item.drive {
+  width: 100%;
+  height: 100%;
+  background: var(--accent-semi-light);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
 }
-.item:hover
-{
-  border-color:var(--accent);
+.item:hover {
+  border-color: var(--accent);
 }
-.item.item-selected
-{
-  border-color:var(--accent-dark)!important; /* selected should have more priority than hover */
+.item.item-selected {
+  border-color: var(
+    --accent-dark
+  ) !important; /* selected should have more priority than hover */
 }
-.item:not(.drive):hover,.item.item-selected:not(.drive)
-{
+.item:not(.drive):hover,
+.item.item-selected:not(.drive) {
   border-radius: 5px;
 }
-.item .icon
-{
-  width:100%;
-  height:calc(var(--icon-size) - var(--icon-gap) * 2);
-  margin-bottom:5px;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:contain;
+.item .icon {
+  width: 100%;
+  height: calc(var(--icon-size) - var(--icon-gap) * 2);
+  margin-bottom: 5px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
-.item.drive .icon
-{
-  width:115px;
-  height:110px;
-  margin-left:-10px;
-  margin-bottom:unset;
+.item.drive .icon {
+  width: 115px;
+  height: 110px;
+  margin-left: -10px;
+  margin-bottom: unset;
 }
-.item .name
-{
-  text-align:center;
-  color:var(--accent-dark);
-  font-size:var(--icon-font-size);
+.item .name {
+  text-align: center;
+  color: var(--accent-dark);
+  font-size: var(--icon-font-size);
 }
-.item:not(.item-selected) .name
-{
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.item:not(.item-selected) .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.item.item-cut
-{
-  opacity:0.3;
+.item.item-cut {
+  opacity: 0.3;
 }
-.item.folder .icon
-{
-  background-image:url("../../../assets/images/folder.svg");
+.item.folder .icon {
+  background-image: url("../../../assets/images/folder.svg");
 }
-.item.folder.filled .icon
-{
-  background-image:url("../../../assets/images/folder-filled.svg");
+.item.folder.filled .icon {
+  background-image: url("../../../assets/images/folder-filled.svg");
 }
-.item.file .icon
-{
-  background-image:url("../../../assets/images/file-default.svg");
+.item.file .icon {
+  background-image: url("../../../assets/images/file-default.svg");
 }
-.item.folder.not-readable .icon
-{
-  background-image:url("../../../assets/images/folder-no-access.svg");
+.item.folder.not-readable .icon {
+  background-image: url("../../../assets/images/folder-no-access.svg");
 }
-.item.drive .icon
-{
-  background-image:url("../../../assets/images/drive.svg");
+.item.drive .icon {
+  background-image: url("../../../assets/images/drive.svg");
 }
-.drive .drive-contents
-{
-  width:100%;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:space-evenly;
+.drive .drive-contents {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
-.drive .drive-contents>*
-{
-  width:100%;
-  height:100%;
+.drive .drive-contents > * {
+  width: 100%;
+  height: 100%;
 }
-.drive .drive-contents .top
-{
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
+.drive .drive-contents .top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .drive .drive-contents .name,
 .drive .drive-contents .percent,
-.drive .drive-contents .size-details
-{
-  display:flex;
-  align-items:center;
-  color:var(--inverse);
-  font-size:16px;
-  font-weight:300;
+.drive .drive-contents .size-details {
+  display: flex;
+  align-items: center;
+  color: var(--inverse);
+  font-size: 16px;
+  font-weight: 300;
 }
-.drive .drive-contents .name
-{
-  font-weight:900;
+.drive .drive-contents .name {
+  font-weight: 900;
 }
-.drive .drive-contents .size-details
-{
-  color:var(--inverse-light);
-  transition:color 0.6s;
+.drive .drive-contents .size-details {
+  color: var(--inverse-light);
+  transition: color 0.6s;
 }
-.item.drive:hover .size-details
-{
-  color:var(--inverse);
+.item.drive:hover .size-details {
+  color: var(--inverse);
 }
-.drive .progress
-{
-  width:100%;
-  height:40%!important;
-  background:var(--inverse-light);
+.drive .progress {
+  width: 100%;
+  height: 40% !important;
+  background: var(--inverse-light);
 }
-.drive .progress .progress-bar
-{
-  width:0%;
-  height:100%;
-  background:var(--primary);
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0);
+.drive .progress .progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--primary);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0);
   transition: box-shadow 0.5s;
 }
-.drive.high .progress .progress-bar
-{
-  background:var(--red);
+.drive.high .progress .progress-bar {
+  background: var(--red);
 }
-.item.drive:hover .progress-bar
-{
+.item.drive:hover .progress-bar {
   box-shadow: 0px 0px 10px 1px var(--primary);
 }
-.item.drive.high:hover .progress-bar
-{
+.item.drive.high:hover .progress-bar {
   box-shadow: 0px 0px 10px 1px var(--red);
 }

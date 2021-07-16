@@ -1,5 +1,4 @@
-export enum fs
-{
+export enum fs {
   DELETE = "delete",
   NEW_FOLDER = "new-folder",
   NEW_FILE = "new-file",

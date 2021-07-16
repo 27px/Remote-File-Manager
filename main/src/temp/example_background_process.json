@@ -1,22 +1,17 @@
 [
   {
-    "process_id":0,
-    "type":"cut-paste",
-    "data":{
-      "source":{
-        "server":"user@host",
-        "baseFolder":"C://XAMPP/htdocs/",
+    "process_id": 0,
+    "type": "cut-paste",
+    "data": {
+      "source": {
+        "server": "user@host",
+        "baseFolder": "C://XAMPP/htdocs/"
       },
-      "target":{
-        "server":"user@host",
-        "baseFolder":"D://New Folder/"
+      "target": {
+        "server": "user@host",
+        "baseFolder": "D://New Folder/"
       },
-      "files":[
-        "file_1.txt",
-        "file_2.txt",
-        "file_3.txt",
-        "Folder 123",
-      ]
+      "files": ["file_1.txt", "file_2.txt", "file_3.txt", "Folder 123"]
     }
   }
 ]
