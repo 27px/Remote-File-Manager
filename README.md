@@ -14,6 +14,19 @@ GUI File Manager, access both local and ssh files, X-OS (Built on electron), Tes
   // or run electron packager commands to generate for other operating systems
 ```
 
+## Run in development mode (In browser)
+
+```
+  // terminal 1
+  cd main/server
+  npm run server // or npm run dev-server (make sure to install nodemon)
+  
+  // terminal 2
+  cd main
+  npm run start
+```
+
+
 ## Screenshots
 
 
