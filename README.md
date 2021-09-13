@@ -25,7 +25,13 @@ GUI File Manager, access both local and ssh files, X-OS (Built on electron), Tes
   cd main
   npm run start
 ```
+## Run in production mode (In browser)
 
+```
+  cd main
+  npm run prod
+  // open http://localhost:4500/ in browser
+```
 
 ## Screenshots
 

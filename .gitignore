@@ -1,5 +1,6 @@
 main/server/node_modules/
 main/node_modules/
+main/server/dist
 desktop.ini
 */desktop.ini
 build
