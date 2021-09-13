@@ -58,7 +58,7 @@
   background: var(--accent-dark);
 }
 .header {
-  grid-area: 1 / 1 / 1 / 4;
+  grid-area: 1 / 1 / 2 / 4;
   border-bottom: var(--border);
   display: flex;
   flex-direction: row;

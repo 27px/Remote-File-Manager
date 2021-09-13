@@ -1,5 +1,5 @@
 BUG
-1 Cannot move electron app using mouse
+1 Icon not showing in Windows taskbar
 
 TODO
 2 Shortcut keys
@@ -12,3 +12,6 @@ TODO
 
 UI TODO
 7 Collapsible Connections
+
+Security TODO
+remove express.js and websocket and use electrons builtin methods
