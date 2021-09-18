@@ -46,7 +46,7 @@ module.exports = (USE_PORT) => {
 
   app.use(
     cors({
-      origin: "*",
+      origin: "http://localhost",
     })
   );
 
