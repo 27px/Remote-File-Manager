@@ -34,8 +34,13 @@ module.exports = (USE_PORT) => {
   // security fixes
   app.disable("x-powered-by");
   app.use((req, res, next) => {
+    // prevents 'ClickJacking'
     res.setHeader('X-Frame-Options', 'DENY');
+    // prevents "MIME-type sniffing"
     res.setHeader('X-Content-Type-Options', 'nosniff');
+    // prevents some XSS
+    res.setHeader('X-XSS-Protection', '1');
+    
     next();
   });
 
