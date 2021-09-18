@@ -31,10 +31,11 @@ module.exports = (USE_PORT) => {
   // app.set("views","./views");
   // app.set("view engine","ejs");
 
+  // security fixes
   app.disable("x-powered-by");
-  
   app.use((req, res, next) => {
-    res.setHeader('X-Frame-Options', 'DENY')
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     next();
   });
 
