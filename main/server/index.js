@@ -32,6 +32,11 @@ module.exports = (USE_PORT) => {
   // app.set("view engine","ejs");
 
   app.disable("x-powered-by");
+  
+  app.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'DENY')
+    next();
+  });
 
   app.use(
     cors({
