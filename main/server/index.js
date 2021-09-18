@@ -31,6 +31,8 @@ module.exports = (USE_PORT) => {
   // app.set("views","./views");
   // app.set("view engine","ejs");
 
+  app.disable("x-powered-by");
+
   app.use(
     cors({
       origin: "*",
@@ -83,6 +85,8 @@ module.exports = (USE_PORT) => {
   // app.use("/static",express.static(path.join(__dirname,"static")));
   app.use("/favicon.ico", express.static(path.join(__dirname, "icon.ico")));
 
+  app.use("/", express.static(path.join(__dirname, "dist")));
+  
   app.use("/", route);
 
   instance = server.listen(PORT, () => {
