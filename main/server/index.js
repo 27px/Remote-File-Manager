@@ -40,13 +40,13 @@ module.exports = (USE_PORT) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     // prevents some XSS
     res.setHeader('X-XSS-Protection', '1');
-    
+
     next();
   });
 
   app.use(
     cors({
-      origin: "http://localhost",
+      origin: "*",
     })
   );
 
@@ -97,7 +97,7 @@ module.exports = (USE_PORT) => {
   app.use("/favicon.ico", express.static(path.join(__dirname, "icon.ico")));
 
   app.use("/", express.static(path.join(__dirname, "dist")));
-  
+
   app.use("/", route);
 
   instance = server.listen(PORT, () => {
