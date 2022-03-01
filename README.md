@@ -1,36 +1,50 @@
 # File-Manager
 GUI File Manager, access both local and ssh files, X-OS (Built on electron), Tested for Windows and Ubuntu
 
+## Versions Used
+|          | Version  |
+|----------|----------|
+| Node.js  | v14.17.0 |
+| Electron | v13.0.1  |
+| Angular  | v11.0.5  |
+
 ## Build package
 
-```
+```sh
+  # move to main folder
   cd main
+  # install dependencies of angular
   npm install
+  # move to server folder
   cd server
+  # install node dependencies
   npm install
-  npm run electron-generate-win           // for windows 64bit
-  npm run electron-generate-linux         // for linux 64bit
-  // output package will be inside of build folder
-  // or run electron packager commands to generate for other operating systems
+  # move back to main folder
+  cd ..
+  # build
+  npm run electron-generate-win           # for windows 64bit
+  npm run electron-generate-linux         # for linux 64bit
+  # output package will be inside of build folder
+  # or run electron packager  commands to generate for other operating systems
 ```
 
 ## Run in development mode (In browser)
 
-```
-  // terminal 1
+```sh
+  # terminal 1
   cd main/server
-  npm run server // or npm run dev-server (make sure to install nodemon)
+  npm run server # or npm run dev-server (make sure to install nodemon)
   
-  // terminal 2
+  # terminal 2
   cd main
   npm run start
 ```
 ## Run in production mode (In browser)
 
-```
+```sh
   cd main
   npm run prod
-  // open http://localhost:4500/ in browser
+  # open http://localhost:4500/ in browser
 ```
 
 ## Screenshots
